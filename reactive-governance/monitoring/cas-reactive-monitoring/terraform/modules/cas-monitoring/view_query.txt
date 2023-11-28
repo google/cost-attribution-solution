@@ -4,14 +4,14 @@ SELECT
         WHEN REGEXP_EXTRACT(name, r'projects/([^/]+)/') is null THEN ancestors[offset(1)]
         ELSE REGEXP_EXTRACT(name, r'projects/([^/]+)/')
         END
-         AS projectId,
+         AS project_id,
     REGEXP_EXTRACT(name, r'[^/]+$') AS name,
     asset_type,
     resource.discovery_name,
     resource.location,
     ancestors
 FROM
-    `prj-21-376417.org_assets.asset`
+    `prj-21-376417.cas_dataset_1.cas_table_1`
 WHERE
     JSON_EXTRACT(resource.data, '$.labels') IS NULL
   AND ( asset_type LIKE '%appengine%'
