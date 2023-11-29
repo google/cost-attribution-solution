@@ -222,13 +222,13 @@ Account created in the previous step at the Org A:
 1.  Clone the Cost attribute Solution repo
 
     ```sh
-    git clone https://github.com/google/quota-monitoring-solution.git quota-monitorings-solution
+    git clone https://github.com/google/quota-monitoring-solution.git quota-monitorings-solution](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/monitoring/cas-reactive-monitoring
     ```
 
 2.  Change directories into the Terraform example
 
     ```sh
-    cd ./quota-monitorings-solution/terraform/module
+    cd ./cas-reactive-monitoring/terraform/module
     ```
 
 ### 4.4 Set OAuth Token Using Service Account Impersonization
