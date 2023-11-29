@@ -222,7 +222,7 @@ Account created in the previous step at the Org A:
 1.  Clone the Cost attribute Solution repo
 
     ```sh
-    git clone https://github.com/google/quota-monitoring-solution.git quota-monitorings-solution](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/monitoring/cas-reactive-monitoring
+    git clone https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/monitoring/cas-reactive-monitoring
     ```
 
 2.  Change directories into the Terraform example
