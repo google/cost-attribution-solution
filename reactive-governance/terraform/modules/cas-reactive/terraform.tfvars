@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Google LLC
+Copyright 2024 Google LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,16 +16,11 @@ Copyright 2023 Google LLC
 
 # Update values
 organization_id              = "29428042487"   //update
-project_id                   = "prj-21-376417" //update
+project_id                   = "prj-22-376417" //update
 region                       = "us-west1" //update
 location                     = "US" //update
-service_account_email        = "cost-attribution-solution@prj-21-376417.iam.gserviceaccount.com" //update
-bigquery_dataset             = "cas_dataset_2"
-bigquery_table               = "cas_table_2"
-bigquery_table_view          = "cas_view_missing_labels_2"
-cas_topic                    = "cas_topic_2"
-scheduler_cas_job_name       = "cas_job_200"
-cloud_function_cas_reporting = "casExportAssets1"
+service_account_email        = "sa-prj-22-376417@prj-22-376417.iam.gserviceaccount.com" //update
+notification_email_address   = "anuradhabajpai@google.com" //update
 scheduler_cas_job_frequency  = "0 * * * *" //every hour
 source_code_bucket           = "cas-source" //do not change
-source_code_object           = "cas.zip" //do not change
+source_code_cas              = "cas.zip" //do not change
