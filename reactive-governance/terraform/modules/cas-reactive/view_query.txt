@@ -11,7 +11,7 @@ SELECT
     resource.location,
     ancestors
 FROM
-    `prj-21-376417.cas_dataset_1.cas_table_1`
+    `[project id].[dataset id].[table id]`
 WHERE
     JSON_EXTRACT(resource.data, '$.labels') IS NULL
   AND ( asset_type LIKE '%appengine%'

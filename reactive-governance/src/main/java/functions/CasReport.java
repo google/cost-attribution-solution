@@ -23,6 +23,7 @@ import com.google.cloud.asset.v1.ExportAssetsRequest;
 import com.google.cloud.asset.v1.ExportAssetsResponse;
 import com.google.cloud.asset.v1.OrganizationName;
 import com.google.cloud.asset.v1.OutputConfig;
+import com.google.cloud.asset.v1.ProjectName;
 import com.google.cloud.functions.CloudEventsFunction;
 import io.cloudevents.CloudEvent;
 import java.io.IOException;
@@ -33,12 +34,12 @@ import java.util.logging.Logger;
 /**
  * Export organization assets to BigQuery table
  */
-public class CasReactiveReporting implements CloudEventsFunction {
+public class CasReport implements CloudEventsFunction {
   private static final String PROJECT_ID = System.getenv("PROJECT_ID");
   private static final String BIGQUERY_DATASET = System.getenv("BIGQUERY_DATASET");
   private static final String BIGQUERY_TABLE = System.getenv("BIGQUERY_TABLE");
   private static final String PARENT = System.getenv("PARENT");
-  private static final Logger logger = Logger.getLogger(CasReactiveReporting.class.getName());
+  private static final Logger logger = Logger.getLogger(CasReport.class.getName());
 
   /**
    * API to export organization assets to BigQuery table
@@ -48,7 +49,8 @@ public class CasReactiveReporting implements CloudEventsFunction {
     logger.info("Asset export start");
     try {
       AssetServiceClient client = AssetServiceClient.create();
-      OrganizationName parent = OrganizationName.of(PARENT);
+     // OrganizationName parent = OrganizationName.of(PARENT);
+      ProjectName parent  = ProjectName.of(PROJECT_ID);
 
       OutputConfig outputConfig =
           OutputConfig.newBuilder()

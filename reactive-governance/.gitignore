@@ -1,0 +1,11 @@
+sendgrid.env
+target
+*.json
+terraform.tfstate*
+terraform/example/*.zip
+
+.*
+!/.gitignore
+!/.github
+!/.markdownlint.json
+*.iml
