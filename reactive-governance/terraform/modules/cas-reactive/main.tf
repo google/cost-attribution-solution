@@ -39,11 +39,15 @@ module "project-services" {
   project_id = var.project_id
 
   activate_apis = [
+    "compute.googleapis.com",
     "bigquery.googleapis.com",
     "pubsub.googleapis.com",
     "cloudscheduler.googleapis.com",
     "cloudfunctions.googleapis.com",
-    "cloudasset.googleapis.com"
+    "cloudasset.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "run.googleapis.com",
+    "eventarc.googleapis.com"
   ]
   depends_on = [module.project-service-cloudresourcemanager]
 }

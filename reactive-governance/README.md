@@ -89,7 +89,7 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     credential file
 
     ```sh
-    mkdir <directory name like quota-monitoring-dashboard>
+    mkdir <directory name like cost-attribution-solution>
     cd <directory name>
     ```
 
@@ -163,7 +163,7 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     The output should look like:
 
     ```sh
-    Created service account [sa-quota-monitoring-project-1].
+    Created service account [sa-cost-attribution-solution-1].
     ```
 
 ### 4. Grant Roles to Service Account
@@ -208,27 +208,26 @@ Account created in the previous step at the Org A:
 1.  Set target organization id
 
     ```sh
-    export TARGET_ORG_ID=<target org id ex. 38659473572>
+    export TARGET_ORG_ID=<target org id ex. 38659477579>
     ```
 
 2.  Run the following commands to add to the roles to the service account
 
     ```sh
-    gcloud organizations add-iam-policy-binding  $TARGET_ORG_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudasset.assets.searchAllResources" --condition=None
-    ```
+    gcloud organizations add-iam-policy-binding  $TARGET_ORG_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudasset.viewer" --condition=None    ```
 
 ### 4.3 Download the Source Code
 
 1.  Clone the Cost attribute Solution repo
 
     ```sh
-    git clone https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/monitoring/cas-reactive-monitoring
+    git clone https://github.com/google/cost-attribution-solution.git cost-attribution-solution
     ```
 
 2.  Change directories into the Terraform example
 
     ```sh
-    cd ./cas-reactive-monitoring/terraform/module
+    cd ./reactive-governance/terraform/modules/cas-reactive
     ```
 
 ### 4.4 Set OAuth Token Using Service Account Impersonization
