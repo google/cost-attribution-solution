@@ -16,7 +16,6 @@ Copyright 2024 Google LLC
 
 provider "google" {
   project = var.project_id
-  credentials = file("prj-22-sa.json")
 }
 
 # Enable Cloud Resource Manager API
@@ -67,7 +66,6 @@ resource "google_cloud_scheduler_job" "cas_job" {
 
   pubsub_target {
     topic_name = google_pubsub_topic.cas_topic.id
-    data       = base64encode("hello")
   }
 
   depends_on = [google_pubsub_topic.cas_topic]
@@ -80,7 +78,7 @@ resource "google_cloudfunctions2_function" "cas_report_function" {
 
   build_config {
     runtime = "java17"
-    entry_point = "functions.CasReactiveReport"
+    entry_point = "functions.CasReport"
     source {
       storage_source {
         bucket = var.source_code_bucket
@@ -138,6 +136,7 @@ resource "google_bigquery_table" "default" {
   }
 
   schema = file("asset_table_schema.txt")
+  depends_on = [google_bigquery_dataset.dataset]
 }
 
 resource "google_bigquery_table" "cas_table_view" {
@@ -154,11 +153,7 @@ resource "google_bigquery_table" "cas_table_view" {
     query = file("view_query.txt")
     use_legacy_sql = false
   }
-}
-
-
-output "function_uri" {
-  value = google_cloudfunctions2_function.cas_report_function.service_config[0].uri
+  depends_on = [google_bigquery_table.default]
 }
 
 ## RESOURCES TO SETUP ALERTING WHEN RESOURCE IS CREATED OR UPDATED AND LABEL IS MISSING ##

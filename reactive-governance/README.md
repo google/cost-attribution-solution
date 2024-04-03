@@ -89,7 +89,7 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     credential file
 
     ```sh
-    mkdir <directory name like cost-attribution-solution>
+    mkdir <directory name>
     cd <directory name>
     ```
 
@@ -183,6 +183,7 @@ project i.e. Project A:
     *   Pub/Sub Admin
 *   Run Terraform
     *   Service Account User
+    *   Service Usage Admin
 
 1.  Run following commands to assign the roles:
 
@@ -196,6 +197,22 @@ project i.e. Project A:
     gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/pubsub.admin" --condition=None
 
     gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/iam.serviceAccountUser" --condition=None
+    
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/serviceusage.serviceUsageAdmin" --condition=None
+
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/monitoring.notificationChannelEditor" --condition=None
+
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/monitoring.alertPolicyEditor" --condition=None
+
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/logging.configWriter" --condition=None
+
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/logging.logWriter" --condition=None
+
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/monitoring.viewer" --condition=None
+
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/monitoring.metricWriter" --condition=None
+    
+    gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudasset.owner" --condition=None
     ```
 
 #### 4.2 Grant Roles in the Target Organization
@@ -227,7 +244,7 @@ Account created in the previous step at the Org A:
 2.  Change directories into the Terraform example
 
     ```sh
-    cd ./reactive-governance/terraform/modules/cas-reactive
+    cd cost-attribution-solution/reactive-governance/terraform/modules/cas-reactive/
     ```
 
 ### 4.4 Set OAuth Token Using Service Account Impersonization
@@ -270,14 +287,20 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     *   variables.tf
     *   terraform.tfvars
 
-2.  Open [terraform.tfvars](terraform/example/terraform.tfvars) file in your
+2.  Open [terraform.tfvars](terraform/modules/cas-reactive/terraform.tfvars) file in your
     favourite editor and change values for the variables.
 
     ```sh
     vi terraform.tfvars
     ```
+    
+3. Open [view_query.txt](terraform/modules/cas-reactive/view_query.txt) file and update the 'project_id' in the query
+    
+   ```sh
+    vi view_query.txt
+    ```
 
-3.  For `region`, use the same region as used for App Engine in earlier steps.
+4. For `region`, use the same region as used for App Engine in earlier steps.
 
     The variables `source_code_base_url`, `cas_version`, `source_code_zip`
     on the QMS module are used to download
