@@ -14,11 +14,6 @@ Copyright 2023 Google LLC
    limitations under the License.
 */
 
-provider "google" {
-  project = var.project_id
-  credentials = file("prj-21-sa.json")
-}
-
 # Enable Cloud Resource Manager API
 module "project-service-cloudresourcemanager" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
