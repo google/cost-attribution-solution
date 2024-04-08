@@ -49,8 +49,14 @@ public class CasReport implements CloudEventsFunction {
     logger.info("Asset export start");
     try {
       AssetServiceClient client = AssetServiceClient.create();
-     // OrganizationName parent = OrganizationName.of(PARENT);
-      ProjectName parent  = ProjectName.of(PROJECT_ID);
+     
+      String parentId = "";
+     //If org id is provided, scan all projects in the org or scan host project
+      if(PARENT != null && !PARENT.trim().isEmpty()){
+        parentId = OrganizationName.of(PARENT).toString();
+      } else {
+        parentId  = ProjectName.of(PROJECT_ID).toString();
+      } 
 
       OutputConfig outputConfig =
           OutputConfig.newBuilder()
@@ -63,7 +69,7 @@ public class CasReport implements CloudEventsFunction {
               .build();
 
       ExportAssetsRequest.Builder exportAssetsRequestBuilder = ExportAssetsRequest.newBuilder()
-          .setParent(parent.toString()).setContentType(ContentType.RESOURCE).setOutputConfig(outputConfig);
+          .setParent(parentId).setContentType(ContentType.RESOURCE).setOutputConfig(outputConfig);
 
       ExportAssetsRequest request = exportAssetsRequestBuilder.build();
       ExportAssetsResponse response = client.exportAssetsAsync(request).get();
