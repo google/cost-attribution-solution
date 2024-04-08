@@ -15,7 +15,7 @@ Copyright 2024 Google LLC
 */
 
 # Update values
-organization_id              = " "   //update
+organization_id              = " "   //update (leave empty if scanning only host project)
 project_id                   = " " //update
 region                       = "us-west1" //update
 location                     = "US" //update
