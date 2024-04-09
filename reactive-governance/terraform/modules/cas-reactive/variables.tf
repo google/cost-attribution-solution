@@ -1,5 +1,5 @@
 /*
-Copyright 2023 Google LLC
+Copyright 2024 Google LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -44,9 +44,11 @@ variable "service_account_email" {
   type        = string
 }
 
+## RESOURCES TO CREATE MISSING LABELS DASHBOARD ##
 variable "bigquery_dataset" {
   description = "Value of the BigQuery dataset id to load assets"
   type        = string
+  default     = "cas_report_dataset"
 }
 
 variable "bigquery_dataset_desc" {
@@ -64,11 +66,13 @@ variable "bigquery_dataset_default_partition_expiration_ms" {
 variable "bigquery_table" {
   description = "Value of the BigQuery table to load assets"
   type        = string
+  default     = "cas_table"
 }
 
 variable "bigquery_table_view" {
   description = "Value of the BigQuery view to extract assets without labels"
   type        = string
+  default     = "cas_view_missing_labels"
 }
 
 variable "bigquery_table_partition" {
@@ -80,11 +84,13 @@ variable "bigquery_table_partition" {
 variable "cas_topic" {
   description = "Value of the Pub/Sub topic Id to trigger Cloud Function"
   type        = string
+  default     = "cas_report_topic"
 }
 
 variable "scheduler_cas_job_name" {
   description = "Value of name of job scheduler"
   type        = string
+  default     = "cas_report_job"
 }
 
 variable "scheduler_cas_job_description" {
@@ -101,6 +107,7 @@ variable "scheduler_cas_job_frequency" {
 variable "cloud_function_cas_reporting" {
   description = "Value of the name for the Cloud Function to Export Assets in Bigquery"
   type        = string
+  default     = "CasReport"
 }
 
 variable "cloud_function_cas_reporting_desc" {
@@ -126,8 +133,37 @@ variable "source_code_bucket" {
   type        = string
 }
 
-variable "source_code_object" {
+variable "source_code_cas" {
   description = "Value of the source code zip name"
   type        = string
 }
 
+## RESOURCES TO SETUP ALERTING WHEN RESOURCE IS CREATED OR UPDATED AND LABEL IS MISSING ##
+variable "cas_alerting_topic" {
+  description = "Value of the Pub/Sub topic Id subscribed to asset feed and triggers Cloud Function"
+  type        = string
+  default     = "cas_alerting_topic"
+}
+
+variable "cloud_function_cas_alerting" {
+  description = "Value of the name for the Cloud Function to Alert for missing labels"
+  type        = string
+  default     = "CasAlert"
+}
+
+variable "cloud_function_cas_alerting_desc" {
+  description = "Value of the description for the Cloud Function to Alert missing labels"
+  type        = string
+  default     = "Alert when resources created or updated and are missing labels"
+}
+
+variable "cas_alert_log_metric" {
+  description = "Value of the name for custom log metric"
+  type        = string
+  default     = "cas_alert_log_metric"
+}
+
+variable "notification_email_address" {
+  description = "Email to receive alerts when resources with missing labels"
+  type        = string
+}
