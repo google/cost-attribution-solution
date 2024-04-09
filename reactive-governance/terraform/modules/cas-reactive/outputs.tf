@@ -14,13 +14,6 @@ Copyright 2024 Google LLC
    limitations under the License.
 */
 
-# Update values
-organization_id              = " "   //update (leave empty if scanning only host project)
-project_id                   = " " //update
-region                       = "us-west1" //update
-location                     = "US" //update
-service_account_email        = " " //update
-notification_email_address   = " " //update
-scheduler_cas_job_frequency  = "0 * * * *" //every hour
-source_code_bucket           = "cas-source" //do not change
-source_code_cas              = "cas.zip" //do not change
+output "function_uri" {
+  value = google_cloudfunctions2_function.cas_report_function.service_config[0].uri
+}
