@@ -244,7 +244,7 @@ Account created in the previous step at the Org A:
 2.  Change directories into the Terraform example
 
     ```sh
-    cd cost-attribution-solution/reactive-governance/terraform/modules/cas-reactive/
+    cd cost-attribution-solution/reactive-governance/terraform/example
     ```
 
 ### 4.4 Set OAuth Token Using Service Account Impersonization
