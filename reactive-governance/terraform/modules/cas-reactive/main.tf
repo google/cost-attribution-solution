@@ -14,8 +14,8 @@ Copyright 2024 Google LLC
    limitations under the License.
 */
 
-provider "google" {
-  project = var.project_id
+locals {
+  expanded_region    = var.region == "us-central" || var.region == "europe-west" ? "${var.region}1" : var.region
 }
 
 # Enable Cloud Resource Manager API
@@ -62,7 +62,7 @@ resource "google_cloud_scheduler_job" "cas_job" {
   name        = var.scheduler_cas_job_name
   description = var.scheduler_cas_job_description
   schedule    = var.scheduler_cas_job_frequency
-  region      = var.region
+  region      = local.expanded_region
 
   pubsub_target {
     topic_name = google_pubsub_topic.cas_topic.id
@@ -73,7 +73,7 @@ resource "google_cloud_scheduler_job" "cas_job" {
 
 resource "google_cloudfunctions2_function" "cas_report_function" {
   name        = var.cloud_function_cas_reporting
-  location    = var.region
+  location    = local.expanded_region
   description = var.scheduler_cas_job_description
 
   build_config {
@@ -100,7 +100,7 @@ resource "google_cloudfunctions2_function" "cas_report_function" {
   }
 
   event_trigger {
-    trigger_region  = var.region
+    trigger_region  = local.expanded_region
     event_type      = "google.cloud.pubsub.topic.v1.messagePublished"
     pubsub_topic    = google_pubsub_topic.cas_topic.id
     retry_policy    = "RETRY_POLICY_RETRY"
@@ -135,7 +135,7 @@ resource "google_bigquery_table" "default" {
     solution = "cost-attribute-solution"
   }
 
-  schema = file("asset_table_schema.txt")
+  schema = file("${path.module}/asset_table_schema.txt")
   depends_on = [google_bigquery_dataset.dataset]
 }
 
@@ -147,10 +147,10 @@ resource "google_bigquery_table" "cas_table_view" {
     solution = "cost-attribute-solution"
   }
 
-  schema = file("asset_table_view_schema.txt")
+  schema = file("${path.module}/asset_table_view_schema.txt")
 
   view {
-    query = file("view_query.txt")
+    query = file("${path.module}/view_query.txt")
     use_legacy_sql = false
   }
   depends_on = [google_bigquery_table.default]
@@ -198,7 +198,7 @@ resource "google_cloud_asset_project_feed" "project_feed" {
 
 resource "google_cloudfunctions2_function" "cas_alert_function" {
   name        = var.cloud_function_cas_alerting
-  location    = var.region
+  location    = local.expanded_region
   description = var.cloud_function_cas_alerting_desc
 
   build_config {
@@ -219,7 +219,7 @@ resource "google_cloudfunctions2_function" "cas_alert_function" {
   }
 
   event_trigger {
-    trigger_region  = var.region
+    trigger_region  = local.expanded_region
     event_type      = "google.cloud.pubsub.topic.v1.messagePublished"
     pubsub_topic    = google_pubsub_topic.cas_alerting_topic.id
     retry_policy    = "RETRY_POLICY_RETRY"

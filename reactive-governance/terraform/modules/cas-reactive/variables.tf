@@ -35,7 +35,7 @@ variable "region" {
 }
 
 variable "location" {
-  description = "Value of the location if region id is not used"
+  description = "Location of where the BigQuery data should be stored, use US or EU for multi-region storage, or use any other region id for single region storage."
   type        = string
 }
 

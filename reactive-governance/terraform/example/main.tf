@@ -28,20 +28,15 @@ provider "google" {
 }
 
 module "cas" {
-  source = "../modules/cas-monitoring"
+  source = "../modules/cas-reactive"
 
   organization_id              = var.organization_id
   project_id                   = var.project_id
   region                       = var.region
   location                     = var.location
   service_account_email        = var.service_account_email
-  bigquery_dataset             = var.bigquery_dataset
-  bigquery_table               = var.bigquery_table
-  bigquery_table_view          = var.bigquery_table_view
-  cas_topic                    = var.cas_topic
-  scheduler_cas_job_name       = var.scheduler_cas_job_name
-  cloud_function_cas_reporting = var.cloud_function_cas_reporting
+  notification_email_address   = var.notification_email_address
   scheduler_cas_job_frequency  = var.scheduler_cas_job_frequency
   source_code_bucket           = var.source_code_bucket
-  source_code_object           = var.source_code_object
+  source_code_cas              = var.source_code_cas
 }

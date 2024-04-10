@@ -60,53 +60,9 @@ variable "service_account_email" {
   type        = string
 }
 
-variable "bigquery_dataset" {
-  description = "Value of the BigQuery dataset id to load assets"
+variable "notification_email_address" {
+  description = "Email to receive alerts when resources with missing labels"
   type        = string
-}
-
-variable "bigquery_dataset_desc" {
-  description = "Value of the BigQuery dataset description to load assets"
-  type        = string
-  default     = "Dataset to load organization assets data"
-}
-
-variable "bigquery_dataset_default_partition_expiration_ms" {
-  description = "Value of the Big Query Dataset default partition expiration"
-  type        = number
-  default     = 86400000
-}
-
-variable "bigquery_table" {
-  description = "Value of the BigQuery table to load assets"
-  type        = string
-}
-
-variable "bigquery_table_view" {
-  description = "Value of the BigQuery view to extract assets without labels"
-  type        = string
-}
-
-variable "bigquery_table_partition" {
-  description = "Value of the Big Query Table time partitioning"
-  type        = string
-  default     = "DAY"
-}
-
-variable "cas_topic" {
-  description = "Value of the Pub/Sub topic Id to trigger Cloud Function"
-  type        = string
-}
-
-variable "scheduler_cas_job_name" {
-  description = "Value of name of job scheduler"
-  type        = string
-}
-
-variable "scheduler_cas_job_description" {
-  description = "Value of description of job scheduler"
-  type        = string
-  default     = "trigger cost attribution monitoring cloud function"
 }
 
 variable "scheduler_cas_job_frequency" {
@@ -114,36 +70,12 @@ variable "scheduler_cas_job_frequency" {
   type        = string
 }
 
-variable "cloud_function_cas_reporting" {
-  description = "Value of the name for the Cloud Function to Export Assets in Bigquery"
-  type        = string
-}
-
-variable "cloud_function_cas_reporting_desc" {
-  description = "Value of the description for the Cloud Function to Export Assets in Bigquery"
-  type        = string
-  default     = "Export Assets in Bigquery"
-}
-
-variable "cloud_function_cas_reporting_memory" {
-  description = "Value of the memory for the Cloud Function to Export Assets in Bigquery"
-  type        = string
-  default     = "512M"
-}
-
-variable "cloud_function_cas_reporting_timeout" {
-  description = "Value of the timeout for the Cloud Function to Export Assets in Bigquery"
-  type        = number
-  default     = 540
-}
-
 variable "source_code_bucket" {
   description = "Value of the source code bucket name"
   type        = string
 }
 
-variable "source_code_object" {
+variable "source_code_cas" {
   description = "Value of the source code zip name"
   type        = string
 }
-
