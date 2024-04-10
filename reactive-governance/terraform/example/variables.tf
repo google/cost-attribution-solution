@@ -69,13 +69,3 @@ variable "scheduler_cas_job_frequency" {
   description = "Value of the cas job frequency to trigger the solution"
   type        = string
 }
-
-variable "source_code_bucket" {
-  description = "Value of the source code bucket name"
-  type        = string
-}
-
-variable "source_code_cas" {
-  description = "Value of the source code zip name"
-  type        = string
-}

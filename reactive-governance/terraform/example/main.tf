@@ -14,17 +14,14 @@ Copyright 2024 Google LLC
    limitations under the License.
 */
 
-terraform {
-  required_providers {
-    google = {
-      version = ">3.5.0"
-    }
-  }
-}
-
 provider "google" {
   project     = var.project_id
   region      = var.region
+  
+  // These might be required if the quota project is different than the host project and are not associated with your credentials.
+  // See https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#quota-management-configuration for more details.
+  //user_project_override = true
+  //billing_project = var.project_id
 }
 
 module "cas" {
@@ -37,6 +34,4 @@ module "cas" {
   service_account_email        = var.service_account_email
   notification_email_address   = var.notification_email_address
   scheduler_cas_job_frequency  = var.scheduler_cas_job_frequency
-  source_code_bucket           = var.source_code_bucket
-  source_code_cas              = var.source_code_cas
 }

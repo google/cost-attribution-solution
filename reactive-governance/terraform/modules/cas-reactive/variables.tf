@@ -128,16 +128,6 @@ variable "cloud_function_cas_reporting_timeout" {
   default     = 540
 }
 
-variable "source_code_bucket" {
-  description = "Value of the source code bucket name"
-  type        = string
-}
-
-variable "source_code_cas" {
-  description = "Value of the source code zip name"
-  type        = string
-}
-
 ## RESOURCES TO SETUP ALERTING WHEN RESOURCE IS CREATED OR UPDATED AND LABEL IS MISSING ##
 variable "cas_alerting_topic" {
   description = "Value of the Pub/Sub topic Id subscribed to asset feed and triggers Cloud Function"

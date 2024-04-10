@@ -51,6 +51,30 @@ module "project-services" {
   depends_on = [module.project-service-cloudresourcemanager]
 }
 
+resource "google_storage_bucket" "bucket_gcf_source" {
+  name          = "${var.project_id}-gcf-source"
+  storage_class = "REGIONAL"
+  location      = local.expanded_region
+  force_destroy = "true"
+  uniform_bucket_level_access = "true"
+}
+
+data "archive_file" "local_source_code_zip" {
+  type        = "zip"
+  source_dir  = abspath("${path.module}/../../../cas-reactive")
+  output_path = "./src.zip"
+}
+
+resource "google_storage_bucket_object" "source_code_object" {
+  name   = "src.${data.archive_file.local_source_code_zip.output_md5}.zip"
+  bucket = google_storage_bucket.bucket_gcf_source.name
+  source = data.archive_file.local_source_code_zip.output_path
+
+  depends_on = [
+    data.archive_file.local_source_code_zip
+  ]
+}
+
 ## RESOURCES TO CREATE MISSING LABELS DASHBOARD ##
 # Create Pub/Sub topic to list projects in the parent node
 resource "google_pubsub_topic" "cas_topic" {
@@ -66,6 +90,7 @@ resource "google_cloud_scheduler_job" "cas_job" {
 
   pubsub_target {
     topic_name = google_pubsub_topic.cas_topic.id
+    data       = base64encode("hello")
   }
 
   depends_on = [google_pubsub_topic.cas_topic]
@@ -81,8 +106,8 @@ resource "google_cloudfunctions2_function" "cas_report_function" {
     entry_point = "functions.CasReport"
     source {
       storage_source {
-        bucket = var.source_code_bucket
-        object = var.source_code_cas
+        bucket = google_storage_bucket.bucket_gcf_source.name
+        object = google_storage_bucket_object.source_code_object.name
       }
     }
   }
@@ -150,7 +175,9 @@ resource "google_bigquery_table" "cas_table_view" {
   schema = file("${path.module}/asset_table_view_schema.txt")
 
   view {
-    query = file("${path.module}/view_query.txt")
+    query = templatefile("${path.module}/view_query.tftpl", {
+      cas_table = "${var.project_id}.${google_bigquery_dataset.dataset.dataset_id}.${google_bigquery_table.default.table_id}",
+    })
     use_legacy_sql = false
   }
   depends_on = [google_bigquery_table.default]
@@ -195,7 +222,6 @@ resource "google_cloud_asset_project_feed" "project_feed" {
   depends_on = [google_pubsub_topic.cas_alerting_topic]
 }
 
-
 resource "google_cloudfunctions2_function" "cas_alert_function" {
   name        = var.cloud_function_cas_alerting
   location    = local.expanded_region
@@ -206,15 +232,15 @@ resource "google_cloudfunctions2_function" "cas_alert_function" {
     entry_point = "functions.CasAlert"
     source {
       storage_source {
-        bucket = var.source_code_bucket
-        object = var.source_code_cas
+        bucket = google_storage_bucket.bucket_gcf_source.name
+        object = google_storage_bucket_object.source_code_object.name
       }
     }
   }
 
   service_config {
-    available_memory    = var.cloud_function_cas_reporting_memory
-    timeout_seconds     = var.cloud_function_cas_reporting_timeout
+    available_memory      = var.cloud_function_cas_reporting_memory
+    timeout_seconds       = var.cloud_function_cas_reporting_timeout
     service_account_email = var.service_account_email
   }
 

@@ -15,6 +15,12 @@ Copyright 2024 Google LLC
 */
 
 terraform {
+  required_providers {
+    google = {
+      version = ">3.5.0"
+    }
+  }
+  
   provider_meta "google" {
     module_name = "cloud-solutions/cost-attribution-monitoring-v1.0"
   }
