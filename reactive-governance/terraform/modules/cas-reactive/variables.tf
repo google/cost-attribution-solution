@@ -35,7 +35,7 @@ variable "region" {
 }
 
 variable "location" {
-  description = "Value of the location if region id is not used"
+  description = "Location of where the BigQuery data should be stored, use US or EU for multi-region storage, or use any other region id for single region storage."
   type        = string
 }
 
@@ -126,16 +126,6 @@ variable "cloud_function_cas_reporting_timeout" {
   description = "Value of the timeout for the Cloud Function to Export Assets in Bigquery"
   type        = number
   default     = 540
-}
-
-variable "source_code_bucket" {
-  description = "Value of the source code bucket name"
-  type        = string
-}
-
-variable "source_code_cas" {
-  description = "Value of the source code zip name"
-  type        = string
 }
 
 ## RESOURCES TO SETUP ALERTING WHEN RESOURCE IS CREATED OR UPDATED AND LABEL IS MISSING ##

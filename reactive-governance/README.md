@@ -244,7 +244,7 @@ Account created in the previous step at the Org A:
 2.  Change directories into the Terraform example
 
     ```sh
-    cd cost-attribution-solution/reactive-governance/terraform/modules/cas-reactive/
+    cd cost-attribution-solution/reactive-governance/terraform/example
     ```
 
 ### 4.4 Set OAuth Token Using Service Account Impersonization
@@ -293,21 +293,8 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     ```sh
     vi terraform.tfvars
     ```
-    
-3. Open [view_query.txt](terraform/modules/cas-reactive/view_query.txt) file and update the 'project_id' in the query
-    
-   ```sh
-    vi view_query.txt
-    ```
 
-4. For `region`, use the same region as used for App Engine in earlier steps.
-
-    The variables `source_code_base_url`, `cas_version`, `source_code_zip`
-    on the QMS module are used to download
-    the source for the CAS Cloud Functions from the latest GitHub [release](https://github.com/google/cost-attribution-solution/releases).
-
-    To deploy the latest unreleased code from a local clone of the CAS
-    repository, set `cas_version` to `main`
+3. For `region`, use the same region as used for App Engine in earlier steps.
 
 ## Run Terraform
 
