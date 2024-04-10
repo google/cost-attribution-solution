@@ -16,9 +16,9 @@ Copyright 2024 Google LLC
 
 # Update values
 organization_id              = ""   //update (leave empty if scanning only host project)
-project_id                   = "scheduled-start-stop" //update
+project_id                   = "" //update
 region                       = "us-west1" //update
 location                     = "US" //update
-service_account_email        = "sa-scheduled-start-stop@scheduled-start-stop.iam.gserviceaccount.com" //update
-notification_email_address   = "benjamingood@google.com" //update
+service_account_email        = "" //update
+notification_email_address   = "" //update
 scheduler_cas_job_frequency  = "0 * * * *" //every hour
