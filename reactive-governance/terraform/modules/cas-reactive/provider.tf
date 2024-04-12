@@ -20,8 +20,8 @@ terraform {
       version = ">3.5.0"
     }
   }
-  
+
   provider_meta "google" {
-    module_name = "cloud-solutions/cost-attribution-monitoring-v1.0"
+    module_name = "cloud-solutions/cost-attribution-solution-v1.0"
   }
 }
