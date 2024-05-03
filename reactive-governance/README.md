@@ -1,46 +1,15 @@
-# Cost Attribution Reactive Solution - Reporting
+# Reactive Governance - Reporting and Alerting
+If your enterprise is in the phase of running workloads on GCP and there are resources that are missing labels, 
+use reactive governance. As a best practice, it is recommended to use reactive governance along with 
+[proactive governance](https://github.com/google/cost-attribution-solution/tree/main/proactive-governance) 
+ to ensure all resources are labeled appropriately. To implement reactive governance, frequently 
+scan the platform for constraint violations on labels and send notifications when a violation is found.
 
-> An easy-to-deploy Looker Studio Dashboard with showing
-resources with missing labels in an organization, folder or project.
+There are 2 parts of the reactive governance solution:
+* **Reporting** resources with missing labels.
+* **Alerting** when resource is created or updated without labels.
 
-Do you run or administer applications on Google Cloud? Do you want to identify costs for individuals or application teams on Google Cloud? Do you want to automate billing for the enterprise with hundreds and thousands of employees using Google Cloud? If your answer is yes, this guide is for you. Google Cloud provides Labels to help enterprises identify and manage costs. Labels are a powerful tool to track your GCP usage and resources at scale, and with the granularity you need.
-
-## What are Labels?
-
-[Labels](https://cloud.google.com/resource-manager/docs/creating-managing-labels) are key-value pairs that are supported by a number of GCP resources. You can attach a label to each resource, then filter the resources based on their labels. Labels provide a convenient way for developers and administrators to organize resources at scale. By adding labels such as costcenter=c23543, service=playlist, and environment=test to your VMs or GCS buckets it’s easy to understand, for example, where your resources are deployed, for what purpose and which cost center they should be charged to.
-Here’s a list of all the things you can do with labels:
-* Identify resources used by individual teams or cost centers (for example, team:research and team:analytics)
-* Distinguish deployment environments (for example, env:prod and env:dev)
-* Identify owners, state labels.
-* Use for cost allocation and billing breakdowns.
-* Monitor resource groups via Cloud Monitoring, which can use labels accessible in the resource metadata
-
-
-## Using Labels to understand costs 
-
-Information about labels is forwarded to the billing system, so you can break down your billed charges by label. When you enable the export of billing data to BigQuery, labels are exported to BigQuery with all corresponding GCP resources and their usage. This makes it easier for CIOs and managers to answer questions such as:
-* What does the shopping cart service in my application cost to run?
-* How much do I spend on developer test machines?
-
-You can use BigQuery in combination with labels such as costcenter=c23543, service=playlist, and environment=test on your VMs or GCS buckets, to understand exactly what all test systems resources cost versus production resources, or how much the playlist service costs.
-
-## Best practices for Labels
-
-Refer [Best Practices for Labels](https://cloud.google.com/resource-manager/docs/best-practices-labels) on GCP
-
-## Solutions to enforce Labels
-It is highly recommended to have clear guidelines for labels naming conventions during the foundation phase. In addition to guidelines, using enforcement with automation can aid your teams in setting up templates to attach appropriate GCP labels to resources within your organization.
-
-### Proactive Governance
-Sometimes when creating a new resource like compute engine or storage, one can forget to add a label with the resources and then it is missing till accounting comes back asking about some expense on your billing. To avoid this, make sure labeling is part of the workflow to always apply labels when resources are being created and ensure it is done in an automated way. This ensures that labels are never missed for resources.
-Refer [Proactive Governance solution](https://cloud.google.com/resource-manager/docs/best-practices-labels)
-
-### Reactive Governance
-If your enterprise is in the phase of running workloads on GCP and there are resources that are missing labels, use reactive governance. As a best practice, it is recommended to use reactive governance along with proactive governance to ensure all resources are labeled appropriately. To implement reactive governance, frequently scan the platform for constraint violations on labels and send notifications when a violation is found.
-
-First part of the solution is reporting resources with missing labels. In future releases, we are going to provide solutions for alerting and programmatically enforcing labels. 
-
-#### Reporting Architecture 
+## Reporting Architecture 
 ![architecture](img/cas-reactive-reporting-architecture.png)
 
 The architecture is built using Google Cloud managed services - Cloud Scheduler,
@@ -56,14 +25,23 @@ Functions, Pub/Sub, BigQuery and Looker studio.
 *   The Looker Studio report can be scheduled to be emailed to appropriate team
     for weekly/daily reporting.
 
+## Alerting Architecture
+![architecture](img/cas-reactive-alerting-architecture.png)
+
+The architecture is built using Google Cloud managed services - Asset Feed,
+Functions, Pub/Sub and Cloud Monitoring.
+
+*   Asset Feeds are subscribed using Pub/Sub. 
+*   Cloud Function is used to filter and log asset feed.
+*   Log metric is configured to trigger an alert for asset feed. 
+
 ### 1. Prerequisites
 
-1.  Host Project - A project where the BigQuery instance, Cloud Function and
-    Cloud Scheduler will be deployed. For example Project A.
+1.  Host Project - A project where the BigQuery instance, Cloud Functions and
+    Cloud Schedulers will be deployed. For example Project A.
 2.  Target Node - The Organization or folder or project which will be scanned
-    for Assets. For example Org A and Folder A.
-3.  Project Owner role on host Project A. IAM Admin role in target Org A and
-    target Folder A.
+    for Assets. For example Org A or Folder A.
+3.  Project Owner role on host Project A. 
 4.  Google Cloud SDK is installed. Detailed instructions to install the SDK
     [here](https://cloud.google.com/sdk/docs/install#mac). See the Getting Started
     page for an introduction to using gcloud and terraform.
@@ -83,9 +61,9 @@ Functions, Pub/Sub, BigQuery and Looker studio.
 
     *Note - Minimum required version v0.14.6. Lower terraform versions may not work.*
 
-### 2. Initial Setup
+## 2. Initial Setup
 
-1.  In local workstation create a new directory to run terraform and store
+1.  In local workstation or Cloud Shell, create a new directory to run terraform and store
     credential file
 
     ```sh
@@ -137,7 +115,7 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     Success! The app is now created. Please use `gcloud app deploy` to deploy your first app.
     ```
 
-### 3. Create Service Account
+## 3. Create Service Account
 
 1.  In local workstation, setup environment variables. Replace the name of the
     Service Account in the commands below
@@ -166,9 +144,9 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     Created service account [sa-cost-attribution-solution-1].
     ```
 
-### 4. Grant Roles to Service Account
+## 4. Grant Roles to Service Account
 
-#### 4.1 Grant Roles in the Host Project
+### 4.1 Grant Roles in the Host Project
 
 The following roles need to be added to the Service Account in the host
 project i.e. Project A:
@@ -184,6 +162,16 @@ project i.e. Project A:
 *   Run Terraform
     *   Service Account User
     *   Service Usage Admin
+*   Monitoring
+    *  Notification Channel Editor
+    *  Alert Policy Editor
+    *  Viewer
+    *  Metric Writer
+*   Logs
+    *  Logs Configuration Writer
+    *  Log Writer
+*   Cloud Asset
+    * Cloud Asset Owner
 
 1.  Run following commands to assign the roles:
 
@@ -215,12 +203,16 @@ project i.e. Project A:
     gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudasset.owner" --condition=None
     ```
 
-#### 4.2 Grant Roles in the Target Organization
+### 4.2 Grant Roles in the Target Organization
 
 If you want to scan projects in the org, add following roles to the Service
 Account created in the previous step at the Org A:
 
-*   Cloud Asset Viewer
+*   Reporting
+    *   Cloud Asset Viewer 
+*   Alerting
+    *   Cloud Asset Owner - This permission allows solution to subscribe to asset feed. This solution does not 
+    modify assets at the org level
 
 1.  Set target organization id
 
@@ -229,9 +221,12 @@ Account created in the previous step at the Org A:
     ```
 
 2.  Run the following commands to add to the roles to the service account
-
+* Reporting:
     ```sh
     gcloud organizations add-iam-policy-binding  $TARGET_ORG_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudasset.viewer" --condition=None    ```
+* Alerting:
+    ```sh 
+    gcloud organizations add-iam-policy-binding  $TARGET_ORG_ID --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" --role="roles/cloudasset.owner" --condition=None    ```
 
 ### 4.3 Download the Source Code
 
@@ -280,7 +275,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
         --condition=None
     ```
     
-## Configure Terraform
+## 5. Configure Terraform
 
 1.  Verify that you have these 3 files in your local directory:
     *   main.tf
@@ -296,7 +291,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 
 3. For `region`, use the same region as used for App Engine in earlier steps.
 
-## Run Terraform
+## 6. Run Terraform
 
 1.  Run terraform commands
     *   `terraform init`
@@ -316,7 +311,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     gcloud config unset auth/impersonate_service_account
     ```
 
-## Testing
+## 7. Test Reporting
 
 1.  Initiate first job run in Cloud Scheduler.
 
@@ -339,7 +334,11 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     time to load data in BigQuery might take a few minutes. The execution time
     depends on the number of projects to scan. 
 
-## Looker Studio Dashboard setup
+
+## 8. Reporting Dashboard 
+Any visualization tool that works with BigQuery can be used. For this setup, Looker Studio has been used.
+
+### 8.1 Looker Studio Dashboard Setup
 
 1.  Go to the [Looker Studio dashboard template](https://lookerstudio.google.com/s/l2haE0mW5cc).
     A Looker Studio dashboard will look like this:
@@ -358,33 +357,48 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 8.  In the next window, click on the ‘Done’ button.
 9.  Once the data source is configured, click on the ‘View’ button on the top
     right corner.
-    Note: make additional changes in the layout like which metrics to be displayed
+    
+Note: make additional changes in the layout like which metrics to be displayed
     on Dashboard, color shades for consumption column, number of rows for each
     table etc in the ‘Edit’ mode.
 
-## Scheduled Reporting
+### 8.1 Scheduled Reporting
 
 Cost Attribution reports can be scheduled from the Looker Studio dashboard using
 ‘Schedule email delivery’. The screenshot of the Looker Studio dashboard will be
 delivered as a pdf report to the configured email Ids.
 
+## 9. Test Alerting 
+Make sure email id is provided in the terraform.tfvars file during terraform setup in the
+earlier steps. By default, following services are configured to receive alerts:
+* Compute Instance
+* Cloud Storage Bucket
+* Bigquery Dataset
+* Bigquery Table
+* PubSub Topic
+* PubSub Subscription 
 
-You should now receive alerts in your Slack channel whenever a quota reaches
-the specified threshold limit.
+For additional resources, add services in the main.tf file under "project_feed".
 
-## What is Next?
+For testing, add a compute instance and do not add label, you should receive alerts via email. 
+Also, if a compute instance which had label, remove label and save. You should receive 
+an alert via email. 
 
-1.  Alerting for resources missing labels 
+## 10. What is Next?
+
+1.  Cost Attribution for resources when labels/tags are not applied
 2.  Enforcing labels
+3.  Support for tags
 
-## Getting Support
+## 11. Getting Support
 
 Cost Attribution Solution is a project based on open source contributions. We'd
 love for you to [report issues, file feature requests][new-issue], and
-[send pull requests][new-pr] (see [Contributing](README.md#7-contributing)). Quota
-Monitoring Solution is not officially covered by the Google Cloud product support.
+[send pull requests][new-pr] (see [Contributing](README.md#7-contributing)). For questions or feedback 
+contact [cost-attribution-solution@google.com](mailto:cost-attribution-solution@google.com). Cost Attribution Solution is not 
+officially covered by the Google Cloud product support.
 
-## Contributing
+## 12. Contributing
 
 *   [Contributing guidelines][contributing-guidelines]
 *   [Code of conduct][code-of-conduct]
