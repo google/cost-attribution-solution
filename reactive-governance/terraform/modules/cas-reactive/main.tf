@@ -196,7 +196,7 @@ resource "google_cloud_asset_project_feed" "project_feed" {
   feed_id          = "missing-labels-feed"
   content_type     = "RESOURCE"
 
-  // TBD Add more resources here
+  // TODO Add more resources here
   asset_types = [
     "compute.googleapis.com/Instance",
     "storage.googleapis.com/Bucket",
