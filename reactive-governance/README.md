@@ -192,6 +192,7 @@ project i.e. Project A:
     roles/storage.admin"
 
     for role in $SA_ROLES; do
+    echo "Assigning role: $role"
     gcloud projects add-iam-policy-binding $DEFAULT_PROJECT_ID \
         --member="serviceAccount:$SERVICE_ACCOUNT_ID@$DEFAULT_PROJECT_ID.iam.gserviceaccount.com" \
         --role $role --condition=None
