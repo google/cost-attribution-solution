@@ -26,7 +26,8 @@ module "project-service-cloudresourcemanager" {
   project_id = var.project_id
 
   activate_apis = [
-    "cloudresourcemanager.googleapis.com"
+    "cloudresourcemanager.googleapis.com",
+    "iamcredentials.googleapis.com"
   ]
 }
 

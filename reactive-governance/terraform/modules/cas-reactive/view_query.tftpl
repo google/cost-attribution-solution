@@ -1,7 +1,7 @@
 SELECT
     name AS url,
     CASE
-        WHEN REGEXP_EXTRACT(name, r'projects/([^/]+)/') is null THEN ancestors[offset(1)]
+        WHEN REGEXP_EXTRACT(name, r'projects/([^/]+)/') is null THEN array_reverse(ancestors)[offset(0)]
         ELSE REGEXP_EXTRACT(name, r'projects/([^/]+)/')
         END
          AS project_id,
