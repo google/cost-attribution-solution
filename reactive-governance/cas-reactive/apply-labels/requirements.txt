@@ -1,0 +1,6 @@
+google-cloud-resource-manager
+google-api-python-client
+pandas~=1.3.5
+fsspec
+gcsfs
+tabulate~=0.9.0
