@@ -27,6 +27,12 @@ resource "google_storage_bucket_iam_member" "member" {
   member = "serviceAccount:${google_service_account.cas_ca_service_account.email}"
 }
 
+resource "google_folder_iam_member" "service_account_compute_admin" {
+  folder = var.folder_id
+  role   = "roles/compute.admin"
+  member = "serviceAccount:${google_service_account.cas_ca_service_account.email}"
+}
+
 resource "google_compute_instance" "default" {
   name         = var.compute_instance_id
   machine_type = "n2-standard-2"
