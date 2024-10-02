@@ -40,6 +40,7 @@ This Python-based CLI tool provides a solution for clearing and applying labels 
     ![valid csv 1](img/csv_valid_2.png)
     
     Example of a CSV with errors in values:
+
     ![valid csv 1](img/csv_with_errors.png)
 
     In this example, the following errors are present:
