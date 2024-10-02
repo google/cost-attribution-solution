@@ -75,13 +75,7 @@ def read_csv(csv_url):
         Returns:
             data frame (data frame): Data frame with csv data
     """
-    # option 1: Panda accessing local file
-    # storage_client = storage.Client()
-    # bucket = storage_client.bucket("cost_attribution")
-    # blob = bucket.blob("labels_update.csv")
-    # blob.download_to_filename("labels_update_local.csv")
-
-    # option 2: Access csv from gcs directly using url
+    # Access csv from gcs directly using url
     df = pd.read_csv(csv_url)
     # print csv file content as table on console
     print("\n=== Print CSV Snippet (This may not display full csv) ===")
