@@ -1,17 +1,3 @@
-# Copyright 2024 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from google.cloud import resourcemanager_v3
 import googleapiclient.discovery
 import pandas as pd
@@ -26,13 +12,17 @@ import logging
 client = resourcemanager_v3.ProjectsClient()
 
 
-def clear_and_apply_project_labels(csv_url):
+def clear_and_apply_project_labels():
     """
     Clear and Apply labels on project with data from CSV.
     The program first parses CSV file and validates the data for labels key:value pair
         Parameters:
             csv_url (str): GCS location of the csv file
     """
+
+    # example url - gs://cost_attribution/gce_labels.csv
+    csv_url = input("\nEnter the CSV URL: ")
+    
     # read projects and labels from csv file and convert into data frame
     logging.info("Reading csv file..")
     df = read_csv(csv_url)
@@ -75,6 +65,7 @@ def read_csv(csv_url):
         Returns:
             data frame (data frame): Data frame with csv data
     """
+
     # Access csv from gcs directly using url
     df = pd.read_csv(csv_url)
     # print csv file content as table on console
@@ -243,9 +234,6 @@ def exit_program():
     sys.exit(0)
 
 
-# ENTER CSV file url from GCS bucket
-CSV_GS_LOCATION = "gs://cost_attribution/labels_update.csv"
-#CSV_GS_LOCATION = "gs://cost_attribution/labels_update_with_error.csv"
 
 if __name__ == "__main__":
-    clear_and_apply_project_labels(CSV_GS_LOCATION)
+    clear_and_apply_project_labels()
