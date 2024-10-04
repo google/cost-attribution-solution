@@ -76,6 +76,7 @@ This Python-based CLI tool provides a solution for clearing and applying labels 
    pip install -r requirements.txt 
    ```
 * **Run the script:**
+  * The script will prompt you to enter the full GCS path to your CSV file (e.g., `gs://your-bucket-name/labels.csv`).
    ```bash
    python3 automate_project_labels.py
    ```
