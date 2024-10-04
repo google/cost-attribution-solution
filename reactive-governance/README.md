@@ -5,9 +5,10 @@ use reactive governance. As a best practice, it is recommended to use reactive g
  to ensure all resources are labeled appropriately. To implement reactive governance, frequently 
 scan the platform for constraint violations on labels and send notifications when a violation is found.
 
-There are 2 parts of the reactive governance solution:
+There are 3 parts of the reactive governance solution:
 * **Reporting** resources with missing labels.
 * **Alerting** when resource is created or updated without labels.
+* **Label Automation** efficiently and accurately applies labels to projects, streamlining workflows and reducing errors.
 
 ## Reporting Architecture 
 ![architecture](img/cas-reactive-reporting-architecture.png)
@@ -382,13 +383,20 @@ For testing, add a compute instance and do not add label, you should receive ale
 Also, if a compute instance which had label, remove label and save. You should receive 
 an alert via email. 
 
-## 10. What is Next?
+## 10. Label Automation (Reconciliation)
+
+Go beyond just reporting and alerting by actively enforcing your labeling policies on 
+existing projects. This empowers you to automate the application of correct labels to 
+unlabeled or mislabeled resources, for comprehensive cost visibility and data accuracy 
+across your entire Google Cloud landscape. Streamline your labeling workflow with
+[these steps](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/cas-reactive/apply-labels) for automated labeling. 
+
+## 11. What is Next?
 
 1.  Cost Attribution for resources when labels/tags are not applied
-2.  Enforcing labels
-3.  Support for tags
+2.  Support for tags
 
-## 11. Getting Support
+## 12. Getting Support
 
 Cost Attribution Solution is a project based on open source contributions. We'd
 love for you to [report issues, file feature requests][new-issue], and
@@ -396,7 +404,7 @@ love for you to [report issues, file feature requests][new-issue], and
 contact [cost-attribution-solution@google.com](mailto:cost-attribution-solution@google.com). Cost Attribution Solution is not 
 officially covered by the Google Cloud product support.
 
-## 12. Contributing
+## 13. Contributing
 
 *   [Contributing guidelines][contributing-guidelines]
 *   [Code of conduct][code-of-conduct]
