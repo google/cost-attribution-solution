@@ -9,3 +9,4 @@ terraform/example/*.zip
 !/.github
 !/.markdownlint.json
 *.iml
+.DS_Store
