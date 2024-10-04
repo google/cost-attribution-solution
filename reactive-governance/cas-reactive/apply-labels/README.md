@@ -56,7 +56,6 @@ This Python-based CLI tool provides a solution for clearing and applying labels 
  
       cd terraform
       vi variables.tf
-* **Update CSV Path:**
   * In `automate_project_labels.py`, update the `CSV_GS_LOCATION` variable with the full GCS path to your CSV file (e.g., `gs://your-bucket-name/labels.csv`).
 
 **3. Provision Infrastructure:**
