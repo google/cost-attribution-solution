@@ -1,0 +1,37 @@
+[
+  {
+    "name": "url",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "project_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "asset_type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+   {
+     "name": "discovery_name",
+     "type": "STRING",
+     "mode": "NULLABLE"
+   },
+  {
+    "name": "location",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+   {
+     "name": "ancestors",
+     "type": "STRING",
+     "mode": "REPEATED"
+   }
+]

@@ -1,0 +1,1 @@
+google-cloud-asset==3.10.0
