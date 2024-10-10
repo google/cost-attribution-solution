@@ -32,7 +32,7 @@ def cas_alert(event, context):
 
     # Get the Pub/Sub message data
     pubsub_message = base64.b64decode(event['data']).decode('utf-8')
-    logger.info(f"Pub/Sub message: {pubsub_message}")
+    # logger.info(f"Pub/Sub message: {pubsub_message}")
 
     # Check if the message is valid JSON
     if pubsub_message.startswith('{') or pubsub_message.startswith('['):

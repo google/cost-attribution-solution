@@ -3,6 +3,8 @@ target
 *.json
 terraform.tfstate*
 terraform/example/*.zip
+reactive-governance/sample-deployment/*.zip
+terraform.tfvars
 
 .*
 !/.gitignore

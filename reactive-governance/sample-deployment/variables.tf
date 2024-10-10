@@ -34,50 +34,9 @@ variable "region" {
   }
 }
 
-variable "cas_alerting_topic" {
-  description = "Value of the Pub/Sub topic Id subscribed to asset feed and triggers Cloud Function"
+variable "location" {
+  description = "Value of the location if region id is not used"
   type        = string
-  default     = "cas_alerting_topic"
-}
-
-variable "cloud_function_cas_alerting" {
-  description = "Value of the name for the Cloud Function to Alert for missing labels"
-  type        = string
-  default     = "cas_alert"
-}
-
-variable "cloud_function_cas_alerting_desc" {
-  description = "Value of the description for the Cloud Function to Alert missing labels"
-  type        = string
-  default     = "Alert when resources created or updated and are missing labels"
-}
-
-variable "cas_alert_log_metric" {
-  description = "Value of the name for custom log metric"
-  type        = string
-  default     = "cas_alert_log_metric"
-}
-
-variable "notification_email_address" {
-  description = "Email to receive alerts when resources with missing labels"
-  type        = string
-}
-
-variable "bucket_gcf_source_name" {
-  description = "Bucket to upload source code to Cloud Function"
-  type        = string
-}
-
-variable "cloud_function_cas_reporting_memory" {
-  description = "Value of the memory for the Cloud Function to Export Assets in Bigquery"
-  type        = string
-  default     = "512M"
-}
-
-variable "cloud_function_cas_reporting_timeout" {
-  description = "Value of the timeout for the Cloud Function to Export Assets in Bigquery"
-  type        = number
-  default     = 540
 }
 
 variable "service_account_email" {
@@ -85,9 +44,19 @@ variable "service_account_email" {
   type        = string
 }
 
-variable "asset_types" {
+variable "notification_email_address" {
+  description = "Email to receive alerts when resources with missing labels"
+  type        = string
+}
+
+variable "scheduler_cas_job_frequency" {
+  description = "Value of the cas job frequency to trigger the solution"
+  type        = string
+}
+
+variable "alert_asset_types" {
   type        = list(string)
-  description = "List of asset types to include in the feed. See https://cloud.google.com/asset-inventory/docs/supported-asset-types for supported types."
+  description = "List of asset types to include in the alert. See https://cloud.google.com/asset-inventory/docs/supported-asset-types for supported types."
   default = [
     "cloudresourcemanager.googleapis.com/Project",
     "compute.googleapis.com/Instance",
@@ -96,5 +65,26 @@ variable "asset_types" {
     "bigquery.googleapis.com/Table",
     "pubsub.googleapis.com/Topic",
     "pubsub.googleapis.com/Subscription",
+  ]
+}
+
+variable "activate_apis" {
+  type = list(string)
+  description = "List of APIs to enable for the project. This is necessary for some asset types to be correctly ingested by the feed."
+  default = [
+    "compute.googleapis.com",
+    "bigquery.googleapis.com",
+    "pubsub.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "cloudasset.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "run.googleapis.com",
+    "eventarc.googleapis.com",
+    "storage.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
   ]
 }

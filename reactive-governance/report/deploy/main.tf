@@ -17,12 +17,12 @@ Copyright 2024 Google LLC
 ## RESOURCES TO CREATE MISSING LABELS DASHBOARD ##
 
 locals {
-  expanded_region    = var.region == "us-central" || var.region == "europe-west" ? "${var.region}1" : var.region
+  expanded_region = var.region == "us-central" || var.region == "europe-west" ? "${var.region}1" : var.region
 }
 
 # Create Pub/Sub topic to list projects in the parent node
 resource "google_pubsub_topic" "cas_topic" {
-  name       = var.cas_topic
+  name = var.cas_topic
 }
 
 resource "google_cloud_scheduler_job" "cas_job" {
@@ -61,11 +61,11 @@ resource "google_cloudfunctions2_function" "cas_report_function" {
   description = var.scheduler_cas_job_description
 
   build_config {
-    runtime = "python310"
+    runtime     = "python310"
     entry_point = "cas_report"
     environment_variables = {
       GOOGLE_FUNCTION_SOURCE = "cas_report.py"
-    } 
+    }
     source {
       storage_source {
         bucket = var.bucket_gcf_source_name
@@ -75,23 +75,23 @@ resource "google_cloudfunctions2_function" "cas_report_function" {
   }
 
   service_config {
-    available_memory    = var.cloud_function_cas_reporting_memory
-    timeout_seconds     = var.cloud_function_cas_reporting_timeout
+    available_memory = var.cloud_function_cas_reporting_memory
+    timeout_seconds  = var.cloud_function_cas_reporting_timeout
     environment_variables = {
-      PARENT            = var.organization_id
-      PROJECT_ID        = var.project_id
-      BIGQUERY_DATASET  = var.bigquery_dataset
-      BIGQUERY_TABLE    = var.bigquery_table
-      LOG_EXECUTION_ID  = "true"
+      PARENT           = var.organization_id
+      PROJECT_ID       = var.project_id
+      BIGQUERY_DATASET = var.bigquery_dataset
+      BIGQUERY_TABLE   = var.bigquery_table
+      LOG_EXECUTION_ID = "true"
     }
     service_account_email = var.service_account_email
   }
 
   event_trigger {
-    trigger_region  = local.expanded_region
-    event_type      = "google.cloud.pubsub.topic.v1.messagePublished"
-    pubsub_topic    = google_pubsub_topic.cas_topic.id
-    retry_policy    = "RETRY_POLICY_RETRY"
+    trigger_region = local.expanded_region
+    event_type     = "google.cloud.pubsub.topic.v1.messagePublished"
+    pubsub_topic   = google_pubsub_topic.cas_topic.id
+    retry_policy   = "RETRY_POLICY_RETRY"
   }
 
   depends_on = [google_pubsub_topic.cas_topic]
@@ -110,8 +110,8 @@ resource "google_bigquery_dataset" "dataset" {
 }
 
 resource "google_bigquery_table" "default" {
-  dataset_id = google_bigquery_dataset.dataset.dataset_id
-  table_id   = var.bigquery_table
+  dataset_id          = google_bigquery_dataset.dataset.dataset_id
+  table_id            = var.bigquery_table
   deletion_protection = false
 
   #time_partitioning {
@@ -122,7 +122,7 @@ resource "google_bigquery_table" "default" {
   #  solution = "cost-attribute-solution"
   #}
 
-  schema = file("${path.module}/asset_table_schema.txt")
+  schema     = file("${path.module}/asset_table_schema.txt")
   depends_on = [google_bigquery_dataset.dataset]
 }
 
