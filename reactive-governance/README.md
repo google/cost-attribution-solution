@@ -11,7 +11,7 @@ There are 3 parts of the reactive governance solution:
 * **Label Automation** efficiently and accurately applies labels to projects, streamlining workflows and reducing errors.
 
 ## Reporting Architecture 
-![architecture](../reactive-governance-old/img/cas-reactive-reporting-architecture.png)
+![architecture](../reactive-governance/img/cas-reactive-reporting-architecture.png)
 
 The architecture is built using Google Cloud managed services - Cloud Scheduler,
 Functions, Pub/Sub, BigQuery and Looker studio.
@@ -27,7 +27,7 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     for weekly/daily reporting.
 
 ## Alerting Architecture
-![architecture](../reactive-governance-old/img/cas-reactive-alerting-architecture.png)
+![architecture](../reactive-governance/img/cas-reactive-alerting-architecture.png)
 
 The architecture is built using Google Cloud managed services - Asset Feed,
 Functions, Pub/Sub and Cloud Monitoring.
@@ -322,7 +322,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     *Note: The status of the ‘Run Now’ button changes to ‘Running’ for a fraction
     of seconds.*
 
-    ![run-cloud-scheduler](../reactive-governance-old/img/cas-scheduler.png)
+    ![run-cloud-scheduler](../reactive-governance/img/cas-scheduler.png)
 
     **Terminal**
 
@@ -342,7 +342,7 @@ Any visualization tool that works with BigQuery can be used. For this setup, Loo
 
 1.  Go to the [Looker Studio dashboard template](https://lookerstudio.google.com/s/l2haE0mW5cc).
     A Looker Studio dashboard will look like this:
-    ![ds-cas-reporting-dashboard](../reactive-governance-old/img/cas-dashboard.png)
+    ![ds-cas-reporting-dashboard](../reactive-governance/img/cas-dashboard.png)
 2.  Make a copy of the template from the copy icon at the top bar (top - right
     corner)
 3.  Click on ‘Copy Report’ button **without changing datasource options**
@@ -392,27 +392,3 @@ unlabeled or mislabeled resources, for comprehensive cost visibility and data ac
 across your entire Google Cloud landscape. Streamline your labeling workflow with
 [these steps](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/label-automation/project_label_automation/) for automated labeling. 
 
-## 11. What is Next?
-
-1.  Cost Attribution for resources when labels/tags are not applied
-2.  Support for tags
-
-## 12. Getting Support
-
-Cost Attribution Solution is a project based on open source contributions. We'd
-love for you to [report issues, file feature requests][new-issue], and
-[send pull requests][new-pr] (see [Contributing](README.md#7-contributing)). For questions or feedback 
-contact [cost-attribution-solution@google.com](mailto:cost-attribution-solution@google.com). Cost Attribution Solution is not 
-officially covered by the Google Cloud product support.
-
-## 13. Contributing
-
-*   [Contributing guidelines][contributing-guidelines]
-*   [Code of conduct][code-of-conduct]
-
-<!-- LINKS: https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[code-of-conduct]: code-of-conduct.md
-[contributing-guidelines]: CONTRIBUTING.md
-[new-issue]: https://github.com/google/quota-monitoring-solution/issues/new
-[new-pr]: https://github.com/google/quota-monitoring-solution/compare
