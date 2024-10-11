@@ -106,6 +106,7 @@ def read_csv(csv_uri):
 
   # Access csv from gcs directly using url
   df = pd.read_csv(csv_uri)
+  df = df.astype(str)  # Convert DataFrame to string
   # print csv file content as table on console
   print("\n=== Print CSV Snippet (This may not display full csv) ===")
   print("=========================================================")
