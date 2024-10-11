@@ -281,7 +281,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     *   variables.tf
     *   terraform.tfvars.example
 
-2.  Open [terraform.tfvars](terraform/modules/cas-reactive/terraform.tfvars) file in your
+2.  Open [terraform.tfvars](sample-deployment/terraform.tfvars.example) file in your
     favourite editor and change values for the variables.
 
     ```sh
