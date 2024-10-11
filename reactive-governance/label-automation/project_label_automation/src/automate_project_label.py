@@ -37,7 +37,7 @@ def clear_and_apply_project_labels():
   # example url - gs://cost_attribution/project_labels.csv
   csv_uri = input("\nEnter the CSV URI: ")
 
-  # validate is CSV path is valid and CSV exists.   
+  # validate is CSV path is valid and CSV exists.
   if not is_valid_gcs_uri_and_exists(csv_uri):
     return
 

@@ -24,13 +24,13 @@ resource "google_service_account" "cas_ca_service_account" {
 }
 
 resource "google_folder_iam_member" "service_account_folder_viewer" {
-  folder = var.folder_id 
+  folder = var.folder_id
   role   = "roles/resourcemanager.folderViewer"
   member = "serviceAccount:${google_service_account.cas_ca_service_account.email}"
 }
 
 resource "google_folder_iam_member" "service_account_project_mover" {
-  folder = var.folder_id 
+  folder = var.folder_id
   role   = "roles/resourcemanager.projectMover"
   member = "serviceAccount:${google_service_account.cas_ca_service_account.email}"
 }

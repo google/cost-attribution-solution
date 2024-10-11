@@ -64,4 +64,3 @@ variable "compute_instance_id" {
   type        = string
   default     = "cas-apply-label-instance"
 }
-

@@ -36,12 +36,12 @@ This Python-based CLI tool provides a solution for clearing and applying labels 
   * The **cells** in each row represent the corresponding `label values` for each project.
     Example of a valid CSVs:
 
-    ![valid csv 1](img/csv_valid_1.png)
-    ![valid csv 1](img/csv_valid_2.png)
+    ![valid csv 1](../../../reactive-governance-old/cas-reactive/apply-labels/img/csv_valid_1.png)
+    ![valid csv 1](../../../reactive-governance-old/cas-reactive/apply-labels/img/csv_valid_2.png)
     
     Example of a CSV with errors in values:
 
-    ![valid csv 1](img/csv_with_errors.png)
+    ![valid csv 1](../../../reactive-governance-old/cas-reactive/apply-labels/img/csv_with_errors.png)
 
     In this example, the following errors are present:
     * `shopping cart`: Contains a space.
@@ -84,4 +84,4 @@ This Python-based CLI tool provides a solution for clearing and applying labels 
 
 **5. Sample CLI Output:**
 
-![label_output](img/sample_cli_output.png)
+![label_output](../../../reactive-governance-old/cas-reactive/apply-labels/img/sample_cli_output.png)

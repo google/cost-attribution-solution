@@ -33,6 +33,6 @@ down the resources until labels are set as reactive governance on labels.
 
 This repository provides tools 
 for [Proactive](https://github.com/google/cost-attribution-solution/tree/main/proactive-governance/) and
-[Reactive](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance) governance 
+[Reactive](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/) governance 
 of labels.  
 

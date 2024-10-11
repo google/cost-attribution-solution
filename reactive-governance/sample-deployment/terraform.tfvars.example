@@ -22,3 +22,5 @@ location                     = "US" //update
 service_account_email        = "" //update
 notification_email_address   = "" //update
 scheduler_cas_job_frequency  = "0 * * * *" //every hour
+# Asset types to be included in the alert if they are missing label. See https://cloud.google.com/asset-inventory/docs/supported-asset-types for supported types
+alert_asset_types            = ["cloudresourcemanager.googleapis.com/Project", "compute.googleapis.com/Instance",]

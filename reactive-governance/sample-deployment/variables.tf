@@ -29,7 +29,7 @@ variable "region" {
   type        = string
 
   validation {
-    condition = var.region != "us-central1" && var.region != "europe-west1"
+    condition     = var.region != "us-central1" && var.region != "europe-west1"
     error_message = "Region must be set to an App Engine location. us-central1 and europe-west1 should be specified as us-central and europe-west respectively."
   }
 }
@@ -52,4 +52,39 @@ variable "notification_email_address" {
 variable "scheduler_cas_job_frequency" {
   description = "Value of the cas job frequency to trigger the solution"
   type        = string
+}
+
+variable "alert_asset_types" {
+  type        = list(string)
+  description = "List of asset types to include in the alert. See https://cloud.google.com/asset-inventory/docs/supported-asset-types for supported types."
+  default = [
+    "cloudresourcemanager.googleapis.com/Project",
+    "compute.googleapis.com/Instance",
+    "storage.googleapis.com/Bucket",
+    "bigquery.googleapis.com/Dataset",
+    "bigquery.googleapis.com/Table",
+    "pubsub.googleapis.com/Topic",
+    "pubsub.googleapis.com/Subscription",
+  ]
+}
+
+variable "activate_apis" {
+  type = list(string)
+  description = "List of APIs to enable for the project. This is necessary for some asset types to be correctly ingested by the feed."
+  default = [
+    "compute.googleapis.com",
+    "bigquery.googleapis.com",
+    "pubsub.googleapis.com",
+    "cloudscheduler.googleapis.com",
+    "cloudfunctions.googleapis.com",
+    "cloudasset.googleapis.com",
+    "cloudbuild.googleapis.com",
+    "run.googleapis.com",
+    "eventarc.googleapis.com",
+    "storage.googleapis.com",
+    "logging.googleapis.com",
+    "monitoring.googleapis.com",
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
+  ]
 }

@@ -29,19 +29,9 @@ variable "region" {
   type        = string
 
   validation {
-    condition = var.region != "us-central1" && var.region != "europe-west1"
+    condition     = var.region != "us-central1" && var.region != "europe-west1"
     error_message = "Region must be set to an App Engine location. us-central1 and europe-west1 should be specified as us-central and europe-west respectively."
   }
-}
-
-variable "location" {
-  description = "Location of where the BigQuery data should be stored, use US or EU for multi-region storage, or use any other region id for single region storage."
-  type        = string
-}
-
-variable "service_account_email" {
-  description = "Value of the Service Account"
-  type        = string
 }
 
 ## RESOURCES TO CREATE MISSING LABELS DASHBOARD ##
@@ -81,6 +71,11 @@ variable "bigquery_table_partition" {
   default     = "DAY"
 }
 
+variable "location" {
+  description = "Location of where the BigQuery data should be stored, use US or EU for multi-region storage, or use any other region id for single region storage."
+  type        = string
+}
+
 variable "cas_topic" {
   description = "Value of the Pub/Sub topic Id to trigger Cloud Function"
   type        = string
@@ -104,10 +99,15 @@ variable "scheduler_cas_job_frequency" {
   type        = string
 }
 
+variable "bucket_gcf_source_name" {
+  description = "Bucket to upload source code to Cloud Function"
+  type        = string
+}
+
 variable "cloud_function_cas_reporting" {
   description = "Value of the name for the Cloud Function to Export Assets in Bigquery"
   type        = string
-  default     = "CasReport"
+  default     = "cas_report"
 }
 
 variable "cloud_function_cas_reporting_desc" {
@@ -128,32 +128,7 @@ variable "cloud_function_cas_reporting_timeout" {
   default     = 540
 }
 
-## RESOURCES TO SETUP ALERTING WHEN RESOURCE IS CREATED OR UPDATED AND LABEL IS MISSING ##
-variable "cas_alerting_topic" {
-  description = "Value of the Pub/Sub topic Id subscribed to asset feed and triggers Cloud Function"
-  type        = string
-  default     = "cas_alerting_topic"
-}
-
-variable "cloud_function_cas_alerting" {
-  description = "Value of the name for the Cloud Function to Alert for missing labels"
-  type        = string
-  default     = "CasAlert"
-}
-
-variable "cloud_function_cas_alerting_desc" {
-  description = "Value of the description for the Cloud Function to Alert missing labels"
-  type        = string
-  default     = "Alert when resources created or updated and are missing labels"
-}
-
-variable "cas_alert_log_metric" {
-  description = "Value of the name for custom log metric"
-  type        = string
-  default     = "cas_alert_log_metric"
-}
-
-variable "notification_email_address" {
-  description = "Email to receive alerts when resources with missing labels"
+variable "service_account_email" {
+  description = "Value of the Service Account"
   type        = string
 }
