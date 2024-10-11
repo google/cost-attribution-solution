@@ -392,27 +392,3 @@ unlabeled or mislabeled resources, for comprehensive cost visibility and data ac
 across your entire Google Cloud landscape. Streamline your labeling workflow with
 [these steps](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/label-automation/project_label_automation/) for automated labeling. 
 
-## 11. What is Next?
-
-1.  Cost Attribution for resources when labels/tags are not applied
-2.  Support for tags
-
-## 12. Getting Support
-
-Cost Attribution Solution is a project based on open source contributions. We'd
-love for you to [report issues, file feature requests][new-issue], and
-[send pull requests][new-pr] (see [Contributing](README.md#7-contributing)). For questions or feedback 
-contact [cost-attribution-solution@google.com](mailto:cost-attribution-solution@google.com). Cost Attribution Solution is not 
-officially covered by the Google Cloud product support.
-
-## 13. Contributing
-
-*   [Contributing guidelines][contributing-guidelines]
-*   [Code of conduct][code-of-conduct]
-
-<!-- LINKS: https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[code-of-conduct]: code-of-conduct.md
-[contributing-guidelines]: CONTRIBUTING.md
-[new-issue]: https://github.com/google/quota-monitoring-solution/issues/new
-[new-pr]: https://github.com/google/quota-monitoring-solution/compare

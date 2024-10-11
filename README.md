@@ -36,3 +36,29 @@ for [Proactive](https://github.com/google/cost-attribution-solution/tree/main/pr
 [Reactive](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/) governance 
 of labels.  
 
+## What is Next?
+
+1.  Cost Attribution for resources when labels/tags are not applied
+2.  Support for tags
+
+## Getting Support
+
+Cost Attribution Solution is a project based on open source contributions. We'd
+love for you to [report issues, file feature requests][new-issue], and
+[send pull requests][new-pr] (see [Contributing](README.md#7-contributing)). For questions or feedback
+contact [cost-attribution-solution@google.com](mailto:cost-attribution-solution@google.com). Cost Attribution Solution is not
+officially covered by the Google Cloud product support.
+
+## Contributing
+
+*   [Contributing guidelines][contributing-guidelines]
+*   [Code of conduct][code-of-conduct]
+
+<!-- LINKS: https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[code-of-conduct]: code-of-conduct.md
+[contributing-guidelines]: CONTRIBUTING.md
+[new-issue]: https://github.com/google/quota-monitoring-solution/issues/new
+[new-pr]: https://github.com/google/quota-monitoring-solution/compare
+
+
