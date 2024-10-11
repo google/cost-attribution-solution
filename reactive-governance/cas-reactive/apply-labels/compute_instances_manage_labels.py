@@ -62,6 +62,7 @@ def read_labels_from_csv(csv_file):
   """
 
   df = pd.read_csv(csv_file)
+  df = df.astype(str)  # Convert DataFrame to string
   print("\n=== Print CSV Snippet (This may not display full csv) ===")
   print("=========================================================")
   print(tabulate(df, headers='keys', tablefmt='psql'))
