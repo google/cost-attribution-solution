@@ -11,7 +11,7 @@ There are 3 parts of the reactive governance solution:
 * **Label Automation** efficiently and accurately applies labels to projects, streamlining workflows and reducing errors.
 
 ## Reporting Architecture 
-![architecture](img/cas-reactive-reporting-architecture.png)
+![architecture](../reactive-governance-old/img/cas-reactive-reporting-architecture.png)
 
 The architecture is built using Google Cloud managed services - Cloud Scheduler,
 Functions, Pub/Sub, BigQuery and Looker studio.
@@ -27,7 +27,7 @@ Functions, Pub/Sub, BigQuery and Looker studio.
     for weekly/daily reporting.
 
 ## Alerting Architecture
-![architecture](img/cas-reactive-alerting-architecture.png)
+![architecture](../reactive-governance-old/img/cas-reactive-alerting-architecture.png)
 
 The architecture is built using Google Cloud managed services - Asset Feed,
 Functions, Pub/Sub and Cloud Monitoring.
@@ -238,7 +238,7 @@ Account created in the previous step at the Org A:
 2.  Change directories into the Terraform example
 
     ```sh
-    cd cost-attribution-solution/reactive-governance/terraform/example
+    cd cost-attribution-solution/reactive-governance/sample-deployment
     ```
 
 ### 4.4 Set OAuth Token Using Service Account Impersonization
@@ -279,12 +279,13 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 1.  Verify that you have these 3 files in your local directory:
     *   main.tf
     *   variables.tf
-    *   terraform.tfvars
+    *   terraform.tfvars.example
 
 2.  Open [terraform.tfvars](terraform/modules/cas-reactive/terraform.tfvars) file in your
     favourite editor and change values for the variables.
 
     ```sh
+    cp terraform.tfvars.example terraform.tfvars
     vi terraform.tfvars
     ```
 
@@ -321,7 +322,7 @@ export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
     *Note: The status of the ‘Run Now’ button changes to ‘Running’ for a fraction
     of seconds.*
 
-    ![run-cloud-scheduler](img/cas-scheduler.png)
+    ![run-cloud-scheduler](../reactive-governance-old/img/cas-scheduler.png)
 
     **Terminal**
 
@@ -341,7 +342,7 @@ Any visualization tool that works with BigQuery can be used. For this setup, Loo
 
 1.  Go to the [Looker Studio dashboard template](https://lookerstudio.google.com/s/l2haE0mW5cc).
     A Looker Studio dashboard will look like this:
-    ![ds-cas-reporting-dashboard](img/cas-dashboard.png)
+    ![ds-cas-reporting-dashboard](../reactive-governance-old/img/cas-dashboard.png)
 2.  Make a copy of the template from the copy icon at the top bar (top - right
     corner)
 3.  Click on ‘Copy Report’ button **without changing datasource options**
@@ -389,7 +390,7 @@ Go beyond just reporting and alerting by actively enforcing your labeling polici
 existing projects. This empowers you to automate the application of correct labels to 
 unlabeled or mislabeled resources, for comprehensive cost visibility and data accuracy 
 across your entire Google Cloud landscape. Streamline your labeling workflow with
-[these steps](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/cas-reactive/apply-labels) for automated labeling. 
+[these steps](https://github.com/google/cost-attribution-solution/tree/main/reactive-governance/label-automation/project_label_automation/) for automated labeling. 
 
 ## 11. What is Next?
 
