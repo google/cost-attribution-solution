@@ -16,6 +16,12 @@ Copyright 2024 Google LLC
 
 ## RESOURCES TO SETUP ALERTING WHEN RESOURCE IS CREATED OR UPDATED AND LABEL IS MISSING ##
 
+terraform {
+  provider_meta "google" {
+    module_name = "cloud-solutions/cost-attribution-solution-alert-v1.1"
+  }
+}
+
 locals {
   expanded_region = var.region == "us-central" || var.region == "europe-west" ? "${var.region}1" : var.region
 }
