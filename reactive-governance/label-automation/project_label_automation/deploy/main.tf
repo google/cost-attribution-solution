@@ -12,6 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+terraform {
+  provider_meta "google" {
+    module_name = "cloud-solutions/cost-attribution-solution-automation-prj-v1.1"
+  }
+}
+
 provider "google" {
   project = var.project_id
   region  = var.region
