@@ -1,0 +1,27 @@
+# Local .terraform directories
+.terraform/
+.terraform.lock.hcl
+
+# Terraform variable files with sensitive information
+*.tfvars
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+
+# Ignore backup files
+*.backup
+
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+.DS_Store
+
+# Ignore provider plugins
+.terraform/plugins/

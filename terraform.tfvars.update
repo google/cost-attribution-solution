@@ -1,0 +1,16 @@
+# The GCP project ID
+project_id =  #"your-gcp-project-id"
+
+# The region for the resources
+region = "us-central1"
+
+# BigQuery dataset ID
+bq_dataset_id = "vertex_ai_audit_logs"
+
+# BigQuery table ID
+bq_table_id = "audit_events"
+
+bucket_name = "vertex-ai-audit-log-bucket"
+
+cf_name = "vertex-ai-audit-log-processor"
+
