@@ -10,6 +10,9 @@
 # Crash logs
 crash.log
 
+# .zip
+*.zip
+
 # Ignore backup files
 *.backup
 

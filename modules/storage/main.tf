@@ -10,8 +10,23 @@ resource "google_storage_bucket" "function_bucket" {
 }
 
 
-resource "google_storage_bucket_object" "object" {
-  name   = var.object_name
-  bucket = google_storage_bucket.function_bucket.name
-  source = var.source_file_path
+# resource "google_storage_bucket_object" "object" {
+#   name   = var.object_name
+#   bucket = google_storage_bucket.function_bucket.name
+#   source = var.source_file_path
+# }
+
+data "archive_file" "function_zip" {
+  type        = "zip"
+  source_dir  = "${path.module}/function_source" # Path to Cloud Function source directory
+  output_path = "${path.module}/function_source.zip"
 }
+
+resource "google_storage_bucket_object" "function_zip" {
+  name   = "function_source.zip"
+  bucket = var.bucket_name
+  source = data.archive_file.function_zip.output_path # ✅ Now correctly references the archive
+}
+
+
+

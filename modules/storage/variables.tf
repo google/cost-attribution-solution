@@ -13,12 +13,22 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "object_name" {
-  description = "The name of the object to upload"
-  type        = string
-}
+# variable "object_name" {
+#   description = "The name of the object to upload"
+#   type        = string
+# }
 
-variable "source_file_path" {
-  description = "The path to the source file to be uploaded"
-  type        = string
-}
+# variable "source_file_path" {
+#   description = "The path to the source file to be uploaded"
+#   type        = string
+# }
+##
+# variable "object_name" {
+#   description = "Name of the object (ZIP file) in the storage bucket"
+#   type        = string
+# }
+
+# variable "source_file_path" {
+#   description = "Path to the local file to upload (ZIP file for Cloud Function)"
+#   type        = string
+# }

@@ -27,3 +27,8 @@ variable "name" {
 
   type = string
 }
+##
+variable "object_name" {
+  description = "The name of the ZIP file in Cloud Storage"
+  type        = string
+}
