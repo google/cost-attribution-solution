@@ -3,7 +3,7 @@ variable "project_id" {
   type        = string
 }
 
-variable "region" {
+variable "bq_region" {
   description = "The region for BigQuery resources"
   type        = string
 }

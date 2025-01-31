@@ -4,7 +4,7 @@ resource "google_project_service" "bigquery_api" {
 
 resource "google_bigquery_dataset" "dataset" {
   dataset_id = var.bq_dataset_id
-  location   = var.region
+  location   = var.bq_region
   depends_on = [google_project_service.bigquery_api]
 }
 

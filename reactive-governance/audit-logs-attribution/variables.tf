@@ -7,6 +7,10 @@ variable "region" {
   description = "The region for the resources"
   type        = string
 }
+variable "bq_region" {
+  description = "The region for the BigQuery resources"
+  type        = string
+}
 
 variable "bq_dataset_id" {
   description = "BigQuery dataset ID"

@@ -1,5 +1,5 @@
 resource "google_project_service" "pubsub_api" {
-  service = "pubsub.googleapis.com"
+  service            = "pubsub.googleapis.com"
   disable_on_destroy = true
 }
 
