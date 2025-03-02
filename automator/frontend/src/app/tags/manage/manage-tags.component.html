@@ -1,17 +1,88 @@
-<div class="tags-dialog">
-  <h2 mat-dialog-title>Available tags</h2>
-  @if (tags.length == 0) {
-    <p>There are no available tags, please check your backend configuration.</p>
-  } @else {
-    <p>Available tags ({{ tags.length }}):</p>
-    <mat-list class="tags-container">
-      @for (tag of tags; track tag) {
-        <mat-list-item>
-          <mat-icon matListItemIcon>sell</mat-icon>
-          <div matListItemTitle>{{ tag.key.value }}</div>
-          <span>{{ formatTagValues(tag) }}</span>
-        </mat-list-item>
-      }
-    </mat-list>
-  }
-</div>
+<!-- Loading resources -->
+@if (loading) {
+  <div class="container-center">
+    <div class="loading-text">Fetching resources...</div>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+} @else {
+  <div class="container">
+    <!-- Buttons -->
+    <div class="inner-container">
+      <button
+        mat-flat-button
+        color="primary"
+        class="search success"
+        [disabled]="dataSource.filteredData.length == 0"
+      >
+        Create new tag
+      </button>
+    </div>
+
+    <!-- Filter -->
+    <mat-form-field class="filter">
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="" #input />
+    </mat-form-field>
+
+    <!-- Resource list -->
+    <div class="mat-elevation-z2 table-container">
+      <mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="mat-elevation-z2 full-table"
+      >
+        <ng-container matColumnDef="key">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Key</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element">{{ element.key.value }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="values">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Values</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element" class="tags">
+            <div>
+              @for (value of element.values; track value) {
+                <mat-chip class="tag-chip">{{ value.value }}</mat-chip>
+              }
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef>Edit Tag</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-icon class="edit-icon" (click)="editResourceTags(element)"
+              >edit</mat-icon
+            >
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef>Delete Tag</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-icon class="edit-icon" (click)="editResourceTags(element)"
+              >delete</mat-icon
+            >
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+        ></mat-row>
+
+        <ng-container matColumnDef="noData">
+          <mat-cell class="no-data" *matNoDataRow>No resources found!</mat-cell>
+        </ng-container>
+      </mat-table>
+      <mat-paginator
+        [pageSizeOptions]="[20, 50, 100]"
+        showFirstLastButtons
+        aria-label="Select page of periodic elements"
+      ></mat-paginator>
+    </div>
+  </div>
+}

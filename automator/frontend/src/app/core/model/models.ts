@@ -14,6 +14,18 @@
    limitations under the License.
 */
 
+export enum FileUploadStatus {
+    Processing = "Processing",
+    Error = "Error",
+    Success = "Success",
+}
+
+export type FileUpload = {
+    id: string;
+    file: string;
+    status: FileUploadStatus;
+};
+
 export type Value = {
     id: string;
     value: string;

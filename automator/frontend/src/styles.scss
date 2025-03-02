@@ -1,0 +1,82 @@
+$primary-color: #3f51b5;
+
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  gap: 3%;
+
+  .inner-container {
+    display: flex;
+    gap: 1%;
+    align-content: center;
+  }
+}
+
+.container-center {
+  display: flex;
+  height: 100%;
+  gap: 4%;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 1.5em;
+}
+
+.edit-icon {
+  cursor: pointer;
+}
+
+mat-cell.tags {
+  white-space: pre;
+}
+
+.table-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.full-table {
+  width: 100%;
+}
+
+mat-header-cell,
+mat-cell {
+  justify-content: center;
+}
+
+mat-header-cell {
+  font-weight: bold;
+}
+
+mat-cell.no-data {
+  padding: 1%;
+}
+
+.filter {
+  width: 100%;
+}
+
+button.search {
+  padding: 3vh;
+  width: 100%;
+  max-width: 300px;
+}
+
+.mat-mdc-raised-button.success {
+  background-color: #009933;
+  color: #fff;
+}
+
+.primary-color {
+  color: $primary-color;
+}

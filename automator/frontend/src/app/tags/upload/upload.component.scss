@@ -1,0 +1,54 @@
+@import "custom";
+
+.container {
+    gap: 4%;
+}
+
+.tab-icon {
+    margin-right: 8px;
+}
+
+.tab-spacing {
+    margin: 2vh 1vw;
+    padding: 2vh 2vh 2vh 2vh;
+    height: 70vh;
+}
+
+.title {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.clear-toggle {
+    width: fit-content;
+    transform: scale(1.5);
+    transform-origin: top left;
+}
+
+.inner-container button {
+    min-width: 10vw;
+    padding: 5%;
+
+    &.success {
+        background-color: $success-color;
+        color: #fff;
+    }
+}
+
+.inner-container {
+    width: 50%;
+    gap: 2%;
+    margin: 1% 0;
+}
+
+.status-Success {
+    color: green;
+}
+
+.status-Processing {
+    color: orange;
+}
+
+.status-Error {
+    color: red;
+}

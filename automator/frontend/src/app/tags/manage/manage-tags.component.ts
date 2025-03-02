@@ -14,41 +14,82 @@
    limitations under the License.
 */
 
-import { MatListModule } from "@angular/material/list";
-import { Component } from "@angular/core";
+import { Component, ViewChild } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
-import {
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-} from "@angular/material/dialog";
 import { Tag } from "../../core/model/models";
 import { MatButtonModule } from "@angular/material/button";
 import { Service } from "../../core/model/Service";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatInputModule } from "@angular/material/input";
 
 @Component({
   selector: "app-manage-tags",
   standalone: true,
   imports: [
+    MatInputModule,
     MatButtonModule,
-    MatDialogActions,
-    MatDialogClose,
-    MatDialogTitle,
-    MatDialogContent,
-    MatListModule,
+    MatTableModule,
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatPaginatorModule,
+    MatChipsModule,
     MatIconModule,
   ],
   templateUrl: "./manage-tags.component.html",
-  styleUrl: "./manage-tags.component.sass",
+  styleUrl: "./manage-tags.component.scss",
 })
 export class ManageTagsComponent {
-  tags: Tag[] = [];
+  dataSource: MatTableDataSource<Tag> = new MatTableDataSource();
+  displayedColumns: string[] = ["key", "values", "edit", "delete"];
+  loading: boolean = true;
+
+  // Pagination
+  @ViewChild(MatPaginator, { static: false }) set contentPaginator(
+    pag: MatPaginator,
+  ) {
+    this.dataSource.paginator = pag;
+  }
+
+  // Sorting
+  @ViewChild(MatSort, { static: false }) set content(sort: MatSort) {
+    this.dataSource.sort = sort;
+  }
 
   constructor(service: Service) {
     service.fetchTags().subscribe((tags) => {
-      this.tags = tags;
+      this.dataSource.data = tags;
+      this.loading = false;
     });
+  }
+
+  editResourceTags(_resource: Tag) {
+    // this.dialog
+    //   .open(SingleEditComponent, {
+    //     width: "40vw",
+    //     enterAnimationDuration: 200,
+    //     exitAnimationDuration: 200,
+    //     data: {
+    //       resource: resource,
+    //       availableTags: this.availableTags,
+    //     },
+    //   })
+    //   .afterClosed()
+    //   .subscribe((result: TagBinding[] | undefined) => {
+    //     // Apply edited result to the table
+    //     if (result) {
+    //       resource.tags = result;
+    //       resource.displayTags = this.formatDisplayTags(resource.tags);
+    //     }
+    //   });
+  }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   formatTagValues(tag: Tag) {

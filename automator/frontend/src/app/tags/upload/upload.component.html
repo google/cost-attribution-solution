@@ -1,1 +1,96 @@
-<p>upload works!</p>
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">upload</mat-icon>
+      New upload
+    </ng-template>
+    <div class="container tab-spacing">
+      <div class="primary-color title">Bulk upload Tags</div>
+      <div>
+        <mat-form-field>
+          <mat-label>Resource Type</mat-label>
+          <mat-select>
+            @for (type of types; track type) {
+              <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <mat-card class="example-card" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title class="primary-color"
+            >CSV File Structure: ensure your CSV adheres to the following
+            structure</mat-card-title
+          >
+        </mat-card-header>
+        <mat-card-content>
+          <b>project_id,cost-center,environment,app</b>
+          <div>my-project-123,fin-ops,prod,shopping-cart</div>
+          <div>my-project-456,sre,dev,catalog</div>
+        </mat-card-content>
+      </mat-card>
+      <mat-slide-toggle class="clear-toggle">Clear Tags</mat-slide-toggle>
+
+      <div class="inner-container">
+        <button mat-flat-button color="primary" class="upload">
+          Upload CSV
+        </button>
+        <button mat-flat-button class="success">Submit</button>
+      </div>
+    </div>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">history</mat-icon>
+      Upload history
+    </ng-template>
+    <div class="container tab-spacing">
+      <div class="mat-elevation-z2 table-container">
+        <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+          <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef>ID</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ element.id }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header
+              >Name</mat-header-cell
+            >
+            <mat-cell *matCellDef="let element">{{ element.file }}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header
+              >Status</mat-header-cell
+            >
+            <mat-cell
+              *matCellDef="let element"
+              [class]="'status-' + element.status"
+              >{{ element.status }}</mat-cell
+            >
+          </ng-container>
+          <ng-container matColumnDef="details">
+            <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <mat-icon class="edit-icon" (click)="viewDetails(element)"
+                >manage_search</mat-icon
+              >
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row
+            mat-row
+            *matRowDef="let row; columns: displayedColumns"
+          ></mat-row>
+
+          <ng-container matColumnDef="noData">
+            <mat-cell class="no-data" *matNoDataRow>No uploads found.</mat-cell>
+          </ng-container>
+        </mat-table>
+        <mat-paginator
+          [pageSizeOptions]="[20, 50, 100]"
+          showFirstLastButtons
+        ></mat-paginator>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
