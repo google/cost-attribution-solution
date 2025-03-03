@@ -37,7 +37,7 @@ type TagControl = {
 };
 
 @Component({
-  selector: "app-edit",
+  selector: "app-tag-binding-edit",
   standalone: true,
   imports: [
     MatFormFieldModule,

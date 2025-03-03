@@ -1,0 +1,17 @@
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+mat-form-field {
+  margin: 3%;
+}
+
+.edit-dialog {
+  padding: 2%;
+}
+
+.mat-mdc-dialog-content {
+  margin-top: 4%;
+}

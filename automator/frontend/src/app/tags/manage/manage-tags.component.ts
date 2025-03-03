@@ -16,16 +16,24 @@
 
 import { Component, ViewChild } from "@angular/core";
 import { MatIconModule } from "@angular/material/icon";
-import { Tag } from "../../core/model/models";
+import { Tag, TagsController, Value } from "../../core/model/models";
 import { MatButtonModule } from "@angular/material/button";
-import { Service } from "../../core/model/Service";
+import { TagService } from "../../core/model/Service";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
-import { MatSort } from "@angular/material/sort";
+import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatChipsModule } from "@angular/material/chips";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatInputModule } from "@angular/material/input";
+import { MatDialog } from "@angular/material/dialog";
+import { NewTagComponent } from "./edit/new/new.component";
+import { AvailableTags } from "../available_tags";
+import { TagManageEditcomponent } from "./edit/edit.component";
+
+type DisplayTag = {
+  name: string;
+} & Tag;
 
 @Component({
   selector: "app-manage-tags",
@@ -38,15 +46,18 @@ import { MatInputModule } from "@angular/material/input";
     MatProgressBarModule,
     MatPaginatorModule,
     MatChipsModule,
+    MatSortModule,
     MatIconModule,
   ],
   templateUrl: "./manage-tags.component.html",
   styleUrl: "./manage-tags.component.scss",
 })
 export class ManageTagsComponent {
-  dataSource: MatTableDataSource<Tag> = new MatTableDataSource();
-  displayedColumns: string[] = ["key", "values", "edit", "delete"];
+  dataSource: MatTableDataSource<DisplayTag> = new MatTableDataSource();
+  displayedColumns: string[] = ["name", "values", "edit", "delete"];
   loading: boolean = true;
+
+  availableTags!: TagsController;
 
   // Pagination
   @ViewChild(MatPaginator, { static: false }) set contentPaginator(
@@ -60,39 +71,59 @@ export class ManageTagsComponent {
     this.dataSource.sort = sort;
   }
 
-  constructor(service: Service) {
+  constructor(
+    service: TagService,
+    private dialog: MatDialog,
+  ) {
     service.fetchTags().subscribe((tags) => {
-      this.dataSource.data = tags;
+      this.availableTags = new AvailableTags(tags);
+
+      this.dataSource.data = tags.map((tag) => ({
+        name: tag.key.value,
+        ...tag,
+      }));
+
       this.loading = false;
     });
   }
 
-  editResourceTags(_resource: Tag) {
-    // this.dialog
-    //   .open(SingleEditComponent, {
-    //     width: "40vw",
-    //     enterAnimationDuration: 200,
-    //     exitAnimationDuration: 200,
-    //     data: {
-    //       resource: resource,
-    //       availableTags: this.availableTags,
-    //     },
-    //   })
-    //   .afterClosed()
-    //   .subscribe((result: TagBinding[] | undefined) => {
-    //     // Apply edited result to the table
-    //     if (result) {
-    //       resource.tags = result;
-    //       resource.displayTags = this.formatDisplayTags(resource.tags);
-    //     }
-    //   });
+  newTag() {
+    this.dialog
+      .open(NewTagComponent, {
+        width: "20vw",
+        enterAnimationDuration: 200,
+        exitAnimationDuration: 200,
+        data: {
+          existingKeys: this.availableTags.keys.map((k) => k.value),
+        },
+      })
+      .afterClosed()
+      .subscribe((result: Tag | undefined) => {
+        // Apply edited result to the table
+        // if (result) {
+        // }
+      });
   }
+
+  editResourceTags(resource: Tag) {
+    this.dialog
+      .open(TagManageEditcomponent, {
+        width: "40vw",
+        enterAnimationDuration: 200,
+        exitAnimationDuration: 200,
+        data: resource,
+      })
+      .afterClosed()
+      .subscribe((result: Value[] | undefined) => {
+        // Apply edited result to the table
+        if (result) {
+          resource.values = result;
+        }
+      });
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  formatTagValues(tag: Tag) {
-    return tag.values.map((v) => v.value).join(", ");
   }
 }

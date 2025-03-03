@@ -33,7 +33,7 @@ import {
   TagsController,
 } from "../../../../core/model/models";
 import { EditComponent } from "../edit.component";
-import { Service } from "../../../../core/model/Service";
+import { TagService } from "../../../../core/model/Service";
 
 type EditTagData = {
   resources: Resource[];
@@ -64,7 +64,7 @@ export class BulkRemoveComponent {
   tags: TagBinding[] = [];
 
   constructor(
-    private service: Service,
+    private service: TagService,
     public dialogRef: MatDialogRef<BulkRemoveComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditTagData,
     private _snackBar: MatSnackBar,

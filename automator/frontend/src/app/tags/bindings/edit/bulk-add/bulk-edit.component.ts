@@ -27,7 +27,7 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { Service } from "../../../../core/model/Service";
+import { TagService } from "../../../../core/model/Service";
 import {
   Resource,
   TagBinding,
@@ -64,7 +64,7 @@ export class BulkEditComponent {
   tags: TagBinding[] = [];
 
   constructor(
-    private service: Service,
+    private service: TagService,
     public dialogRef: MatDialogRef<BulkEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditTagData,
     private _snackBar: MatSnackBar,

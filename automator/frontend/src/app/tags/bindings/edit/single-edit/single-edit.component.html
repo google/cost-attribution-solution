@@ -2,7 +2,7 @@
   <h2 mat-dialog-title>Editing tags for {{ data.resource.name }}</h2>
   <mat-dialog-content>
     <!-- Attached tags  -->
-    <app-edit
+    <app-tag-binding-edit
       [tagBindings]="data.resource.tags"
       [availableTags]="data.availableTags"
       (tags)="data.resource.tags = $event"

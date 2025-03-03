@@ -24,11 +24,11 @@ import {
   Tag,
   TagBinding,
 } from "../model/models";
-import { Service } from "../model/Service";
+import { TagService } from "../model/Service";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable()
-export class BackendService implements Service {
+export class BackendService implements TagService {
   private apiUrl: string;
 
   constructor(private http: HttpClient) {

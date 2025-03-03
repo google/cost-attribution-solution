@@ -11,6 +11,7 @@
       <button
         mat-flat-button
         color="primary"
+        (click)="newTag()"
         class="search success"
         [disabled]="dataSource.filteredData.length == 0"
       >
@@ -31,17 +32,15 @@
         matSort
         class="mat-elevation-z2 full-table"
       >
-        <ng-container matColumnDef="key">
+        <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef mat-sort-header
             >Key</mat-header-cell
           >
-          <mat-cell *matCellDef="let element">{{ element.key.value }}</mat-cell>
+          <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="values">
-          <mat-header-cell *matHeaderCellDef mat-sort-header
-            >Values</mat-header-cell
-          >
+          <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
           <mat-cell *matCellDef="let element" class="tags">
             <div>
               @for (value of element.values; track value) {
@@ -63,9 +62,7 @@
         <ng-container matColumnDef="delete">
           <mat-header-cell *matHeaderCellDef>Delete Tag</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <mat-icon class="edit-icon" (click)="editResourceTags(element)"
-              >delete</mat-icon
-            >
+            <mat-icon class="edit-icon">delete</mat-icon>
           </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

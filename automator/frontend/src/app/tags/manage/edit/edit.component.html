@@ -1,0 +1,40 @@
+<div class="edit-dialog">
+  <h2 mat-dialog-title>Editing "{{ data.key.value }}" values</h2>
+  <mat-dialog-content>
+    <mat-form-field class="values-chip-list">
+      <mat-label>Tag values</mat-label>
+      <mat-chip-grid class="values-chip-grid" #chipGrid aria-label="Tag values">
+        @for (value of data.values; track value) {
+          <mat-chip-row
+            class="values-chip-row"
+            (removed)="remove(value)"
+            [editable]="true"
+            (edited)="edit(value, $event)"
+            [aria-description]="'press enter to edit ' + value.value"
+          >
+            {{ value.value }}
+            <button matChipRemove [attr.aria-label]="'remove ' + value.value">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+        <input
+          placeholder="Add value..."
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          matChipInputAddOnBlur="true"
+          (matChipInputTokenEnd)="add($event)"
+        />
+      </mat-chip-grid>
+    </mat-form-field>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    @if (saving) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    } @else {
+      <button mat-button color="primary" (click)="save()">Save</button>
+      <button mat-button mat-dialog-close>Close</button>
+    }
+  </mat-dialog-actions>
+</div>

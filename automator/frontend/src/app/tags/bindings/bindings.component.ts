@@ -27,7 +27,7 @@ import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { Resource, TagBinding, TagsController } from "../../core/model/models";
 import { AvailableTags } from "../available_tags";
 import { combineLatest } from "rxjs";
-import { Service } from "../../core/model/Service";
+import { TagService } from "../../core/model/Service";
 import { SingleEditComponent } from "./edit/single-edit/single-edit.component";
 import { BulkEditComponent } from "./edit/bulk-add/bulk-edit.component";
 import { BulkRemoveComponent } from "./edit/bulk-remove/bulk-remove.component";
@@ -74,7 +74,7 @@ export class TagsBindingsComponent {
   }
 
   constructor(
-    private service: Service,
+    private service: TagService,
     private dialog: MatDialog,
   ) {
     this.updateData();

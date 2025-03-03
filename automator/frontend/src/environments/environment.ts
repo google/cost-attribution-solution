@@ -15,5 +15,12 @@
 export const environment = {
     apiUrl: "/api",
 
+    dashboards: {
+        missing_attributions:
+            "https://lookerstudio.google.com/embed/reporting/e4cd9ef5-dfb0-4dd2-8332-e8ebbe980299/page/6zXD",
+        billing:
+            "https://lookerstudio.google.com/embed/reporting/e4cd9ef5-dfb0-4dd2-8332-e8ebbe980299/page/p_nk4rm2e9pd",
+    },
+
     production: true,
 };

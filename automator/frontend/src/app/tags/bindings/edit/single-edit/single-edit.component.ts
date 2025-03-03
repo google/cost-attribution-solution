@@ -28,7 +28,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { Resource, TagsController } from "../../../../core/model/models";
-import { Service } from "../../../../core/model/Service";
+import { TagService } from "../../../../core/model/Service";
 import { EditComponent } from "../edit.component";
 
 type EditTagData = {
@@ -58,7 +58,7 @@ export class SingleEditComponent {
   valid: boolean = false;
 
   constructor(
-    private service: Service,
+    private service: TagService,
     public dialogRef: MatDialogRef<SingleEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditTagData,
     private _snackBar: MatSnackBar,

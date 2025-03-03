@@ -23,10 +23,10 @@ import {
   Tag,
   TagBinding,
 } from "../model/models";
-import { Service } from "../model/Service";
+import { TagService } from "../model/Service";
 
 @Injectable()
-export class MockBackendService implements Service {
+export class MockBackendService implements TagService {
   private readonly DELAY = 0.5 * 1000;
 
   constructor() {

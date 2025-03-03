@@ -17,7 +17,7 @@
 import { Observable } from "rxjs";
 import { BulkResponse, Resource, Response, Tag, TagBinding } from "./models";
 
-export abstract class Service {
+export abstract class TagService {
   abstract fetchResources(): Observable<Array<Resource>>;
   abstract fetchTags(): Observable<Array<Tag>>;
 
