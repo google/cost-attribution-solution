@@ -56,6 +56,8 @@ import { Tag, Value } from "../../../core/model/models";
 })
 export class TagManageEditcomponent {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+  values: Set<string>;
   saving: boolean = false;
 
   constructor(
@@ -63,26 +65,26 @@ export class TagManageEditcomponent {
     @Inject(MAT_DIALOG_DATA) public data: Tag,
     public dialogRef: MatDialogRef<TagManageEditcomponent>,
     private _snackBar: MatSnackBar,
-  ) {}
+  ) {
+    this.values = new Set(data.values.map((v) => v.value));
+  }
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || "").trim();
 
     if (value) {
+      this.values.add(value);
     }
 
     // Clear the input value
     event.chipInput!.clear();
   }
 
-  remove(value: Value): void {
-    // const index = this.fruits.indexOf(fruit);
-    // if (index >= 0) {
-    //   this.fruits.splice(index, 1);
-    // }
+  remove(value: string): void {
+    this.values.delete(value);
   }
 
-  edit(value: Value, event: MatChipEditedEvent) {
+  edit(value: string, event: MatChipEditedEvent) {
     const newValue = event.value.trim();
 
     // Remove fruit if it no longer has a name
@@ -100,5 +102,7 @@ export class TagManageEditcomponent {
 
   save() {
     this.saving = true;
+
+    // TODO: CALL API and return the tag
   }
 }

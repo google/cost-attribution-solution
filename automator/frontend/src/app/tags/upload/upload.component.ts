@@ -8,6 +8,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { FileUpload, FileUploadStatus } from "../../core/model/models";
 import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatSnackBar } from "@angular/material/snack-bar";
 
 @Component({
   selector: "app-upload",
@@ -37,10 +38,29 @@ export class UploadComponent {
     },
   ];
 
+  readonly fields: { [key: string]: { header: string; rows: string } } = {
+    a: {
+      header: `A,project_id,cost-center,environment,app`,
+      rows: `my-project-123,fin-ops,prod,shopping-cart\nmy-project-456,sre,dev,catalog`,
+    },
+    b: {
+      header: `B,project_id,cost-center,environment,app`,
+      rows: `my-project-123,fin-ops,prod,shopping-cart\nmy-project-456,sre,dev,catalog`,
+    },
+  };
+
+  chosenType: string | undefined;
+  file:
+    | {
+        name: string;
+        contents: string;
+      }
+    | undefined;
+
   dataSource: MatTableDataSource<FileUpload> = new MatTableDataSource();
   displayedColumns: string[] = ["id", "name", "status", "details"];
 
-  constructor() {
+  constructor(private _snackBar: MatSnackBar) {
     this.dataSource.data = [
       {
         id: "123",
@@ -58,6 +78,32 @@ export class UploadComponent {
         status: FileUploadStatus.Success,
       },
     ];
+  }
+
+  onFileSelected(event: Event) {
+    const file: File = (event.target as any).files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = (e: any) => {
+      const contents = e.target.result;
+
+      // TODO: validate the schema
+      this.file = {
+        name: file.name,
+        contents,
+      };
+    };
+
+    reader.onerror = (e: any) => {
+      this._snackBar.open(
+        "Failed to read the file, please try again.",
+        "Close",
+        { duration: 3000 },
+      );
+    };
+
+    reader.readAsText(file);
   }
 
   viewDetails(element: FileUpload) {}

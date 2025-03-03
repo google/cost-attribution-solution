@@ -9,33 +9,53 @@
       <div>
         <mat-form-field>
           <mat-label>Resource Type</mat-label>
-          <mat-select>
+          <mat-select [(value)]="chosenType">
             @for (type of types; track type) {
               <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
             }
           </mat-select>
         </mat-form-field>
       </div>
-      <mat-card class="example-card" appearance="outlined">
-        <mat-card-header>
-          <mat-card-title class="primary-color"
-            >CSV File Structure: ensure your CSV adheres to the following
-            structure</mat-card-title
-          >
-        </mat-card-header>
-        <mat-card-content>
-          <b>project_id,cost-center,environment,app</b>
-          <div>my-project-123,fin-ops,prod,shopping-cart</div>
-          <div>my-project-456,sre,dev,catalog</div>
-        </mat-card-content>
-      </mat-card>
+      @if (chosenType) {
+        <mat-card class="example-card" appearance="outlined">
+          <mat-card-header>
+            <mat-card-title class="primary-color"
+              >CSV File Structure: ensure your CSV adheres to the following
+              structure</mat-card-title
+            >
+          </mat-card-header>
+          <mat-card-content>
+            <b>{{ fields[chosenType].header }}</b>
+            <pre>{{ fields[chosenType].rows }}</pre>
+          </mat-card-content>
+        </mat-card>
+      }
       <mat-slide-toggle class="clear-toggle">Clear Tags</mat-slide-toggle>
 
       <div class="inner-container">
-        <button mat-flat-button color="primary" class="upload">
+        <!-- File upload  -->
+        <input
+          type="file"
+          class="file-input"
+          (change)="onFileSelected($event)"
+          #fileUpload
+        />
+
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="fileUpload.click()"
+          class="upload"
+          [disabled]="!chosenType"
+        >
           Upload CSV
         </button>
-        <button mat-flat-button class="success">Submit</button>
+
+        @if (file) {
+          <button mat-flat-button class="success">
+            Submit {{ file.name }}
+          </button>
+        }
       </div>
     </div>
   </mat-tab>

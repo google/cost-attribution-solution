@@ -4,16 +4,16 @@
     <mat-form-field class="values-chip-list">
       <mat-label>Tag values</mat-label>
       <mat-chip-grid class="values-chip-grid" #chipGrid aria-label="Tag values">
-        @for (value of data.values; track value) {
+        @for (value of values; track value) {
           <mat-chip-row
             class="values-chip-row"
             (removed)="remove(value)"
-            [editable]="true"
+            [editable]="false"
             (edited)="edit(value, $event)"
-            [aria-description]="'press enter to edit ' + value.value"
+            [aria-description]="'press enter to edit ' + value"
           >
-            {{ value.value }}
-            <button matChipRemove [attr.aria-label]="'remove ' + value.value">
+            {{ value }}
+            <button matChipRemove [attr.aria-label]="'remove ' + value">
               <mat-icon>cancel</mat-icon>
             </button>
           </mat-chip-row>

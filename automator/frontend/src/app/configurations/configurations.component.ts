@@ -1,12 +1,10 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-configurations',
+  selector: "app-configurations",
   standalone: true,
   imports: [],
-  templateUrl: './configurations.component.html',
-  styleUrl: './configurations.component.sass'
+  templateUrl: "./configurations.component.html",
+  styleUrl: "./configurations.component.scss",
 })
-export class ConfigurationsComponent {
-
-}
+export class ConfigurationsComponent {}

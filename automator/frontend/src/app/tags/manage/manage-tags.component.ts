@@ -15,21 +15,21 @@
 */
 
 import { Component, ViewChild } from "@angular/core";
-import { MatIconModule } from "@angular/material/icon";
-import { Tag, TagsController, Value } from "../../core/model/models";
 import { MatButtonModule } from "@angular/material/button";
-import { TagService } from "../../core/model/Service";
-import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
-import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { MatInputModule } from "@angular/material/input";
 import { MatDialog } from "@angular/material/dialog";
-import { NewTagComponent } from "./edit/new/new.component";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSort, MatSortModule } from "@angular/material/sort";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { TagService } from "../../core/model/Service";
+import { Tag, TagsController, Value } from "../../core/model/models";
 import { AvailableTags } from "../available_tags";
 import { TagManageEditcomponent } from "./edit/edit.component";
+import { NewTagComponent } from "./edit/new/new.component";
 
 type DisplayTag = {
   name: string;
@@ -78,10 +78,7 @@ export class ManageTagsComponent {
     service.fetchTags().subscribe((tags) => {
       this.availableTags = new AvailableTags(tags);
 
-      this.dataSource.data = tags.map((tag) => ({
-        name: tag.key.value,
-        ...tag,
-      }));
+      this.dataSource.data = tags.map(this.formatTag);
 
       this.loading = false;
     });
@@ -99,9 +96,16 @@ export class ManageTagsComponent {
       })
       .afterClosed()
       .subscribe((result: Tag | undefined) => {
-        // Apply edited result to the table
-        // if (result) {
-        // }
+        // Apply new result to the table
+        if (result) {
+          this.dataSource.data = [
+            ...this.dataSource.data,
+            this.formatTag(result),
+          ];
+
+          // Opens to edit the newly created tag
+          this.editResourceTags(result);
+        }
       });
   }
 
@@ -125,5 +129,12 @@ export class ManageTagsComponent {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  private formatTag(tag: Tag) {
+    return {
+      name: tag.key.value,
+      ...tag,
+    };
   }
 }

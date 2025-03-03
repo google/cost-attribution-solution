@@ -39,6 +39,7 @@ import { MatInputModule } from "@angular/material/input";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { TagService } from "../../../../core/model/Service";
+import { Tag } from "../../../../core/model/models";
 import { TagManageEditcomponent } from "../edit.component";
 
 type NewTagData = {
@@ -97,6 +98,20 @@ export class NewTagComponent {
 
   save() {
     this.saving = true;
+
+    this._snackBar.open("Tag created successfuly.", "Close", {
+      duration: 3000,
+    });
+
+    const createdTag: Tag = {
+      key: {
+        id: "abc123",
+        value: this.tagFormControl.value,
+      },
+      values: [],
+    };
+
+    this.dialogRef.close(createdTag);
 
     // Call backend
     // this.service
