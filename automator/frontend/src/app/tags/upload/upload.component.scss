@@ -28,11 +28,6 @@
 .inner-container button {
     min-width: 10vw;
     padding: 5%;
-
-    &.success {
-        background-color: $success-color;
-        color: #fff;
-    }
 }
 
 .inner-container {

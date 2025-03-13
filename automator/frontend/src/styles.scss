@@ -1,4 +1,4 @@
-$primary-color: #3f51b5;
+@import "custom";
 
 body {
   font-family: "Roboto", sans-serif;
@@ -72,16 +72,22 @@ button.search {
   max-width: 300px;
 }
 
-.mat-mdc-raised-button.success {
-  background-color: #009933;
-  color: #fff;
-}
-
 .primary-color {
   color: $primary-color;
 }
 
+.mdc-button.btn-success[mat-raised-button] {
+  background-color: $success-color;
+  color: #fff;
+}
+
 .title {
-  font-size: 1.5em;
+  font-size: 1.6em;
+  font-weight: bold;
+  color: $primary-color;
+}
+
+.sub-title {
+  font-size: 1.2em;
   font-weight: bold;
 }

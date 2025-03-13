@@ -1,1 +1,16 @@
-<div class="primary-color title">Configurations</div>
+<div class="title">Configurations</div>
+
+<div class="sub-title">Asset types</div>
+
+<mat-form-field id="asset-types">
+  <mat-label>Choose types</mat-label>
+  <mat-select [formControl]="chosenAssetTypes" multiple>
+    @for (assetType of assetTypes; track assetType) {
+      <mat-option [value]="assetType">{{ assetType }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<div>
+  <button mat-raised-button color="primary">Save changes</button>
+</div>
