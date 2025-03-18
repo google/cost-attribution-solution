@@ -4,21 +4,20 @@
     <form>
       <mat-form-field class="example-full-width">
         <mat-label>Key name</mat-label>
-        <input type="text" matInput [formControl]="tagFormControl" />
+        <input type="text" matInput [formControl]="nameControl" />
         @if (
-          tagFormControl.hasError("takenKey") &&
-          !tagFormControl.hasError("required")
+          nameControl.hasError("takenKey") && !nameControl.hasError("required")
         ) {
           <mat-error>This key name is already taken.</mat-error>
         }
-        @if (tagFormControl.hasError("required")) {
+        @if (nameControl.hasError("required")) {
           <mat-error>Key is <strong>required</strong></mat-error>
         }
       </mat-form-field>
 
       <mat-form-field class="example-full-width">
         <mat-label>Description</mat-label>
-        <input type="text" matInput />
+        <input type="text" matInput [formControl]="descriptionControl" />
       </mat-form-field>
     </form>
   </mat-dialog-content>
@@ -30,7 +29,7 @@
       <button
         mat-button
         color="primary"
-        [disabled]="tagFormControl.invalid"
+        [disabled]="nameControl.invalid"
         (click)="save()"
       >
         Create

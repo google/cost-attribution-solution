@@ -16,6 +16,7 @@
 
 import os
 from flask import Flask, jsonify, request, Blueprint
+from add_tag import add_gcp_tag
 from list_possible_tags import getTags
 from update_resources_tags import update_gcp_tags, bulk_update_gcp_tags
 from list_resources_tags import formatResources, search_resources_by_type
@@ -130,8 +131,36 @@ def bulk_tags_from_resources():
         )
 
 
+# Endpoint : POST /resource/tags
+@api.route("/tag", methods=["POST"])
+def add_tag():
+    """Add tags to multiple resources."""
+    data = request.get_json()
+
+    name = data.get("name")
+    description = data.get("description")
+
+    if not name or not description:
+        return jsonify({"error": "Missing required fields (name, description)"}), 400
+
+    response = add_gcp_tag(name, description, scope)
+
+    if not response:
+        return (
+            jsonify(
+                {"message": "Internal error when creating tag.", "errors": response}
+            ),
+            500,
+        )
+
+    return (
+        jsonify({"key": response}),
+        201,
+    )
+
+
 app = Flask(__name__)
 app.register_blueprint(api)
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    app.run(host="0.0.0.0", port=8080, debug=True)

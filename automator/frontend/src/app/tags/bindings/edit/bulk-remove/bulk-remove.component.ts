@@ -33,7 +33,7 @@ import {
   TagsController,
 } from "../../../../core/model/models";
 import { EditComponent } from "../edit.component";
-import { TagService } from "../../../../core/model/Service";
+import { TagService } from "../../../../core/model/TagService";
 
 type EditTagData = {
   resources: Resource[];

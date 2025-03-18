@@ -15,21 +15,21 @@
 */
 
 import { Component, ViewChild } from "@angular/core";
-import { MatButtonModule } from "@angular/material/button";
-import { MatChipsModule } from "@angular/material/chips";
-import { MatDialog } from "@angular/material/dialog";
 import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input";
-import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
-import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { MatSort, MatSortModule } from "@angular/material/sort";
-import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { TagService } from "../../core/model/Service";
 import { Tag, TagsController, Value } from "../../core/model/models";
+import { MatButtonModule } from "@angular/material/button";
+import { TagService } from "../../core/model/TagService";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatSort, MatSortModule } from "@angular/material/sort";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatInputModule } from "@angular/material/input";
+import { MatDialog } from "@angular/material/dialog";
+import { NewTagComponent } from "./edit/new/new.component";
 import { AvailableTags } from "../available_tags";
 import { TagManageEditcomponent } from "./edit/edit.component";
-import { NewTagComponent } from "./edit/new/new.component";
 
 type DisplayTag = {
   name: string;

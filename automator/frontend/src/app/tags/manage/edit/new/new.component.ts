@@ -38,8 +38,7 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { TagService } from "../../../../core/model/Service";
-import { Tag } from "../../../../core/model/models";
+import { TagService } from "../../../../core/model/TagService";
 import { TagManageEditcomponent } from "../edit.component";
 
 type NewTagData = {
@@ -81,7 +80,8 @@ function takenValueValidator(takenValues: string[]): ValidatorFn {
   styleUrl: "./new.component.scss",
 })
 export class NewTagComponent {
-  tagFormControl: FormControl;
+  nameControl: FormControl;
+  descriptionControl: FormControl;
   saving: boolean = false;
 
   constructor(
@@ -90,56 +90,47 @@ export class NewTagComponent {
     public dialogRef: MatDialogRef<NewTagComponent>,
     private _snackBar: MatSnackBar,
   ) {
-    this.tagFormControl = new FormControl("", [
+    this.nameControl = new FormControl("", [
       Validators.required,
       takenValueValidator(data.existingKeys),
     ]);
+
+    this.descriptionControl = new FormControl("");
   }
 
   save() {
     this.saving = true;
 
-    this._snackBar.open("Tag created successfuly.", "Close", {
-      duration: 3000,
-    });
+    this.service
+      .addTag(this.nameControl.value, this.descriptionControl.value)
+      .subscribe({
+        next: (res) => {
+          this._snackBar.open("Tag created with success.", "Close", {
+            duration: 3000,
+          });
 
-    const createdTag: Tag = {
-      key: {
-        id: "abc123",
-        value: this.tagFormControl.value,
-      },
-      values: [],
-    };
+          // Returns only the key ID (from server) and short_name
+          // Values will be added in a second moment
+          this.dialogRef.close({
+            key: {
+              id: res.key,
+              value: this.nameControl.value,
+            },
+            values: [],
+          });
+        },
 
-    this.dialogRef.close(createdTag);
+        error: (err) => {
+          this._snackBar.open(
+            `Fail to create tag: ${err.error.message}`,
+            "Close",
+            {
+              duration: 10000,
+            },
+          );
 
-    // Call backend
-    // this.service
-    //   .updateResourceTags(
-    //     this.data.resource.id,
-    //     this.data.resource.location,
-    //     this.data.resource.tags,
-    //   )
-    //   .subscribe({
-    //     next: () => {
-    //       this._snackBar.open("Tags updated with success.", "Close", {
-    //         duration: 3000,
-    //       });
-
-    //       this.dialogRef.close(this.data.resource.tags);
-    //     },
-
-    //     error: (err) => {
-    //       this._snackBar.open(
-    //         `Fail to update tags: ${err.error.message}`,
-    //         "Close",
-    //         {
-    //           duration: 10000,
-    //         },
-    //       );
-
-    //       this.saving = false;
-    //     },
-    //   });
+          this.saving = false;
+        },
+      });
   }
 }

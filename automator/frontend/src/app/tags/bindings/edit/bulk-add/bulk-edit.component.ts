@@ -27,7 +27,7 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { TagService } from "../../../../core/model/Service";
+import { TagService } from "../../../../core/model/TagService";
 import {
   Resource,
   TagBinding,

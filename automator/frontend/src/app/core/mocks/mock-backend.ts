@@ -16,6 +16,7 @@
 
 import { Injectable } from "@angular/core";
 import { Observable, delay, of } from "rxjs";
+import { TagService } from "../model/TagService";
 import {
   BulkResponse,
   Resource,
@@ -23,7 +24,6 @@ import {
   Tag,
   TagBinding,
 } from "../model/models";
-import { TagService } from "../model/Service";
 
 @Injectable()
 export class MockBackendService implements TagService {
@@ -33,6 +33,10 @@ export class MockBackendService implements TagService {
     console.log(
       "Using MockBackendService, use --configuration production to use server.",
     );
+  }
+
+  addTag(name: string, description: string): Observable<{ key: string }> {
+    return of({ key: "abc123", errors: [] }).pipe(delay(this.DELAY));
   }
 
   fetchResources(): Observable<Resource[]> {

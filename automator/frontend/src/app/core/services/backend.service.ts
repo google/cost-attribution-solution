@@ -24,7 +24,7 @@ import {
   Tag,
   TagBinding,
 } from "../model/models";
-import { TagService } from "../model/Service";
+import { TagService } from "../model/TagService";
 import { HttpClient } from "@angular/common/http";
 
 @Injectable()
@@ -33,6 +33,13 @@ export class BackendService implements TagService {
 
   constructor(private http: HttpClient) {
     this.apiUrl = inject(SERVICE_CONFIG).apiUrl;
+  }
+
+  addTag(name: string, description: string): Observable<{ key: string }> {
+    return this.http.post<{ key: string }>(this.apiUrl + "/tag", {
+      name,
+      description,
+    });
   }
 
   fetchResources(): Observable<Resource[]> {

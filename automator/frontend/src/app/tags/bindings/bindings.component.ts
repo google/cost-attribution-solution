@@ -27,7 +27,7 @@ import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { Resource, TagBinding, TagsController } from "../../core/model/models";
 import { AvailableTags } from "../available_tags";
 import { combineLatest } from "rxjs";
-import { TagService } from "../../core/model/Service";
+import { TagService } from "../../core/model/TagService";
 import { SingleEditComponent } from "./edit/single-edit/single-edit.component";
 import { BulkEditComponent } from "./edit/bulk-add/bulk-edit.component";
 import { BulkRemoveComponent } from "./edit/bulk-remove/bulk-remove.component";

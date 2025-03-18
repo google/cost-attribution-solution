@@ -34,7 +34,7 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { TagService } from "../../../core/model/Service";
+import { TagService } from "../../../core/model/TagService";
 import { Tag, Value } from "../../../core/model/models";
 
 @Component({
@@ -87,7 +87,6 @@ export class TagManageEditcomponent {
   edit(value: string, event: MatChipEditedEvent) {
     const newValue = event.value.trim();
 
-    // Remove fruit if it no longer has a name
     if (!newValue) {
       // this.remove(fruit);
       return;

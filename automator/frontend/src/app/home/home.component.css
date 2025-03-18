@@ -1,14 +1,6 @@
-.container-center {
-  display: flex;
-  height: 100%;
-  gap: 4%;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-}
-
 h1 {
   font-size: 2.5em;
+  text-align: center;
 }
 
 img {
