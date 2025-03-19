@@ -17,7 +17,8 @@
 import os
 from flask import Flask, jsonify, request, Blueprint
 from add_tag import add_gcp_tag
-from list_possible_tags import getTags
+
+from list_tags import getTags
 from update_resources_tags import update_gcp_tags, bulk_update_gcp_tags
 from list_resources_tags import formatResources, search_resources_by_type
 from delete_resources_tags import del_gcp_tags
@@ -59,9 +60,9 @@ def get_resources():
 
 # Endpoint 3: GET /tags
 @api.route("/tags", methods=["GET"])
-def get_tags():
+async def get_tags():
     """List all available tags."""
-    return jsonify(getTags(scope))
+    return jsonify(await getTags(scope))
 
 
 # Endpoint 4: POST /resource
