@@ -1,5 +1,5 @@
 /*
-   Copyright 2024 Google LLC
+   Copyright 2025 Google LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -84,24 +84,29 @@ export class TagManageEditcomponent {
     this.values.delete(value);
   }
 
-  edit(value: string, event: MatChipEditedEvent) {
-    const newValue = event.value.trim();
-
-    if (!newValue) {
-      // this.remove(fruit);
-      return;
-    }
-
-    // Edit existing fruit
-    // const index = this.fruits.indexOf(fruit);
-    // if (index >= 0) {
-    //   this.fruits[index].name = value;
-    // }
-  }
-
   save() {
     this.saving = true;
 
-    // TODO: CALL API and return the tag
+    this.service.editTag(this.data.key.id, [...this.values]).subscribe({
+      next: (res) => {
+        this._snackBar.open("Tag values updated with success.", "Close", {
+          duration: 3000,
+        });
+
+        this.dialogRef.close(res.message);
+      },
+
+      error: (err) => {
+        this._snackBar.open(
+          `Fail to update tag values: ${err.error.message}`,
+          "Close",
+          {
+            duration: 10000,
+          },
+        );
+
+        this.saving = false;
+      },
+    });
   }
 }

@@ -13,12 +13,13 @@
 # limitations under the License.
 
 """Tag Automator to easily manage tags from GCP resources."""
-
 import os
+import logging
 from flask import Flask, jsonify, request, Blueprint
+from google.api_core.exceptions import GoogleAPICallError
 from add_tag import add_gcp_tag
 
-from list_tags import getTags
+from list_tags import getTags, update_tag_values
 from update_resources_tags import update_gcp_tags, bulk_update_gcp_tags
 from list_resources_tags import formatResources, search_resources_by_type
 from delete_resources_tags import del_gcp_tags
@@ -141,8 +142,8 @@ def add_tag():
     name = data.get("name")
     description = data.get("description")
 
-    if not name or not description:
-        return jsonify({"error": "Missing required fields (name, description)"}), 400
+    if not name:
+        return jsonify({"message": "missing required field (name)"}), 400
 
     response = add_gcp_tag(name, description, scope)
 
@@ -158,6 +159,33 @@ def add_tag():
         jsonify({"key": response}),
         201,
     )
+
+
+# Endpoint : POST /resource/tags
+@api.route("/tagValues", methods=["POST"])
+async def edit_tag_values():
+    """Edit tag values for a tag key."""
+    data = request.get_json()
+
+    key = data.get("key")
+    values = data.get("values")
+
+    if not key:
+        return jsonify({"message": "missing required field (key)"}), 400
+
+    try:
+        values = await update_tag_values(key, values)
+
+        return (
+            jsonify({"message": values}),
+            201,
+        )
+    except GoogleAPICallError as e:
+        logging.error(e)
+        return (
+            jsonify({"message": f"internal error when editing tag values: {e}"}),
+            500,
+        )
 
 
 app = Flask(__name__)

@@ -35,6 +35,13 @@ export class BackendService implements TagService {
     this.apiUrl = inject(SERVICE_CONFIG).apiUrl;
   }
 
+  editTag(key: string, values: string[]): Observable<Response> {
+    return this.http.post<Response>(this.apiUrl + "/tagValues", {
+      key,
+      values,
+    });
+  }
+
   addTag(name: string, description: string): Observable<{ key: string }> {
     return this.http.post<{ key: string }>(this.apiUrl + "/tag", {
       name,

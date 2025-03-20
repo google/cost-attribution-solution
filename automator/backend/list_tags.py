@@ -15,7 +15,59 @@
 """Module to handle adding new tags."""
 
 import asyncio
+from typing import List
+from google.api_core.operation_async import AsyncOperation
 from google.cloud import resourcemanager_v3
+
+
+async def update_tag_values(key, values):
+    """Update tag values for key."""
+
+    client = resourcemanager_v3.TagValuesAsyncClient()
+
+    async def delete_tag_value(name):
+        request = resourcemanager_v3.DeleteTagValueRequest(
+            name=name,
+        )
+        return await (await client.delete_tag_value(request=request)).result()
+
+    async def create_tag_value(short_name):
+        request = resourcemanager_v3.CreateTagValueRequest(
+            tag_value=resourcemanager_v3.TagValue(parent=key, short_name=short_name)
+        )
+        return await (await client.create_tag_value(request=request)).result()
+
+    current_values = await _getTagValues(key, client)
+
+    # This is now a dict of short_name: key
+    values_dict = {value: key for key, value in current_values.items()}
+
+    # Set math to find new values not present to create, and old values to delete
+    to_be_deleted = set(values_dict.keys()) - set(values)
+    to_be_created = set(values) - set(values_dict.keys())
+
+    # Delete takes the key
+    delete_tasks = [
+        delete_tag_value(values_dict[short_name]) for short_name in to_be_deleted
+    ]
+
+    # Create takes only the value
+    create_tasks = [create_tag_value(short_name) for short_name in to_be_created]
+
+    operations = await asyncio.gather(*delete_tasks, *create_tasks)
+
+    # Assemble response with updated
+    for res in operations:
+
+        # If deletion was success, remove from current values
+        if res.short_name in to_be_deleted:
+            del current_values[res.name]
+
+        # Otherwise, include it
+        else:
+            current_values[res.name] = res.short_name
+
+    return _formatTagValues(current_values)
 
 
 async def getTags(scope):
@@ -34,13 +86,11 @@ async def getTags(scope):
         # Gather the results from all tasks
         values = await asyncio.gather(*tasks)
 
-        for key, value_list in zip(keys, values):
+        for key, values_dict in zip(keys, values):
             response.append(
                 {
                     "key": {"id": key.name, "value": key.short_name},
-                    "values": [
-                        {"id": v.name, "value": v.short_name} for v in value_list
-                    ],
+                    "values": _formatTagValues(values_dict),
                 }
             )
 
@@ -62,13 +112,13 @@ def _getTagKeys(scope):
 async def _getTagValues(key, client):
     """Internal method to list Tag Keys."""
 
-    response = []
-
     values = await client.list_tag_values(
         resourcemanager_v3.ListTagValuesRequest(parent=key)
     )
 
-    async for value in values:
-        response.append(value)
+    return {value.name: value.short_name async for value in values}
 
-    return response
+
+def _formatTagValues(values_dict):
+    """Format tag values for list of id/value objects"""
+    return [{"id": k, "value": v} for k, v in values_dict.items()]

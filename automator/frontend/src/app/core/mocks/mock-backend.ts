@@ -35,6 +35,12 @@ export class MockBackendService implements TagService {
     );
   }
 
+  editTag(key: string, values: string[]): Observable<Response> {
+    return of({
+      message: "success!",
+    }).pipe(delay(this.DELAY));
+  }
+
   addTag(name: string, description: string): Observable<{ key: string }> {
     return of({ key: "abc123", errors: [] }).pipe(delay(this.DELAY));
   }
