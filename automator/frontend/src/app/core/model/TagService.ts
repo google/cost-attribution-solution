@@ -24,6 +24,7 @@ export abstract class TagService {
     description: string,
   ): Observable<{ key: string }>;
   abstract editTag(key: string, values: string[]): Observable<Response>;
+  abstract deleteTag(key: string): Observable<Response>;
 
   abstract fetchResources(): Observable<Array<Resource>>;
 

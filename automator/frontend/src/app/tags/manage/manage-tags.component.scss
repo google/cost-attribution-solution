@@ -1,5 +1,26 @@
+.tag-chip-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .tag-chip {
-    margin: 0 2%;
+    margin: 1% 1%;
+}
+
+.mat-mdc-standard-chip {
+    border-radius: 10px;
+}
+
+.block-icon {
+    cursor: not-allowed;
+    color: darkgray;
+}
+
+.delete-icon {
+    color: #e74545;
 }
 
 .mat-column-edit,

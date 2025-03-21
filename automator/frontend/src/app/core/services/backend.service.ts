@@ -14,9 +14,10 @@
    limitations under the License.
 */
 
+import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
-import { SERVICE_CONFIG } from "../model/values";
 import { Observable } from "rxjs";
+import { TagService } from "../model/TagService";
 import {
   BulkResponse,
   Resource,
@@ -24,8 +25,7 @@ import {
   Tag,
   TagBinding,
 } from "../model/models";
-import { TagService } from "../model/TagService";
-import { HttpClient } from "@angular/common/http";
+import { SERVICE_CONFIG } from "../model/values";
 
 @Injectable()
 export class BackendService implements TagService {
@@ -33,6 +33,10 @@ export class BackendService implements TagService {
 
   constructor(private http: HttpClient) {
     this.apiUrl = inject(SERVICE_CONFIG).apiUrl;
+  }
+
+  deleteTag(key: string): Observable<Response> {
+    return this.http.delete<Response>(this.apiUrl + "/tag/" + key);
   }
 
   editTag(key: string, values: string[]): Observable<Response> {

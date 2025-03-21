@@ -15,9 +15,13 @@
 """Module to handle adding new tags."""
 
 import asyncio
-from typing import List
-from google.api_core.operation_async import AsyncOperation
 from google.cloud import resourcemanager_v3
+
+
+def delete_tag_key(key):
+    client = resourcemanager_v3.TagKeysClient()
+
+    client.delete_tag_key(resourcemanager_v3.DeleteTagKeyRequest(name=key))
 
 
 async def update_tag_values(key, values):

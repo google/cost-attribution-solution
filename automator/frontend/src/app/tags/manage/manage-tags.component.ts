@@ -15,21 +15,24 @@
 */
 
 import { Component, ViewChild } from "@angular/core";
-import { MatIconModule } from "@angular/material/icon";
-import { Tag, TagsController, Value } from "../../core/model/models";
 import { MatButtonModule } from "@angular/material/button";
-import { TagService } from "../../core/model/TagService";
-import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { MatProgressBarModule } from "@angular/material/progress-bar";
-import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
-import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatChipsModule } from "@angular/material/chips";
-import { MatTooltipModule } from "@angular/material/tooltip";
-import { MatInputModule } from "@angular/material/input";
 import { MatDialog } from "@angular/material/dialog";
-import { NewTagComponent } from "./edit/new/new.component";
+import { MatIconModule } from "@angular/material/icon";
+import { MatInputModule } from "@angular/material/input";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressBarModule } from "@angular/material/progress-bar";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatSort, MatSortModule } from "@angular/material/sort";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { TagService } from "../../core/model/TagService";
+import { Tag, TagsController, Value } from "../../core/model/models";
 import { AvailableTags } from "../available_tags";
 import { TagManageEditcomponent } from "./edit/edit.component";
+import { NewTagComponent } from "./edit/new/new.component";
+import { finalize } from "rxjs";
 
 type DisplayTag = {
   name: string;
@@ -48,6 +51,7 @@ type DisplayTag = {
     MatChipsModule,
     MatSortModule,
     MatIconModule,
+    MatMenuModule,
   ],
   templateUrl: "./manage-tags.component.html",
   styleUrl: "./manage-tags.component.scss",
@@ -56,6 +60,7 @@ export class ManageTagsComponent {
   dataSource: MatTableDataSource<DisplayTag> = new MatTableDataSource();
   displayedColumns: string[] = ["name", "values", "edit", "delete"];
   loading: boolean = true;
+  deleting: boolean = false;
 
   availableTags!: TagsController;
 
@@ -72,8 +77,9 @@ export class ManageTagsComponent {
   }
 
   constructor(
-    service: TagService,
+    private service: TagService,
     private dialog: MatDialog,
+    private _snackBar: MatSnackBar,
   ) {
     service.fetchTags().subscribe((tags) => {
       this.availableTags = new AvailableTags(tags);
@@ -123,6 +129,34 @@ export class ManageTagsComponent {
         if (result) {
           resource.values = result;
         }
+      });
+  }
+
+  confirmDeleteTag(resource: Tag) {
+    this.deleting = true;
+
+    this.service
+      .deleteTag(resource.key.id)
+      .pipe(finalize(() => (this.deleting = false)))
+      .subscribe({
+        next: (_res) => {
+          this.dataSource.data = this.dataSource.data.filter(
+            (t) => t.key.id != resource.key.id,
+          );
+          this._snackBar.open("Tag deleted with success.", "Close", {
+            duration: 3000,
+          });
+        },
+
+        error: (err) => {
+          this._snackBar.open(
+            `Fail to delete tag: ${err.error.message}`,
+            "Close",
+            {
+              duration: 10000,
+            },
+          );
+        },
       });
   }
 

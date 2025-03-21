@@ -35,6 +35,12 @@ export class MockBackendService implements TagService {
     );
   }
 
+  deleteTag(key: string): Observable<Response> {
+    return of({
+      message: "success!",
+    }).pipe(delay(this.DELAY));
+  }
+
   editTag(key: string, values: string[]): Observable<Response> {
     return of({
       message: "success!",

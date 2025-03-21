@@ -13,13 +13,14 @@
 # limitations under the License.
 
 """Tag Automator to easily manage tags from GCP resources."""
+from http import HTTPStatus
 import os
 import logging
 from flask import Flask, jsonify, request, Blueprint
 from google.api_core.exceptions import GoogleAPICallError
 from add_tag import add_gcp_tag
 
-from list_tags import getTags, update_tag_values
+from tags_manager import delete_tag_key, getTags, update_tag_values
 from update_resources_tags import update_gcp_tags, bulk_update_gcp_tags
 from list_resources_tags import formatResources, search_resources_by_type
 from delete_resources_tags import del_gcp_tags
@@ -162,6 +163,22 @@ def add_tag():
 
 
 # Endpoint : POST /resource/tags
+@api.route("/tag/<path:key>", methods=["DELETE"])
+def delete_tag(key):
+    """Delete a tag (must be with zero values)."""
+
+    try:
+        delete_tag_key(key)
+        return "", HTTPStatus.NO_CONTENT
+    except GoogleAPICallError as e:
+        logging.error(e)
+        return (
+            jsonify({"message": e.message}),
+            500,
+        )
+
+
+# Endpoint : POST /resource/tags
 @api.route("/tagValues", methods=["POST"])
 async def edit_tag_values():
     """Edit tag values for a tag key."""
@@ -183,7 +200,7 @@ async def edit_tag_values():
     except GoogleAPICallError as e:
         logging.error(e)
         return (
-            jsonify({"message": f"internal error when editing tag values: {e}"}),
+            jsonify({"message": e.message}),
             500,
         )
 

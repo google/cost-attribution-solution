@@ -42,7 +42,7 @@
         <ng-container matColumnDef="values">
           <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
           <mat-cell *matCellDef="let element" class="tags">
-            <div>
+            <div class="tag-chip-container">
               @for (value of element.values; track value) {
                 <mat-chip class="tag-chip">{{ value.value }}</mat-chip>
               }
@@ -62,7 +62,27 @@
         <ng-container matColumnDef="delete">
           <mat-header-cell *matHeaderCellDef>Delete Tag</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <mat-icon class="edit-icon">delete</mat-icon>
+            @if (element.values.length == 0) {
+              @if (deleting) {
+                <mat-progress-bar
+                  mode="indeterminate"
+                  color="warn"
+                ></mat-progress-bar>
+              } @else {
+                <mat-icon
+                  [matMenuTriggerFor]="menu"
+                  class="edit-icon delete-icon"
+                  >delete</mat-icon
+                >
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="confirmDeleteTag(element)">
+                    Confirm deletion
+                  </button>
+                </mat-menu>
+              }
+            } @else {
+              <mat-icon class="block-icon">delete</mat-icon>
+            }
           </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
