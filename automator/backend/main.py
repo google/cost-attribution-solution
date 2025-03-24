@@ -136,7 +136,7 @@ def delete_tags_from_resources(bulk: BulkResource = Body(...)):
     if not response:
         return {"detail": "Tags deleted successfully."}
 
-    return 500, {"errors": response}
+    return {"errors": response}
 
 
 @app.post("/api/resources/tags")
@@ -153,7 +153,7 @@ def bulk_tags_from_resources(bulk: BulkResource = Body(...)):
     if not response:
         return {"detail": "Tag applied successfully."}
 
-    return 500, {"errors": response}
+    return {"errors": response}
 
 
 @app.get("/api/tags")

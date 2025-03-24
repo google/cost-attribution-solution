@@ -14,7 +14,7 @@
 
 import { TestBed } from "@angular/core/testing";
 
-import { BackendService } from "./backend.service";
+import { BackendService } from "./tag_backend.service";
 
 describe("BackendService", () => {
   let service: BackendService;

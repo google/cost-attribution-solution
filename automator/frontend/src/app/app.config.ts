@@ -23,7 +23,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { TagService } from "./core/model/TagService";
 import { SERVICE_CONFIG, TITLE } from "./core/model/values";
 import { environment } from "./../environments/environment";
-import { BackendService } from "./core/services/backend.service";
+import { BackendService } from "./core/services/tag_backend.service";
 import { MockBackendService } from "./core/mocks/mock-backend";
 
 export const appConfig: ApplicationConfig = {
