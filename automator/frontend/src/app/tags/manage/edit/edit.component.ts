@@ -98,7 +98,7 @@ export class TagManageEditcomponent {
 
       error: (err) => {
         this._snackBar.open(
-          `Fail to update tag values: ${err.error.message}`,
+          `Fail to update tag values: ${err.error.detail}`,
           "Close",
           {
             duration: 10000,

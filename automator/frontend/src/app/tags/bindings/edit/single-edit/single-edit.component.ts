@@ -85,7 +85,7 @@ export class SingleEditComponent {
 
         error: (err) => {
           this._snackBar.open(
-            `Fail to update tags: ${err.error.message}`,
+            `Fail to update tags: ${err.error.detail}`,
             "Close",
             {
               duration: 10000,

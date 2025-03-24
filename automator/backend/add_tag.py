@@ -22,18 +22,12 @@ def add_gcp_tag(name, description, scope):
 
     client = resourcemanager_v3.TagKeysClient()
 
-    try:
+    tag = resourcemanager_v3.TagKey(
+        short_name=name, description=description, parent=scope
+    )
 
-        tag = resourcemanager_v3.TagKey(
-            short_name=name, description=description, parent=scope
-        )
+    response = client.create_tag_key(
+        request=resourcemanager_v3.CreateTagKeyRequest(tag_key=tag)
+    ).result()
 
-        response = client.create_tag_key(
-            request=resourcemanager_v3.CreateTagKeyRequest(tag_key=tag)
-        ).result()
-
-        return response.name if response else None
-
-    except Exception as e:
-        print(f"Fail to create tag: {e}")
-        return None
+    return response.name if response else None

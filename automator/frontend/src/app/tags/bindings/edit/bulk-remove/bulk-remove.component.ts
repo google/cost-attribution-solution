@@ -88,7 +88,7 @@ export class BulkRemoveComponent {
       .subscribe({
         next: (resp) => {
           const resourcesCount = this.data.resources.length;
-          const errorsCount = resp.errors.length;
+          const errorsCount = resp.errors?.length || 0;
 
           if (errorsCount > 0) {
             this._snackBar.open(
@@ -103,7 +103,19 @@ export class BulkRemoveComponent {
               { duration: 3000 },
             );
           }
+
           this.dialogRef.close(this.tags);
+        },
+        error: (err) => {
+          this._snackBar.open(
+            `Fail to remove tags: ${err.error.detail}`,
+            "Close",
+            {
+              duration: 10000,
+            },
+          );
+
+          this.saving = false;
         },
       });
   }

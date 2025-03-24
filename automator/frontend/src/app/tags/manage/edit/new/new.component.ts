@@ -122,7 +122,7 @@ export class NewTagComponent {
 
         error: (err) => {
           this._snackBar.open(
-            `Fail to create tag: ${err.error.message}`,
+            `Fail to create tag: ${err.error.detail}`,
             "Close",
             {
               duration: 10000,

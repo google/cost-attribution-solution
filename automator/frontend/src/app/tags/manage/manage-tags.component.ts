@@ -150,7 +150,7 @@ export class ManageTagsComponent {
 
         error: (err) => {
           this._snackBar.open(
-            `Fail to delete tag: ${err.error.message}`,
+            `Fail to delete tag: ${err.error.detail}`,
             "Close",
             {
               duration: 10000,

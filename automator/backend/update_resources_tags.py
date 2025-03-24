@@ -31,37 +31,30 @@ def update_gcp_tags(resource_name, new_tags, location=None):
     )
 
     # Retrieve existing tag bindings (handling NotFound for missing resources)
-    try:
-        current_bindings = client.list_tag_bindings(parent=resource_name)
+    current_bindings = client.list_tag_bindings(parent=resource_name)
 
-        existing_tag_values = {binding.tag_value for binding in current_bindings}
-        new_tag_values = {new_binding["value"] for new_binding in new_tags}
+    existing_tag_values = {binding.tag_value for binding in current_bindings}
+    new_tag_values = {new_binding["value"] for new_binding in new_tags}
 
-        tag_bindings_to_add = []
-        for _tag in new_tags:
-            tag_value = _tag["value"]
-            if tag_value not in existing_tag_values:
-                tag_binding = resourcemanager_v3.TagBinding(
-                    tag_value=tag_value, parent=resource_name
-                )
-                tag_bindings_to_add.append(tag_binding)
+    tag_bindings_to_add = []
+    for _tag in new_tags:
+        tag_value = _tag["value"]
+        if tag_value not in existing_tag_values:
+            tag_binding = resourcemanager_v3.TagBinding(
+                tag_value=tag_value, parent=resource_name
+            )
+            tag_bindings_to_add.append(tag_binding)
 
-        tag_bindings_to_remove = []
-        for binding in current_bindings:
-            if binding.tag_value not in new_tag_values:
-                tag_bindings_to_remove.append(binding)
+    tag_bindings_to_remove = []
+    for binding in current_bindings:
+        if binding.tag_value not in new_tag_values:
+            tag_bindings_to_remove.append(binding)
 
-        for tag_binding in tag_bindings_to_remove:
-            client.delete_tag_binding(name=tag_binding.name)
+    for tag_binding in tag_bindings_to_remove:
+        client.delete_tag_binding(name=tag_binding.name)
 
-        for tag_binding in tag_bindings_to_add:
-            client.create_tag_binding(tag_binding=tag_binding)
-
-        return True
-
-    except Exception as e:
-        print(f"Fail to update tags: {e}")
-        return False
+    for tag_binding in tag_bindings_to_add:
+        client.create_tag_binding(tag_binding=tag_binding)
 
 
 def bulk_update_gcp_tags(resources, add_tags, scope):
