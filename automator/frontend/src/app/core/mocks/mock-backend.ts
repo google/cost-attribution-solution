@@ -37,13 +37,13 @@ export class MockBackendService implements TagService {
 
   deleteTag(key: string): Observable<Response> {
     return of({
-      message: "success!",
+      detail: "success!",
     }).pipe(delay(this.DELAY));
   }
 
   editTag(key: string, values: string[]): Observable<Response> {
     return of({
-      message: "success!",
+      detail: "success!",
     }).pipe(delay(this.DELAY));
   }
 
@@ -209,7 +209,7 @@ export class MockBackendService implements TagService {
 
   updateResourceTags(): Observable<Response> {
     return of({
-      message: "success!",
+      detail: "success!",
     }).pipe(delay(this.DELAY));
   }
 
@@ -217,13 +217,13 @@ export class MockBackendService implements TagService {
     resources: { id: string; location: string }[],
     tags: TagBinding[],
   ): Observable<BulkResponse> {
-    return of({ message: "success!", errors: [] }).pipe(delay(this.DELAY));
+    return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }
 
   removeTagsFromResources(
     resources: { id: string; location: string }[],
     tags: TagBinding[],
   ): Observable<BulkResponse> {
-    return of({ message: "success!", errors: [] }).pipe(delay(this.DELAY));
+    return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }
 }

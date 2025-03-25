@@ -36,18 +36,18 @@ export class BackendService implements TagService {
   }
 
   deleteTag(key: string): Observable<Response> {
-    return this.http.delete<Response>(this.apiUrl + "/tag/" + key);
+    return this.http.delete<Response>(this.apiUrl + "/tags/" + key);
   }
 
   editTag(key: string, values: string[]): Observable<Response> {
-    return this.http.post<Response>(this.apiUrl + "/tagValues", {
+    return this.http.post<Response>(this.apiUrl + "/tags/tagValues", {
       key,
       values,
     });
   }
 
   addTag(name: string, description: string): Observable<{ key: string }> {
-    return this.http.post<{ key: string }>(this.apiUrl + "/tag", {
+    return this.http.post<{ key: string }>(this.apiUrl + "/tags", {
       name,
       description,
     });
@@ -66,7 +66,7 @@ export class BackendService implements TagService {
     location: string,
     tags: TagBinding[],
   ): Observable<Response> {
-    return this.http.post<Response>(this.apiUrl + "/resource", {
+    return this.http.patch<Response>(this.apiUrl + "/resources/tags", {
       id,
       location,
       tags,

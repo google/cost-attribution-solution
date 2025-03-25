@@ -50,11 +50,11 @@ export type Tag = {
 };
 
 export type Response = {
-    message: string;
+    detail: string;
 };
 
 export type BulkResponse = {
-    message: string;
+    detail: string;
     errors: string[];
 };
 

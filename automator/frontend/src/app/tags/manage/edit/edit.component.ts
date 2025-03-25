@@ -93,7 +93,7 @@ export class TagManageEditcomponent {
           duration: 3000,
         });
 
-        this.dialogRef.close(res.message);
+        this.dialogRef.close(res.detail);
       },
 
       error: (err) => {
