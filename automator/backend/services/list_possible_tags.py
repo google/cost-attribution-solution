@@ -15,11 +15,12 @@
 """Module to load all available tags on scope."""
 
 from google.cloud import asset_v1
+from services.clients import ClientFactory
 
 
 def getTags(scope):
     """Fetch tags from Asset Inventory using the provided scope."""
-    client = asset_v1.AssetServiceClient()
+    client = ClientFactory.get_asset_client()
 
     request = asset_v1.SearchAllResourcesRequest(
         scope=scope,

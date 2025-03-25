@@ -15,7 +15,7 @@
 from fastapi import APIRouter, Body, Depends
 from typing import List, Optional
 from pydantic import BaseModel
-from dependencies import get_asset_types, get_scope
+from routes.dependencies import get_asset_types, get_scope
 
 from services.tag_binding_manager import (
     update_gcp_tags,

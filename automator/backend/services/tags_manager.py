@@ -16,16 +16,13 @@
 
 import asyncio
 from google.cloud import resourcemanager_v3
-
-
-tagKeysClient = resourcemanager_v3.TagKeysAsyncClient()
-tagValuesClient = resourcemanager_v3.TagValuesAsyncClient()
+from services.clients import ClientFactory
 
 
 def add_gcp_tag(name, description, scope):
     """Add a tag to GCP scope location."""
 
-    client = resourcemanager_v3.TagKeysClient()
+    client = ClientFactory.get_tag_keys_client()
 
     tag = resourcemanager_v3.TagKey(
         short_name=name, description=description, parent=scope
@@ -39,7 +36,7 @@ def add_gcp_tag(name, description, scope):
 
 
 def delete_tag_key(key):
-    client = resourcemanager_v3.TagKeysClient()
+    client = ClientFactory.get_tag_keys_client()
 
     client.delete_tag_key(resourcemanager_v3.DeleteTagKeyRequest(name=key))
 
@@ -47,7 +44,7 @@ def delete_tag_key(key):
 async def update_tag_values(key, values):
     """Update tag values for key."""
 
-    client = resourcemanager_v3.TagValuesAsyncClient()
+    client = ClientFactory.get_tag_values_async_client()
 
     async def delete_tag_value(name):
         request = resourcemanager_v3.DeleteTagValueRequest(
@@ -104,7 +101,7 @@ async def getTags(scope):
         keys = await _getTagKeys(scope)
 
         # Create a list of tasks to fetch tag values concurrently
-        client = tagValuesClient
+        client = ClientFactory.get_tag_values_async_client()
         tasks = [_getTagValues(key.name, client) for key in keys]
 
         # Gather the results from all tasks
@@ -128,7 +125,7 @@ async def getTags(scope):
 async def _getTagKeys(scope):
     """Internal method to list Tag Keys."""
 
-    client = tagKeysClient
+    client = ClientFactory.get_tag_keys_async_client()
     response = await client.list_tag_keys(parent=scope)
 
     return [k async for k in response]

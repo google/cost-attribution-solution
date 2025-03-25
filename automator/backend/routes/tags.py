@@ -15,7 +15,7 @@
 from fastapi import APIRouter, Body, HTTPException, status, Depends
 from typing import List, Optional
 from pydantic import BaseModel
-from dependencies import get_scope
+from routes.dependencies import get_scope
 
 from services.tags_manager import (
     getTags,

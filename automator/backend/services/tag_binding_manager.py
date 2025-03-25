@@ -15,20 +15,14 @@
 """Module to handle resources tag binding."""
 
 from google.cloud import resourcemanager_v3
-from google.api_core.client_options import ClientOptions
+from services.clients import ClientFactory
 from services.list_possible_tags import getTags
 
 
 def update_gcp_tags(resource_name, new_tags, location=None):
     """Update the tags on a GCP resource."""
-    endpoint = "cloudresourcemanager.googleapis.com"
 
-    if location is not None and location != "global":
-        endpoint = location + "-" + endpoint
-
-    client = resourcemanager_v3.TagBindingsClient(
-        client_options=ClientOptions(api_endpoint=endpoint)
-    )
+    client = ClientFactory.get_tag_bindings_client(location)
 
     # Retrieve existing tag bindings (handling NotFound for missing resources)
     current_bindings = client.list_tag_bindings(parent=resource_name)
@@ -66,13 +60,7 @@ def bulk_update_gcp_tags(resources, add_tags, scope):
         id = resource.get("id")
         location = resource.get("location")
 
-        endpoint = "cloudresourcemanager.googleapis.com"
-        if location is not None and location != "global":
-            endpoint = location + "-" + endpoint
-
-        client = resourcemanager_v3.TagBindingsClient(
-            client_options=ClientOptions(api_endpoint=endpoint)
-        )
+        client = ClientFactory.get_tag_bindings_client(location)
 
         try:
 
@@ -109,13 +97,7 @@ def del_gcp_tags(resources, del_tags):
         id = resource.get("id")
         location = resource.get("location")
 
-        endpoint = "cloudresourcemanager.googleapis.com"
-        if location is not None and location != "global":
-            endpoint = location + "-" + endpoint
-
-        client = resourcemanager_v3.TagBindingsClient(
-            client_options=ClientOptions(api_endpoint=endpoint)
-        )
+        client = ClientFactory.get_tag_bindings_client(location)
 
         # Retrieve existing tag bindings (handling NotFound for missing resources)
         try:

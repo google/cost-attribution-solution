@@ -18,6 +18,8 @@
 import re
 from google.cloud import asset_v1
 
+from services.clients import ClientFactory
+
 
 def search_resources_by_type(scope, asset_type):
     """Search for resources of a specific type within a GCP project.
@@ -30,7 +32,7 @@ def search_resources_by_type(scope, asset_type):
     Returns:
         list: A list of ResourceSearchResult objects for the specified type.
     """
-    client = asset_v1.AssetServiceClient()
+    client = ClientFactory.get_asset_client()
 
     # Build the request, specifying the desired asset type
     request = asset_v1.SearchAllResourcesRequest(
