@@ -1,0 +1,42 @@
+# Copyright 2025 Google LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     https://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from typing import Annotated
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
+from services.uploads_manager import parse_labels_csv
+
+router = APIRouter()
+
+
+@router.post("/labels", status_code=status.HTTP_201_CREATED, response_model=dict)
+async def add_tag_route(
+    file: UploadFile = File(...),
+    clean_labels: Annotated[
+        bool,
+        Query(
+            description="Whether of not to delete all current labels before applying."
+        ),
+    ] = False,
+):
+    """Process the labels upload CSV file."""
+
+    errors = parse_labels_csv(await file.read())
+
+    if errors > 0:
+        raise HTTPException(
+            status_code=400,
+            detail=f"invalid CSV schema for {file.filename}",
+        )
+
+    return {"detail": "OK"}

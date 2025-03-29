@@ -18,7 +18,7 @@ from fastapi.exceptions import RequestValidationError
 from google.api_core.exceptions import GoogleAPICallError
 from starlette.responses import JSONResponse
 
-from routes import tags, resource_bindings
+from routes import tags, resource_bindings, uploads
 
 app = FastAPI()
 
@@ -63,6 +63,7 @@ app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
 app.include_router(
     resource_bindings.router, prefix="/api/resources", tags=["resources"]
 )
+app.include_router(uploads.router, prefix="/api/uploads", tags=["uploads"])
 
 
 if __name__ == "__main__":

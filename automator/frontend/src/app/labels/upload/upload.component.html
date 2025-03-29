@@ -5,7 +5,7 @@
       New upload
     </ng-template>
     <div class="container tab-spacing">
-      <div class="primary-color title">Bulk upload Tags</div>
+      <div class="primary-color title">Bulk upload labels</div>
       <div>
         <mat-form-field>
           <mat-label>Resource Type</mat-label>
@@ -30,7 +30,9 @@
           </mat-card-content>
         </mat-card>
       }
-      <mat-slide-toggle class="clear-toggle">Clear Tags</mat-slide-toggle>
+      <mat-slide-toggle class="clear-toggle" [(ngModel)]="clean_labels"
+        >Clear labels</mat-slide-toggle
+      >
 
       <div class="inner-container">
         <!-- File upload  -->
@@ -50,12 +52,6 @@
         >
           Upload CSV
         </button>
-
-        @if (file) {
-          <button mat-raised-button class="btn-success">
-            Submit {{ file.name }}
-          </button>
-        }
       </div>
     </div>
   </mat-tab>

@@ -35,4 +35,6 @@ export abstract class LabelService {
     resources: { id: string; location: string }[],
     labels: Binding[],
   ): Observable<BulkResponse>;
+
+  abstract uploadCSV(file: File, clean_labels: boolean): Observable<Response>;
 }

@@ -74,4 +74,10 @@ export class MockLabelService implements LabelService {
   ): Observable<BulkResponse> {
     return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }
+
+  uploadCSV(file: File, clean_labels: boolean): Observable<Response> {
+    return of({
+      detail: "success!",
+    }).pipe(delay(this.DELAY));
+  }
 }
