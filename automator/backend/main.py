@@ -38,7 +38,7 @@ async def google_api_call_error_handler(_: Request, exc: GoogleAPICallError):
     logging.exception(exc)
     return JSONResponse(
         status_code=500,
-        content={"details": exc.message},
+        content={"detail": exc.message},
     )
 
 
@@ -47,7 +47,7 @@ async def generic_error_handler(_: Request, exc: Exception):
     logging.exception(exc)
     return JSONResponse(
         status_code=500,
-        content={"details": "Internal server error"},
+        content={"detail": "Internal server error"},
     )
 
 

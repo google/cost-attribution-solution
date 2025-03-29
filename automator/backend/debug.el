@@ -5,6 +5,6 @@
        :cwd nil
        :module nil
        :env '(("SCOPE" . "projects/tag-automator-app"))
-       :program "main.py"
+       :program (concat "${workspaceFolder}" "/automator/backend/main.py")
        :request "launch"
        :name "Backend App"))

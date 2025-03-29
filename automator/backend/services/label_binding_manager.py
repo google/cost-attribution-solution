@@ -14,20 +14,32 @@
 
 """Module to handle resources label binding."""
 
-from google.cloud import resourcemanager_v3
-from google.protobuf.field_mask_pb2 import FieldMask
+import googleapiclient.discovery
 
 
 def update_gcp_labels(resource_name, new_labels, location=None):
     """Update the labels on a GCP resource."""
 
-    client = resourcemanager_v3.ProjectsClient()
+    projectId = resource_name.split("/")[-1]
 
-    project = resourcemanager_v3.Project(
-        name=f"projects/{resource_name.split("/")[-1]}"
-    )
-    project.labels = {l["id"]: l["value"] for l in new_labels}
+    # Adjust the correct new labels expected API format
+    new_labels = {l["id"]: l["value"] for l in new_labels}
 
-    client.update_project(
-        project=project, update_mask=FieldMask(paths=["labels"])
-    ).result()
+    # Fetch project
+    manager = googleapiclient.discovery.build("cloudresourcemanager", "v1")
+    project = manager.projects().get(projectId=projectId).execute()
+
+    # First fetch all labels from the project
+    current_labels = project["labels"]
+
+    # Update current labels with new values
+    current_labels.update(new_labels)
+
+    # Remove old labels
+    keys_to_delete = [k for k in current_labels.keys() if k not in new_labels]
+
+    for k in keys_to_delete:
+        del current_labels[k]
+
+    request = manager.projects().update(projectId=projectId, body=project)
+    project = request.execute()
