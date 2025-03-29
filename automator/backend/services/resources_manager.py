@@ -38,7 +38,7 @@ def search_resources_by_type(scope, asset_type):
     request = asset_v1.SearchAllResourcesRequest(
         scope=scope,
         asset_types=asset_type,
-        read_mask="displayName,location,assetType,tags,name,additionalAttributes,versionedResources",
+        read_mask="displayName,location,assetType,tags,labels,name,additionalAttributes,versionedResources",
     )
 
     # Iterate over the search results
@@ -50,7 +50,7 @@ def search_resources_by_type(scope, asset_type):
     return results
 
 
-def formatResources(instance_resources):
+def formatTagResources(instance_resources):
     """Format resources into expected list format."""
     resources = []
     for resource in instance_resources:
@@ -68,6 +68,30 @@ def formatResources(instance_resources):
             "name": resource.display_name,
             "location": resource.location,
             "tags": data_values,
+        }
+
+        resources.append(data)
+
+    return resources
+
+
+def formatLabelResources(instance_resources):
+    """Format resources into expected list format."""
+    resources = []
+    for resource in instance_resources:
+
+        data_values = []
+        if resource.labels:
+
+            for k, v in resource.labels.items():
+                data_values.append({"id": k, "value": v})
+
+        data = {
+            "id": format_asset_id(resource),
+            "type": resource.asset_type,
+            "name": resource.display_name,
+            "location": resource.location,
+            "labels": data_values,
         }
 
         resources.append(data)

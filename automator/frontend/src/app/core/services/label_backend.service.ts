@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { LabelService } from "../model/LabelService";
@@ -23,7 +23,6 @@ import {
   BulkResponse,
   ResourceLabels,
   Response,
-  Tag,
 } from "../model/models";
 import { SERVICE_CONFIG } from "../model/values";
 
@@ -37,7 +36,7 @@ export class LabelBackendService implements LabelService {
 
   fetchResources(): Observable<ResourceLabels[]> {
     return this.http.get<Array<ResourceLabels>>(this.apiUrl + `/resources`, {
-      params: { type: "label" },
+      params: { type: "labels" },
     });
   }
 

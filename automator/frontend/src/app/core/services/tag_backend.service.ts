@@ -54,7 +54,9 @@ export class TagBackendService implements TagService {
   }
 
   fetchResources(): Observable<ResourceTags[]> {
-    return this.http.get<Array<ResourceTags>>(this.apiUrl + `/resources`);
+    return this.http.get<Array<ResourceTags>>(this.apiUrl + `/resources`, {
+      params: { type: "tags" },
+    });
   }
 
   fetchTags(): Observable<Tag[]> {

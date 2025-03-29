@@ -16,6 +16,7 @@ import enum
 from fastapi import APIRouter, Body, Depends, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
+from services.label_binding_manager import update_gcp_labels
 from routes.dependencies import get_asset_types, get_scope
 
 from services.tag_binding_manager import (
@@ -23,12 +24,16 @@ from services.tag_binding_manager import (
     bulk_update_gcp_tags,
     del_gcp_tags,
 )
-from services.resources_manager import formatResources, search_resources_by_type
+from services.resources_manager import (
+    formatLabelResources,
+    formatTagResources,
+    search_resources_by_type,
+)
 
 router = APIRouter()
 
 
-class TagBinding(BaseModel):
+class Binding(BaseModel):
     id: str
     value: str
 
@@ -41,12 +46,18 @@ class Resource(BaseModel):
 class ResourceTags(BaseModel):
     id: str
     location: Optional[str] = None
-    tags: List[TagBinding]
+    tags: List[Binding]
+
+
+class ResourceLabels(BaseModel):
+    id: str
+    location: Optional[str] = None
+    labels: List[Binding]
 
 
 class BulkResource(BaseModel):
     resources: List[Resource]
-    tags: List[TagBinding]
+    tags: List[Binding]
 
 
 class Type(str, enum.Enum):
@@ -64,11 +75,14 @@ def get_resources(
     match type:
         case Type.tags:
             instance_resources = search_resources_by_type(scope, asset_types)
-            filtered_resources = formatResources(instance_resources)
-            return filtered_resources
+            return formatTagResources(instance_resources)
 
         case Type.labels:
-            return []
+            # TODO: type is hardcoded for projects just for now
+            instance_resources = search_resources_by_type(
+                scope, ["cloudresourcemanager.googleapis.com/Project"]
+            )
+            return formatLabelResources(instance_resources)
 
         case _:
             return HTTPException(400, f"Invalid type ({type})")
@@ -110,3 +124,12 @@ def bulk_tags_from_resources(
         return {"detail": "Tag applied successfully."}
 
     return {"errors": response}
+
+
+@router.patch("/labels", response_model=dict)
+def update_resource_labels(resource: ResourceLabels = Body(...)):
+    """Update labels for a resource."""
+    update_gcp_labels(
+        resource.id, [l.model_dump() for l in resource.labels], resource.location
+    )
+    return {"detail": "Label applied created successfully."}
