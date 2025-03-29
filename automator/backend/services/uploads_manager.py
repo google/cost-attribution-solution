@@ -13,9 +13,12 @@
 # limitations under the License.
 
 import re
+import json
 import logging
 import pandas as pd
 from io import BytesIO
+
+from services.label_binding_manager import update_gcp_labels
 
 
 def parse_labels_csv(file_bytes: bytes):
@@ -55,4 +58,27 @@ def parse_labels_csv(file_bytes: bytes):
                     f"ERROR: Label Value '{row[column]}' does not follow recommended pattern. "
                     f"Refer https://cloud.google.com/resource-manager/docs/labels-overview#requirements"
                 )
-    return error_count
+    return df, error_count
+
+
+def process_labels_csv(df: pd.DataFrame, clean_labels: bool):
+    all_projects_labels = {}
+    columns = df.columns
+
+    for index, row in df.iterrows():
+        project_labels = {}
+        for column in columns:
+            # skip project columns and cells where value is empty
+            if column != "project_id" and not pd.isnull(row[column]):
+                project_labels[column] = row[column]
+        json_str = json.dumps(project_labels, indent=4)
+        print(f"project_id: {row[columns[0]]}, \nlabels: {json_str}\n")
+
+        all_projects_labels[row[columns[0]]] = project_labels
+
+    for project_id in all_projects_labels.keys():
+        labels = all_projects_labels[project_id]
+        print(f"key: {project_id}, \nvalue: {labels}\n")
+
+        # TODO: make this async to process multiple projects concurrently
+        update_gcp_labels(project_id, labels, clean_labels)

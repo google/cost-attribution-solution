@@ -14,7 +14,7 @@
 
 from typing import Annotated
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
-from services.uploads_manager import parse_labels_csv
+from services.uploads_manager import parse_labels_csv, process_labels_csv
 
 router = APIRouter()
 
@@ -31,12 +31,14 @@ async def add_tag_route(
 ):
     """Process the labels upload CSV file."""
 
-    errors = parse_labels_csv(await file.read())
+    df, errors = parse_labels_csv(await file.read())
 
     if errors > 0:
         raise HTTPException(
             status_code=400,
             detail=f"invalid CSV schema for {file.filename}",
         )
+
+    process_labels_csv(df, clean_labels)
 
     return {"detail": "OK"}

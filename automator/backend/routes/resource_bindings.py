@@ -129,7 +129,12 @@ def bulk_tags_from_resources(
 @router.patch("/labels", response_model=dict)
 def update_resource_labels(resource: ResourceLabels = Body(...)):
     """Update labels for a resource."""
-    update_gcp_labels(
-        resource.id, [l.model_dump() for l in resource.labels], resource.location
-    )
-    return {"detail": "Label applied created successfully."}
+
+    # Adjust the correct labels expected API format
+    labels = {l.id: l.value for l in resource.labels}
+
+    # TODO: support other types, projects only for now
+    projectId = resource.id.split("/")[-1]
+    update_gcp_labels(projectId, labels)
+
+    return {"detail": "Label applied successfully."}

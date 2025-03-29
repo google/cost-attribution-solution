@@ -17,13 +17,8 @@
 import googleapiclient.discovery
 
 
-def update_gcp_labels(resource_name, new_labels, location=None):
+def update_gcp_labels(projectId, new_labels, clean_labels: bool = True):
     """Update the labels on a GCP resource."""
-
-    projectId = resource_name.split("/")[-1]
-
-    # Adjust the correct new labels expected API format
-    new_labels = {l["id"]: l["value"] for l in new_labels}
 
     # Fetch project
     manager = googleapiclient.discovery.build("cloudresourcemanager", "v1")
@@ -35,11 +30,12 @@ def update_gcp_labels(resource_name, new_labels, location=None):
     # Update current labels with new values
     current_labels.update(new_labels)
 
-    # Remove old labels
-    keys_to_delete = [k for k in current_labels.keys() if k not in new_labels]
+    # Remove old labels if flag set
+    if clean_labels:
+        keys_to_delete = [k for k in current_labels.keys() if k not in new_labels]
 
-    for k in keys_to_delete:
-        del current_labels[k]
+        for k in keys_to_delete:
+            del current_labels[k]
 
     request = manager.projects().update(projectId=projectId, body=project)
     project = request.execute()

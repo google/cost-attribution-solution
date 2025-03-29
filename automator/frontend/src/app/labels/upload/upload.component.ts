@@ -45,7 +45,7 @@ export class UploadComponent {
   };
 
   chosenType: string | undefined;
-  clean_labels: boolean = false;
+  clean_labels: boolean = true;
 
   dataSource: MatTableDataSource<FileUpload> = new MatTableDataSource();
   displayedColumns: string[] = ["id", "name", "status", "details"];
