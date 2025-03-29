@@ -44,6 +44,25 @@ export const routes: Routes = [
         ],
     },
     {
+        path: "labels",
+        children: [
+            {
+                path: "bindings",
+                loadComponent: () =>
+                    import("./labels/bindings/bindings.component").then(
+                        (m) => m.LabelBindingsComponent,
+                    ),
+            },
+            {
+                path: "upload",
+                loadComponent: () =>
+                    import("./labels/upload/upload.component").then(
+                        (m) => m.UploadComponent,
+                    ),
+            },
+        ],
+    },
+    {
         path: "reports/:reportType",
         loadComponent: () =>
             import("./reports/reports.component").then(

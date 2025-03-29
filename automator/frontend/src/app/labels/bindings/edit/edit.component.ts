@@ -29,15 +29,15 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
 import { MatSelectModule } from "@angular/material/select";
-import { Binding, TagsController, Value } from "../../../core/model/models";
+import { Binding, Value } from "../../../core/model/models";
 
-type TagControl = {
+type LabelControl = {
   key: FormControl<string | null>;
   value: FormControl<string | null>;
 };
 
 @Component({
-  selector: "app-tag-binding-edit",
+  selector: "app-label-binding-edit",
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -51,22 +51,21 @@ type TagControl = {
   styleUrl: "./edit.component.sass",
 })
 export class EditComponent implements OnInit {
-  @Input() tagBindings: Binding[] = [];
-  @Input({ required: true }) availableTags!: TagsController;
+  @Input() labelBindings: Binding[] = [];
   @Output() valid = new EventEmitter<boolean>();
-  @Output() tags = new EventEmitter<Value[]>();
+  @Output() labels = new EventEmitter<Value[]>();
 
   form = new FormGroup({
-    tagBindings: new FormArray<FormGroup<TagControl>>([]),
+    labelBindings: new FormArray<FormGroup<LabelControl>>([]),
   });
 
   constructor() {
-    // Emit tags and valid
+    // Emit labels and valid
     this.form.statusChanges.subscribe((status) => {
       this.valid.emit(status === "VALID");
 
-      this.tags.emit(
-        this.tagBindingsForm.controls.map((c) => ({
+      this.labels.emit(
+        this.labelBindingsForm.controls.map((c) => ({
           id: c.value.key as string,
           value: c.value.value as string,
         })),
@@ -75,38 +74,26 @@ export class EditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Populate initial tag bindings
-    this.tagBindings.forEach((tag: Binding) => {
-      this.addTagToForm(tag);
+    // Populate initial label bindings
+    this.labelBindings.forEach((label: Binding) => {
+      this.addLabelToForm(label);
     });
   }
 
-  filterKeys() {
-    return this.availableTags.keys;
-  }
-
-  filterValues(index: number) {
-    const keyId = this.tagBindingsForm.at(index).controls.key.value;
-
-    if (keyId == null) return [];
-
-    return this.availableTags.filterValues(keyId);
-  }
-
   newBinding() {
-    this.addTagToForm({ id: "", value: "" });
+    this.addLabelToForm({ id: "", value: "" });
   }
 
   deleteBinding(index: number) {
-    this.tagBindingsForm.removeAt(index);
+    this.labelBindingsForm.removeAt(index);
   }
 
-  get tagBindingsForm() {
-    return this.form.controls.tagBindings;
+  get labelBindingsForm() {
+    return this.form.controls.labelBindings;
   }
 
-  private addTagToForm(tag: Binding) {
-    const keyControl = new FormControl<string | null>(tag.id, {
+  private addLabelToForm(label: Binding) {
+    const keyControl = new FormControl<string | null>(label.id, {
       validators: [
         Validators.required,
 
@@ -115,7 +102,7 @@ export class EditComponent implements OnInit {
           const currentValue = control.value;
 
           // Filter for controls with the same key value, excluding the current control itself
-          const count = this.tagBindingsForm.controls.filter(
+          const count = this.labelBindingsForm.controls.filter(
             (binding, index) => {
               const otherKeyValue = binding.get("key")?.value;
               return (
@@ -131,7 +118,7 @@ export class EditComponent implements OnInit {
     });
 
     const valueControl = new FormControl<string | null>(
-      { value: tag.value, disabled: !tag.id },
+      { value: label.value, disabled: !label.id },
       Validators.required,
     );
 
@@ -142,8 +129,8 @@ export class EditComponent implements OnInit {
     });
 
     // Add to form
-    this.tagBindingsForm.push(
-      new FormGroup<TagControl>({
+    this.labelBindingsForm.push(
+      new FormGroup<LabelControl>({
         key: keyControl,
         value: valueControl,
       }),

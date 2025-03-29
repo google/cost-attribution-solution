@@ -28,15 +28,15 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import {
-  Resource,
-  TagBinding,
+  ResourceTags,
+  Binding,
   TagsController,
 } from "../../../../core/model/models";
 import { EditComponent } from "../edit.component";
 import { TagService } from "../../../../core/model/TagService";
 
 type EditTagData = {
-  resources: Resource[];
+  resources: ResourceTags[];
   availableTags: TagsController;
 };
 
@@ -61,7 +61,7 @@ export class BulkRemoveComponent {
   saving: boolean = false;
   valid: boolean = false;
   availableTags: TagsController;
-  tags: TagBinding[] = [];
+  tags: Binding[] = [];
 
   constructor(
     private service: TagService,

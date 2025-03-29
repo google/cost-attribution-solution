@@ -27,17 +27,12 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { TagService } from "../../../../core/model/TagService";
-import {
-  ResourceTags,
-  Binding,
-  TagsController,
-} from "../../../../core/model/models";
+import { LabelService } from "../../../../core/model/LabelService";
+import { ResourceLabels, Binding } from "../../../../core/model/models";
 import { EditComponent } from "../edit.component";
 
-type EditTagData = {
-  resources: ResourceTags[];
-  availableTags: TagsController;
+type EditLabelData = {
+  resources: ResourceLabels[];
 };
 
 @Component({
@@ -60,30 +55,26 @@ type EditTagData = {
 export class BulkEditComponent {
   saving: boolean = false;
   valid: boolean = false;
-  availableTags: TagsController;
-  tags: Binding[] = [];
+  labels: Binding[] = [];
 
   constructor(
-    private service: TagService,
+    private service: LabelService,
     public dialogRef: MatDialogRef<BulkEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: EditTagData,
+    @Inject(MAT_DIALOG_DATA) public data: EditLabelData,
     private _snackBar: MatSnackBar,
-  ) {
-    // Available tags to choosen from
-    this.availableTags = data.availableTags;
-  }
+  ) {}
 
   save() {
     this.saving = true;
 
     // Call backend
     this.service
-      .addTagsToResources(
+      .addLabelsToResources(
         this.data.resources.map((r) => ({
           id: r.id,
           location: r.location,
         })),
-        this.tags,
+        this.labels,
       )
       .subscribe({
         next: (resp) => {
@@ -92,23 +83,23 @@ export class BulkEditComponent {
 
           if (errorsCount > 0) {
             this._snackBar.open(
-              `Fail to add tags to ${errorsCount} resources${errorsCount < resourcesCount ? ` (other ${resourcesCount - errorsCount} succeeded).` : "."}`,
+              `Fail to add labels to ${errorsCount} resources${errorsCount < resourcesCount ? ` (other ${resourcesCount - errorsCount} succeeded).` : "."}`,
               "Close",
               { duration: 30000 },
             );
           } else {
             this._snackBar.open(
-              `Tags added to ${this.data.resources.length} resources.`,
+              `Labels added to ${this.data.resources.length} resources.`,
               "Close",
               { duration: 3000 },
             );
           }
 
-          this.dialogRef.close(this.tags);
+          this.dialogRef.close(this.labels);
         },
         error: (err) => {
           this._snackBar.open(
-            `Fail to add tags: ${err.error.detail}`,
+            `Fail to add labels: ${err.error.detail}`,
             "Close",
             {
               duration: 10000,

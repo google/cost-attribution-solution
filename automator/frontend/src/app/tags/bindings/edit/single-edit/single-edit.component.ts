@@ -27,12 +27,12 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { Resource, TagsController } from "../../../../core/model/models";
+import { ResourceTags, TagsController } from "../../../../core/model/models";
 import { TagService } from "../../../../core/model/TagService";
 import { EditComponent } from "../edit.component";
 
 type EditTagData = {
-  resource: Resource;
+  resource: ResourceTags;
   availableTags: TagsController;
 };
 

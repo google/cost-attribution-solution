@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fastapi import APIRouter, Body, Depends
+import enum
+from fastapi import APIRouter, Body, Depends, HTTPException
 from typing import List, Optional
 from pydantic import BaseModel
 from routes.dependencies import get_asset_types, get_scope
@@ -48,14 +49,29 @@ class BulkResource(BaseModel):
     tags: List[TagBinding]
 
 
+class Type(str, enum.Enum):
+    labels = "labels"
+    tags = "tags"
+
+
 @router.get("", response_model=List[dict])
 def get_resources(
-    scope: str = Depends(get_scope), asset_types: List[str] = Depends(get_asset_types)
+    scope: str = Depends(get_scope),
+    asset_types: List[str] = Depends(get_asset_types),
+    type: Type = Type.labels,
 ):
-    """Retrieve resources based on filters."""
-    instance_resources = search_resources_by_type(scope, asset_types)
-    filtered_resources = formatResources(instance_resources)
-    return filtered_resources
+    """Retrieve resources based on filters (TODO) and type."""
+    match type:
+        case Type.tags:
+            instance_resources = search_resources_by_type(scope, asset_types)
+            filtered_resources = formatResources(instance_resources)
+            return filtered_resources
+
+        case Type.labels:
+            return []
+
+        case _:
+            return HTTPException(400, f"Invalid type ({type})")
 
 
 @router.patch("/tags", response_model=dict)

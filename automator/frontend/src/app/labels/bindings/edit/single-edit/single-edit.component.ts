@@ -27,88 +27,64 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { TagService } from "../../../../core/model/TagService";
-import {
-  ResourceTags,
-  Binding,
-  TagsController,
-} from "../../../../core/model/models";
+import { ResourceLabels } from "../../../../core/model/models";
+import { LabelService } from "../../../../core/model/LabelService";
 import { EditComponent } from "../edit.component";
 
-type EditTagData = {
-  resources: ResourceTags[];
-  availableTags: TagsController;
+type EditLabelData = {
+  resource: ResourceLabels;
 };
 
 @Component({
-  selector: "app-bulk-edit",
+  selector: "app-single-edit",
   standalone: true,
   imports: [
+    MatButtonModule,
     MatDialogActions,
     MatSnackBarModule,
     MatDialogClose,
     MatDialogTitle,
     MatDialogContent,
     MatIconModule,
-    MatButtonModule,
     MatProgressBarModule,
     EditComponent,
   ],
-  templateUrl: "./bulk-edit.component.html",
-  styleUrl: "./bulk-edit.component.sass",
+  templateUrl: "./single-edit.component.html",
+  styleUrl: "./single-edit.component.sass",
 })
-export class BulkEditComponent {
+export class SingleEditComponent {
   saving: boolean = false;
   valid: boolean = false;
-  availableTags: TagsController;
-  tags: Binding[] = [];
 
   constructor(
-    private service: TagService,
-    public dialogRef: MatDialogRef<BulkEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: EditTagData,
+    private service: LabelService,
+    public dialogRef: MatDialogRef<SingleEditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: EditLabelData,
     private _snackBar: MatSnackBar,
-  ) {
-    // Available tags to choosen from
-    this.availableTags = data.availableTags;
-  }
+  ) {}
 
   save() {
     this.saving = true;
 
     // Call backend
     this.service
-      .addTagsToResources(
-        this.data.resources.map((r) => ({
-          id: r.id,
-          location: r.location,
-        })),
-        this.tags,
+      .updateResourceLabels(
+        this.data.resource.id,
+        this.data.resource.location,
+        this.data.resource.labels,
       )
       .subscribe({
-        next: (resp) => {
-          const resourcesCount = this.data.resources.length;
-          const errorsCount = resp.errors?.length || 0;
+        next: () => {
+          this._snackBar.open("Labels updated with success.", "Close", {
+            duration: 3000,
+          });
 
-          if (errorsCount > 0) {
-            this._snackBar.open(
-              `Fail to add tags to ${errorsCount} resources${errorsCount < resourcesCount ? ` (other ${resourcesCount - errorsCount} succeeded).` : "."}`,
-              "Close",
-              { duration: 30000 },
-            );
-          } else {
-            this._snackBar.open(
-              `Tags added to ${this.data.resources.length} resources.`,
-              "Close",
-              { duration: 3000 },
-            );
-          }
-
-          this.dialogRef.close(this.tags);
+          this.dialogRef.close(this.data.resource.labels);
         },
+
         error: (err) => {
           this._snackBar.open(
-            `Fail to add tags: ${err.error.detail}`,
+            `Fail to update labels: ${err.error.detail}`,
             "Close",
             {
               duration: 10000,

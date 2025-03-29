@@ -1,5 +1,5 @@
 /*
-   Copyright 2024 Google LLC
+   Copyright 2025 Google LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,32 +15,24 @@
 */
 
 import { Observable } from "rxjs";
-import { BulkResponse, ResourceTags, Response, Tag, Binding } from "./models";
+import { Binding, BulkResponse, ResourceLabels, Response } from "./models";
 
-export abstract class TagService {
-  abstract fetchTags(): Observable<Array<Tag>>;
-  abstract addTag(
-    name: string,
-    description: string,
-  ): Observable<{ key: string }>;
-  abstract editTag(key: string, values: string[]): Observable<Response>;
-  abstract deleteTag(key: string): Observable<Response>;
+export abstract class LabelService {
+  abstract fetchResources(): Observable<Array<ResourceLabels>>;
 
-  abstract fetchResources(): Observable<Array<ResourceTags>>;
-
-  abstract updateResourceTags(
+  abstract updateResourceLabels(
     id: string,
     location: string,
-    tags: Binding[],
+    labels: Binding[],
   ): Observable<Response>;
 
-  abstract addTagsToResources(
+  abstract addLabelsToResources(
     resources: { id: string; location: string }[],
-    tags: Binding[],
+    labels: Binding[],
   ): Observable<BulkResponse>;
 
-  abstract removeTagsFromResources(
+  abstract removeLabelsFromResources(
     resources: { id: string; location: string }[],
-    tags: Binding[],
+    labels: Binding[],
   ): Observable<BulkResponse>;
 }

@@ -1,0 +1,50 @@
+<form [formGroup]="form">
+  <div formArrayName="labelBindings">
+    @for (label of labelBindingsForm.controls; track label) {
+      <div class="label-form" [formGroupName]="$index">
+        <!-- Key -->
+        <mat-form-field>
+          <mat-label>Key</mat-label>
+          <input
+            matInput
+            formControlName="key"
+            [value]="label.value.key"
+            placeholder="Key"
+          />
+        </mat-form-field>
+
+        <!-- Value -->
+        <mat-form-field>
+          <mat-label>Value</mat-label>
+          <input
+            matInput
+            formControlName="value"
+            [value]="label.value.value"
+            placeholder="Value"
+          />
+        </mat-form-field>
+
+        <!-- Delete this label -->
+        <button
+          mat-fab
+          color="warn"
+          class="delete-button"
+          aria-label="delete icon"
+          (click)="deleteBinding($index)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    }
+  </div>
+</form>
+
+<button
+  class="new-label-btn"
+  [disabled]="!form.valid"
+  (click)="newBinding()"
+  mat-flat-button
+  color="primary"
+>
+  Add label to list
+</button>

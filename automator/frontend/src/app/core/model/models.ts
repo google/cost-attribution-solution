@@ -31,17 +31,25 @@ export type Value = {
     value: string;
 };
 
-export type TagBinding = {
+export type Binding = {
     id: string;
     value: string;
 };
 
-export type Resource = {
+export type ResourceLabels = {
     id: string;
     name: string;
     type: string;
     location: string;
-    tags: TagBinding[];
+    labels: Binding[];
+};
+
+export type ResourceTags = {
+    id: string;
+    name: string;
+    type: string;
+    location: string;
+    tags: Binding[];
 };
 
 export type Tag = {

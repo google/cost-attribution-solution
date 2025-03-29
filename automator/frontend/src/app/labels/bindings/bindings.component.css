@@ -1,0 +1,15 @@
+.tag-chip-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tag-chip {
+    margin: 1% 1%;
+}
+
+.mat-mdc-standard-chip {
+    border-radius: 10px;
+}

@@ -27,21 +27,16 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { TagService } from "../../../../core/model/TagService";
-import {
-  ResourceTags,
-  Binding,
-  TagsController,
-} from "../../../../core/model/models";
+import { ResourceLabels, Binding } from "../../../../core/model/models";
 import { EditComponent } from "../edit.component";
+import { LabelService } from "../../../../core/model/LabelService";
 
-type EditTagData = {
-  resources: ResourceTags[];
-  availableTags: TagsController;
+type EditLabelData = {
+  resources: ResourceLabels[];
 };
 
 @Component({
-  selector: "app-bulk-edit",
+  selector: "app-bulk-remove",
   standalone: true,
   imports: [
     MatDialogActions,
@@ -54,36 +49,32 @@ type EditTagData = {
     MatProgressBarModule,
     EditComponent,
   ],
-  templateUrl: "./bulk-edit.component.html",
-  styleUrl: "./bulk-edit.component.sass",
+  templateUrl: "./bulk-remove.component.html",
+  styleUrl: "./bulk-remove.component.sass",
 })
-export class BulkEditComponent {
+export class BulkRemoveComponent {
   saving: boolean = false;
   valid: boolean = false;
-  availableTags: TagsController;
-  tags: Binding[] = [];
+  labels: Binding[] = [];
 
   constructor(
-    private service: TagService,
-    public dialogRef: MatDialogRef<BulkEditComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: EditTagData,
+    private service: LabelService,
+    public dialogRef: MatDialogRef<BulkRemoveComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: EditLabelData,
     private _snackBar: MatSnackBar,
-  ) {
-    // Available tags to choosen from
-    this.availableTags = data.availableTags;
-  }
+  ) {}
 
   save() {
     this.saving = true;
 
     // Call backend
     this.service
-      .addTagsToResources(
+      .removeLabelsFromResources(
         this.data.resources.map((r) => ({
           id: r.id,
           location: r.location,
         })),
-        this.tags,
+        this.labels,
       )
       .subscribe({
         next: (resp) => {
@@ -92,23 +83,23 @@ export class BulkEditComponent {
 
           if (errorsCount > 0) {
             this._snackBar.open(
-              `Fail to add tags to ${errorsCount} resources${errorsCount < resourcesCount ? ` (other ${resourcesCount - errorsCount} succeeded).` : "."}`,
+              `Fail to remove labels from ${errorsCount} resources${errorsCount < resourcesCount ? ` (other ${resourcesCount - errorsCount} succeeded).` : "."}`,
               "Close",
               { duration: 30000 },
             );
           } else {
             this._snackBar.open(
-              `Tags added to ${this.data.resources.length} resources.`,
+              `Labels removed from ${this.data.resources.length} resources.`,
               "Close",
               { duration: 3000 },
             );
           }
 
-          this.dialogRef.close(this.tags);
+          this.dialogRef.close(this.labels);
         },
         error: (err) => {
           this._snackBar.open(
-            `Fail to add tags: ${err.error.detail}`,
+            `Fail to remove labels: ${err.error.detail}`,
             "Close",
             {
               duration: 10000,

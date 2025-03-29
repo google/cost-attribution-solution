@@ -23,7 +23,7 @@
           <mat-icon matListItemIcon>link</mat-icon>
         </mat-list-item>
 
-        <mat-list-item routerLink="/tags/upload" routerLinkActive="active">
+        <mat-list-item disabled>
           <p matListItemTitle>Bulk Upload</p>
           <mat-icon matListItemIcon>upload_file</mat-icon>
         </mat-list-item>
@@ -35,21 +35,17 @@
 
       <!-- Labels  -->
       <mat-nav-list>
-        <mat-list-item
-          disabled
-          routerLink="/label-manage"
-          routerLinkActive="active"
-        >
+        <mat-list-item disabled>
           <h3 matListItemTitle>Manage</h3>
           <mat-icon matListItemIcon>edit_note</mat-icon>
         </mat-list-item>
 
-        <mat-list-item routerLink="/label-bindings" routerLinkActive="active">
+        <mat-list-item routerLink="/labels/bindings" routerLinkActive="active">
           <h3 matListItemTitle>Bindings</h3>
           <mat-icon matListItemIcon>link</mat-icon>
         </mat-list-item>
 
-        <mat-list-item routerLink="/label-upload" routerLinkActive="active">
+        <mat-list-item routerLink="/labels/upload" routerLinkActive="active">
           <h3 matListItemTitle>Bulk Upload</h3>
           <mat-icon matListItemIcon>upload_file</mat-icon>
         </mat-list-item>

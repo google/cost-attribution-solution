@@ -18,7 +18,7 @@ from fastapi.exceptions import RequestValidationError
 from google.api_core.exceptions import GoogleAPICallError
 from starlette.responses import JSONResponse
 
-from routes import tags, tag_bindings
+from routes import tags, resource_bindings
 
 app = FastAPI()
 
@@ -60,7 +60,9 @@ async def get_health():
 
 # --- Include Routers ---
 app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
-app.include_router(tag_bindings.router, prefix="/api/resources", tags=["resources"])
+app.include_router(
+    resource_bindings.router, prefix="/api/resources", tags=["resources"]
+)
 
 
 if __name__ == "__main__":

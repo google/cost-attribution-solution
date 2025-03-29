@@ -19,14 +19,14 @@ import { Observable, delay, of } from "rxjs";
 import { TagService } from "../model/TagService";
 import {
   BulkResponse,
-  Resource,
+  ResourceTags,
   Response,
   Tag,
-  TagBinding,
+  Binding,
 } from "../model/models";
 
 @Injectable()
-export class MockBackendService implements TagService {
+export class MockTagService implements TagService {
   private readonly DELAY = 0.5 * 1000;
 
   constructor() {
@@ -51,7 +51,7 @@ export class MockBackendService implements TagService {
     return of({ key: "abc123", errors: [] }).pipe(delay(this.DELAY));
   }
 
-  fetchResources(): Observable<Resource[]> {
+  fetchResources(): Observable<ResourceTags[]> {
     return of([
       {
         id: "//compute.googleapis.com/projects/tag-automator-app/zones/southamerica-east1-a/instances/8355509907069725591",
@@ -215,14 +215,14 @@ export class MockBackendService implements TagService {
 
   addTagsToResources(
     resources: { id: string; location: string }[],
-    tags: TagBinding[],
+    tags: Binding[],
   ): Observable<BulkResponse> {
     return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }
 
   removeTagsFromResources(
     resources: { id: string; location: string }[],
-    tags: TagBinding[],
+    tags: Binding[],
   ): Observable<BulkResponse> {
     return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }

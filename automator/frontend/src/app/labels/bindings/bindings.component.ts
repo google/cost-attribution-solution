@@ -16,27 +16,26 @@
 
 import { Component, ViewChild } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
+import { MatChipsModule } from "@angular/material/chips";
 import { MatDialog } from "@angular/material/dialog";
-import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatIconModule } from "@angular/material/icon";
 import { MatInputModule } from "@angular/material/input";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatFormField } from "@angular/material/select";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { ResourceTags, Binding, TagsController } from "../../core/model/models";
-import { AvailableTags } from "../available_tags";
-import { combineLatest } from "rxjs";
-import { TagService } from "../../core/model/TagService";
-import { SingleEditComponent } from "./edit/single-edit/single-edit.component";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { LabelService } from "../../core/model/LabelService";
+import { Binding, ResourceLabels } from "../../core/model/models";
 import { BulkEditComponent } from "./edit/bulk-add/bulk-edit.component";
 import { BulkRemoveComponent } from "./edit/bulk-remove/bulk-remove.component";
-import { MatTooltipModule } from "@angular/material/tooltip";
+import { SingleEditComponent } from "./edit/single-edit/single-edit.component";
 
-type DisplayResource = ResourceTags & { displayTags: string };
+type DisplayResource = ResourceLabels;
 
 @Component({
-  selector: "tags-bindings",
+  selector: "labels-bindings",
   templateUrl: "./bindings.component.html",
   styleUrl: "./bindings.component.css",
   standalone: true,
@@ -49,16 +48,16 @@ type DisplayResource = ResourceTags & { displayTags: string };
     MatIconModule,
     MatPaginatorModule,
     MatProgressBarModule,
+    MatChipsModule,
     MatTooltipModule,
   ],
   providers: [],
 })
-export class TagsBindingsComponent {
+export class LabelBindingsComponent {
   // Resouces data Source
   dataSource: MatTableDataSource<DisplayResource> = new MatTableDataSource();
-  displayedColumns: string[] = ["name", "type", "displayTags", "edit"];
+  displayedColumns: string[] = ["name", "type", "displayLabels", "edit"];
 
-  availableTags!: TagsController;
   loading: boolean = true;
 
   // Pagination
@@ -74,7 +73,7 @@ export class TagsBindingsComponent {
   }
 
   constructor(
-    private service: TagService,
+    private service: LabelService,
     private dialog: MatDialog,
   ) {
     this.updateData();
@@ -83,24 +82,15 @@ export class TagsBindingsComponent {
   updateData() {
     this.loading = true;
 
-    // Fetch available tags and resources from service
-    combineLatest([
-      this.service.fetchTags(),
-      this.service.fetchResources(),
-    ]).subscribe(([tags, resources]) => {
-      this.availableTags = new AvailableTags(tags);
-
-      // Enrich with the display tags field!
-      this.dataSource.data = resources.map((r) => ({
-        ...r,
-        displayTags: this.formatDisplayTags(r.tags),
-      }));
+    // Fetch available labels and resources from service
+    this.service.fetchResources().subscribe((resources) => {
+      this.dataSource.data = resources;
 
       this.loading = false;
     });
   }
 
-  addTagsToFiltered() {
+  addLabelsToFiltered() {
     const filtered = this.dataSource.filteredData as DisplayResource[];
 
     this.dialog
@@ -110,28 +100,28 @@ export class TagsBindingsComponent {
         exitAnimationDuration: 200,
         data: {
           resources: filtered,
-          availableTags: this.availableTags,
         },
       })
       .afterClosed()
       .subscribe((result: Binding[] | undefined) => {
         // Apply edited result to the table
         if (result) {
-          const tagMap = new Map(result.map((t) => [t.id, t.value]));
+          const labelMap = new Map(result.map((t) => [t.id, t.value]));
 
           for (const resource of filtered) {
             // Remove any existing values for added keys
-            resource.tags = resource.tags.filter((t) => !tagMap.has(t.id));
+            resource.labels = resource.labels.filter(
+              (t) => !labelMap.has(t.id),
+            );
 
-            // Add new tags to it
-            resource.tags.push(...result);
-            resource.displayTags = this.formatDisplayTags(resource.tags);
+            // Add new labels to it
+            resource.labels.push(...result);
           }
         }
       });
   }
 
-  removeTagsFromFiltered() {
+  removeLabelsFromFiltered() {
     const filtered = this.dataSource.filteredData as DisplayResource[];
 
     this.dialog
@@ -141,41 +131,39 @@ export class TagsBindingsComponent {
         exitAnimationDuration: 200,
         data: {
           resources: filtered,
-          availableTags: this.availableTags,
         },
       })
       .afterClosed()
       .subscribe((result: Binding[] | undefined) => {
         // Apply edited result to the table
         if (result) {
-          const tagSet = new Set(result.map((t) => t.value));
+          const labelSet = new Set(result.map((t) => t.value));
 
           for (const resource of filtered) {
-            // Remove the deleted tags
-            resource.tags = resource.tags.filter((t) => !tagSet.has(t.value));
-            resource.displayTags = this.formatDisplayTags(resource.tags);
+            // Remove the deleted labels
+            resource.labels = resource.labels.filter(
+              (t) => !labelSet.has(t.value),
+            );
           }
         }
       });
   }
 
-  editResourceTags(resource: DisplayResource) {
+  editResourceLabels(resource: DisplayResource) {
     this.dialog
       .open(SingleEditComponent, {
         width: "40vw",
         enterAnimationDuration: 200,
         exitAnimationDuration: 200,
         data: {
-          resource: resource,
-          availableTags: this.availableTags,
+          resource: { ...resource },
         },
       })
       .afterClosed()
       .subscribe((result: Binding[] | undefined) => {
         // Apply edited result to the table
         if (result) {
-          resource.tags = result;
-          resource.displayTags = this.formatDisplayTags(resource.tags);
+          resource.labels = result;
         }
       });
   }
@@ -183,16 +171,5 @@ export class TagsBindingsComponent {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  private formatDisplayTags(tags: Binding[]) {
-    if (tags.length == 0) return "-";
-
-    return tags
-      .map(
-        (tag) =>
-          `${this.availableTags.getKeyName(tag.id)}: ${this.availableTags.getValueName(tag.id, tag.value)}`,
-      )
-      .join("\n");
   }
 }

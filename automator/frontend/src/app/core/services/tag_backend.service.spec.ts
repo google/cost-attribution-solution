@@ -14,14 +14,14 @@
 
 import { TestBed } from "@angular/core/testing";
 
-import { BackendService } from "./tag_backend.service";
+import { TagBackendService } from "./tag_backend.service";
 
 describe("BackendService", () => {
-  let service: BackendService;
+  let service: TagBackendService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(BackendService);
+    service = TestBed.inject(TagBackendService);
   });
 
   it("should be created", () => {

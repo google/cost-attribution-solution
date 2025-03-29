@@ -1,0 +1,22 @@
+<div class="edit-dialog">
+  <h2 mat-dialog-title>Editing labels for {{ data.resource.name }}</h2>
+  <mat-dialog-content>
+    <!-- Attached labels  -->
+    <app-label-binding-edit
+      [labelBindings]="data.resource.labels"
+      (labels)="data.resource.labels = $event"
+      (valid)="valid = $event"
+    />
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="center">
+    @if (saving) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    } @else {
+      <button mat-button color="primary" [disabled]="!valid" (click)="save()">
+        Save
+      </button>
+      <button mat-button mat-dialog-close>Close</button>
+    }
+  </mat-dialog-actions>
+</div>

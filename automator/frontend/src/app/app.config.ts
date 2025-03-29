@@ -23,16 +23,25 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
 import { TagService } from "./core/model/TagService";
 import { SERVICE_CONFIG, TITLE } from "./core/model/values";
 import { environment } from "./../environments/environment";
-import { BackendService } from "./core/services/tag_backend.service";
-import { MockBackendService } from "./core/mocks/mock-backend";
+import { TagBackendService } from "./core/services/tag_backend.service";
+import { MockTagService } from "./core/mocks/mock-tag.service";
+import { LabelService } from "./core/model/LabelService";
+import { LabelBackendService } from "./core/services/label_backend.service";
+import { MockLabelService } from "./core/mocks/mock-label.service";
 
 export const appConfig: ApplicationConfig = {
     providers: [
         {
             provide: TagService,
             useClass: environment.production
-                ? BackendService
-                : MockBackendService,
+                ? TagBackendService
+                : MockTagService,
+        },
+        {
+            provide: LabelService,
+            useClass: environment.production
+                ? LabelBackendService
+                : MockLabelService,
         },
         provideRouter(routes),
         provideAnimationsAsync(),

@@ -1,0 +1,102 @@
+<!-- Loading resources -->
+@if (loading) {
+  <div class="container-center">
+    <div class="loading-text">Fetching resources...</div>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+} @else {
+  <div class="container">
+    <!-- Buttons -->
+    <div class="inner-container">
+      <button
+        mat-flat-button
+        color="primary"
+        class="search success"
+        (click)="addLabelsToFiltered()"
+        [disabled]="dataSource.filteredData.length == 0"
+      >
+        <!-- <mat-icon>new_label</mat-icon> -->
+        Add labels to results
+      </button>
+      <button
+        mat-flat-button
+        color="warn"
+        class="search"
+        (click)="removeLabelsFromFiltered()"
+        [disabled]="dataSource.filteredData.length == 0"
+      >
+        <!-- <mat-icon>delete</mat-icon> -->
+        Remove labels from results
+      </button>
+    </div>
+
+    <!-- Filter -->
+    <mat-form-field class="filter">
+      <mat-label>Filter</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="" #input />
+    </mat-form-field>
+
+    <!-- Resource list -->
+    <div class="mat-elevation-z2 table-container">
+      <mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef>Resource</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{ element.id }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Name</mat-header-cell
+          >
+          <mat-cell
+            [matTooltip]="element.id"
+            matTooltipPosition="right"
+            *matCellDef="let element"
+            >{{ element.name }}</mat-cell
+          >
+        </ng-container>
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Type</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element">{{ element.type }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="displayLabels">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Labels</mat-header-cell
+          >
+          <mat-cell *matCellDef="let element" class="labels">
+            <div class="tag-chip-container">
+              @for (label of element.labels; track label) {
+                <mat-chip class="tag-chip">
+                  {{ label.id }}: {{ label.value }}
+                </mat-chip>
+              }
+            </div>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef>Edit Labels</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-icon class="edit-icon" (click)="editResourceLabels(element)"
+              >sell</mat-icon
+            >
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+        ></mat-row>
+
+        <ng-container matColumnDef="noData">
+          <mat-cell class="no-data" *matNoDataRow>No resources found!</mat-cell>
+        </ng-container>
+      </mat-table>
+      <mat-paginator
+        [pageSizeOptions]="[20, 50, 100]"
+        showFirstLastButtons
+        aria-label="Select page of periodic elements"
+      ></mat-paginator>
+    </div>
+  </div>
+}

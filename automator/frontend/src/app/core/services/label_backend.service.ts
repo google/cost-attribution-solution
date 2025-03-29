@@ -14,83 +14,63 @@
    limitations under the License.
 */
 
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
-import { TagService } from "../model/TagService";
+import { LabelService } from "../model/LabelService";
 import {
+  Binding,
   BulkResponse,
-  ResourceTags,
+  ResourceLabels,
   Response,
   Tag,
-  Binding,
 } from "../model/models";
 import { SERVICE_CONFIG } from "../model/values";
 
 @Injectable()
-export class TagBackendService implements TagService {
+export class LabelBackendService implements LabelService {
   private apiUrl: string;
 
   constructor(private http: HttpClient) {
     this.apiUrl = inject(SERVICE_CONFIG).apiUrl;
   }
 
-  deleteTag(key: string): Observable<Response> {
-    return this.http.delete<Response>(this.apiUrl + "/tags/" + key);
-  }
-
-  editTag(key: string, values: string[]): Observable<Response> {
-    return this.http.post<Response>(this.apiUrl + "/tags/tagValues", {
-      key,
-      values,
+  fetchResources(): Observable<ResourceLabels[]> {
+    return this.http.get<Array<ResourceLabels>>(this.apiUrl + `/resources`, {
+      params: { type: "label" },
     });
   }
 
-  addTag(name: string, description: string): Observable<{ key: string }> {
-    return this.http.post<{ key: string }>(this.apiUrl + "/tags", {
-      name,
-      description,
-    });
-  }
-
-  fetchResources(): Observable<ResourceTags[]> {
-    return this.http.get<Array<ResourceTags>>(this.apiUrl + `/resources`);
-  }
-
-  fetchTags(): Observable<Tag[]> {
-    return this.http.get<Array<Tag>>(this.apiUrl + `/tags`);
-  }
-
-  updateResourceTags(
+  updateResourceLabels(
     id: string,
     location: string,
-    tags: Binding[],
+    labels: Binding[],
   ): Observable<Response> {
-    return this.http.patch<Response>(this.apiUrl + "/resources/tags", {
+    return this.http.patch<Response>(this.apiUrl + "/resources/labels", {
       id,
       location,
-      tags,
+      labels,
     });
   }
 
-  addTagsToResources(
+  addLabelsToResources(
     resources: { id: string; location: string }[],
-    tags: Binding[],
+    labels: Binding[],
   ): Observable<BulkResponse> {
-    return this.http.post<BulkResponse>(this.apiUrl + "/resources/tags", {
+    return this.http.post<BulkResponse>(this.apiUrl + "/resources/labels", {
       resources,
-      tags,
+      labels,
     });
   }
 
-  removeTagsFromResources(
+  removeLabelsFromResources(
     resources: { id: string; location: string }[],
-    tags: Binding[],
+    labels: Binding[],
   ): Observable<BulkResponse> {
-    return this.http.delete<BulkResponse>(this.apiUrl + "/resources/tags", {
+    return this.http.delete<BulkResponse>(this.apiUrl + "/resources/labels", {
       body: {
         resources,
-        tags,
+        labels,
       },
     });
   }
