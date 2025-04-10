@@ -27,9 +27,11 @@ import {
 import { MatIconModule } from "@angular/material/icon";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
-import { ResourceLabels, Binding } from "../../../../core/model/models";
-import { EditComponent } from "../edit.component";
+import { ResourceLabels } from "../../../../core/model/models";
 import { LabelService } from "../../../../core/model/LabelService";
+import { MatChipInputEvent, MatChipsModule } from "@angular/material/chips";
+import { MatFormFieldModule } from "@angular/material/form-field";
+import { COMMA, ENTER } from "@angular/cdk/keycodes";
 
 type EditLabelData = {
   resources: ResourceLabels[];
@@ -39,6 +41,7 @@ type EditLabelData = {
   selector: "app-bulk-remove",
   standalone: true,
   imports: [
+    MatFormFieldModule,
     MatDialogActions,
     MatSnackBarModule,
     MatDialogClose,
@@ -47,15 +50,16 @@ type EditLabelData = {
     MatIconModule,
     MatButtonModule,
     MatProgressBarModule,
-    EditComponent,
+    MatChipsModule,
   ],
   templateUrl: "./bulk-remove.component.html",
   styleUrl: "./bulk-remove.component.sass",
 })
 export class BulkRemoveComponent {
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
   saving: boolean = false;
-  valid: boolean = false;
-  labels: Binding[] = [];
+  labels: Set<string> = new Set();
 
   constructor(
     private service: LabelService,
@@ -63,6 +67,21 @@ export class BulkRemoveComponent {
     @Inject(MAT_DIALOG_DATA) public data: EditLabelData,
     private _snackBar: MatSnackBar,
   ) {}
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || "").trim();
+
+    if (value) {
+      this.labels.add(value);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+  }
+
+  remove(value: string): void {
+    this.labels.delete(value);
+  }
 
   save() {
     this.saving = true;
@@ -74,7 +93,7 @@ export class BulkRemoveComponent {
           id: r.id,
           location: r.location,
         })),
-        this.labels,
+        [...this.labels],
       )
       .subscribe({
         next: (resp) => {

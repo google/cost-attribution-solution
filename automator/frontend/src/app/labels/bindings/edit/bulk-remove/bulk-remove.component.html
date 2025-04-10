@@ -3,18 +3,47 @@
     Removing labels for {{ data.resources.length }} resources
   </h2>
   <mat-dialog-content>
-    <!-- Attached labels  -->
-    <app-label-binding-edit
-      (labels)="labels = $event"
-      (valid)="valid = $event"
-    />
+    <mat-form-field class="values-chip-list">
+      <mat-label>Labels to delete</mat-label>
+      <mat-chip-grid
+        class="values-chip-grid"
+        #chipGrid
+        aria-label="Labels to delete"
+      >
+        @for (value of labels; track value) {
+          <mat-chip-row
+            class="values-chip-row"
+            (removed)="remove(value)"
+            [editable]="false"
+            [aria-description]="'press enter to edit ' + value"
+          >
+            {{ value }}
+            <button matChipRemove [attr.aria-label]="'remove ' + value">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        }
+        <input
+          placeholder="Add value..."
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          matChipInputAddOnBlur="true"
+          (matChipInputTokenEnd)="add($event)"
+        />
+      </mat-chip-grid>
+    </mat-form-field>
   </mat-dialog-content>
 
   <mat-dialog-actions align="center">
     @if (saving) {
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     } @else {
-      <button mat-button color="primary" [disabled]="!valid" (click)="save()">
+      <button
+        mat-button
+        color="primary"
+        [disabled]="labels.size == 0"
+        (click)="save()"
+      >
         Save
       </button>
       <button mat-button mat-dialog-close>Close</button>

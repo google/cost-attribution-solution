@@ -39,3 +39,40 @@ def update_gcp_labels(projectId, new_labels, clean_labels: bool = True):
 
     request = manager.projects().update(projectId=projectId, body=project)
     project = request.execute()
+
+
+def bulk_update_gcp_labels(projectIds, labels):
+
+    for project in projectIds:
+        projectId = project.id.split("/")[-1]
+
+        try:
+            update_gcp_labels(projectId, labels, False)
+        except Exception as e:
+            print(f"Error updating labels for project {projectId}: {e}")
+
+
+def bulk_delete_gcp_labels(projectIds, keys):
+
+    manager = googleapiclient.discovery.build("cloudresourcemanager", "v1")
+
+    for project in projectIds:
+        projectId = project.id.split("/")[-1]
+
+        try:
+            # Fetch project
+            project = manager.projects().get(projectId=projectId).execute()
+
+            # First fetch all labels from the project
+            current_labels = project.setdefault("labels", {})
+
+            # Delete specified keys
+            for k in keys:
+                if k in current_labels:
+                    del current_labels[k]
+
+            request = manager.projects().update(projectId=projectId, body=project)
+            project = request.execute()
+
+        except Exception as e:
+            print(f"Error updating labels for project {projectId}: {e}")

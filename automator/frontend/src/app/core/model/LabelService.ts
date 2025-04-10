@@ -39,7 +39,7 @@ export abstract class LabelService {
 
   abstract removeLabelsFromResources(
     resources: { id: string; location: string }[],
-    labels: Binding[],
+    labels: string[],
   ): Observable<BulkResponse>;
 
   abstract uploadCSV(

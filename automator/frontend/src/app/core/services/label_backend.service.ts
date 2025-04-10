@@ -65,7 +65,7 @@ export class LabelBackendService implements LabelService {
 
   removeLabelsFromResources(
     resources: { id: string; location: string }[],
-    labels: Binding[],
+    labels: string[],
   ): Observable<BulkResponse> {
     return this.http.delete<BulkResponse>(this.apiUrl + "/resources/labels", {
       body: {

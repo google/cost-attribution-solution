@@ -71,7 +71,7 @@ export class MockLabelService implements LabelService {
 
   removeLabelsFromResources(
     resources: { id: string; location: string }[],
-    labels: Binding[],
+    labels: string[],
   ): Observable<BulkResponse> {
     return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }

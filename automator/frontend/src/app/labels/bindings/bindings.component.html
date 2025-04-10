@@ -13,7 +13,7 @@
         color="primary"
         class="search success"
         (click)="addLabelsToFiltered()"
-        [disabled]="dataSource.filteredData.length > -1"
+        [disabled]="dataSource.filteredData.length == 0"
       >
         <!-- <mat-icon>new_label</mat-icon> -->
         Add labels to results
@@ -23,7 +23,7 @@
         color="warn"
         class="search"
         (click)="removeLabelsFromFiltered()"
-        [disabled]="dataSource.filteredData.length > -1"
+        [disabled]="dataSource.filteredData.length == 0"
       >
         <!-- <mat-icon>delete</mat-icon> -->
         Remove labels from results

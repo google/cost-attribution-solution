@@ -14,9 +14,13 @@
 
 import enum
 from fastapi import APIRouter, Body, Depends, HTTPException
-from typing import List, Optional
+from typing import List, Optional, Set
 from pydantic import BaseModel
-from services.label_binding_manager import update_gcp_labels
+from services.label_binding_manager import (
+    bulk_delete_gcp_labels,
+    bulk_update_gcp_labels,
+    update_gcp_labels,
+)
 from routes.dependencies import get_asset_types, get_scope
 
 from services.tag_binding_manager import (
@@ -55,7 +59,17 @@ class ResourceLabels(BaseModel):
     labels: List[Binding]
 
 
-class BulkResource(BaseModel):
+class BulkResourceLabels(BaseModel):
+    resources: List[Resource]
+    labels: List[Binding]
+
+
+class BulkDeleteResourceLabels(BaseModel):
+    resources: List[Resource]
+    labels: Set[str]
+
+
+class BulkResourceTags(BaseModel):
     resources: List[Resource]
     tags: List[Binding]
 
@@ -98,7 +112,7 @@ def update_resource_tags(resource: ResourceTags = Body(...)):
 
 
 @router.delete("/tags", response_model=dict)
-def delete_tags_from_resources(bulk: BulkResource = Body(...)):
+def delete_tags_from_resources(bulk: BulkResourceTags = Body(...)):
     """Delete tags from multiple resources."""
     response = del_gcp_tags(
         [r.model_dump() for r in bulk.resources],
@@ -112,7 +126,7 @@ def delete_tags_from_resources(bulk: BulkResource = Body(...)):
 
 @router.post("/tags", response_model=dict)
 def bulk_tags_from_resources(
-    bulk: BulkResource = Body(...), scope: str = Depends(get_scope)
+    bulk: BulkResourceTags = Body(...), scope: str = Depends(get_scope)
 ):
     """Add tags to multiple resources."""
     response = bulk_update_gcp_tags(
@@ -137,4 +151,25 @@ def update_resource_labels(resource: ResourceLabels = Body(...)):
     projectId = resource.id.split("/")[-1]
     update_gcp_labels(projectId, labels)
 
-    return {"detail": "Label applied successfully."}
+    return {"detail": "Labels applied successfully."}
+
+
+@router.post("/labels", response_model=dict)
+def bulk_update_resource_labels(bulk: BulkResourceLabels = Body(...)):
+    """Bulk update labels for a resource."""
+
+    # Adjust the correct labels expected API format
+    labels = {l.id: l.value for l in bulk.labels}
+
+    bulk_update_gcp_labels(bulk.resources, labels)
+
+    return {"detail": "Labels updated in bulk successfully."}
+
+
+@router.delete("/labels", response_model=dict)
+def bulk_dekete_resource_labels(bulk: BulkDeleteResourceLabels = Body(...)):
+    """Bulk delete labels for a resource."""
+
+    bulk_delete_gcp_labels(bulk.resources, bulk.labels)
+
+    return {"detail": "Labels deleted in bulk successfully."}
