@@ -22,6 +22,7 @@ import {
   BulkResponse,
   ResourceLabels,
   Response,
+  UploadResponse,
 } from "../model/models";
 
 @Injectable()
@@ -75,9 +76,14 @@ export class MockLabelService implements LabelService {
     return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
   }
 
-  uploadCSV(file: File, clean_labels: boolean): Observable<Response> {
+  uploadCSV(file: File, clean_labels: boolean): Observable<UploadResponse> {
     return of({
-      detail: "success!",
+      project: {
+        success: true,
+        value: {
+          key123: "value123",
+        },
+      },
     }).pipe(delay(this.DELAY));
   }
 }

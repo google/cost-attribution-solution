@@ -23,6 +23,7 @@ import {
   BulkResponse,
   ResourceLabels,
   Response,
+  UploadResponse,
 } from "../model/models";
 import { SERVICE_CONFIG } from "../model/values";
 
@@ -74,11 +75,15 @@ export class LabelBackendService implements LabelService {
     });
   }
 
-  uploadCSV(file: File, clean_labels: boolean): Observable<Response> {
+  uploadCSV(file: File, clean_labels: boolean): Observable<UploadResponse> {
     const formData = new FormData();
     formData.append("file", file, file.name);
-    return this.http.post<Response>(this.apiUrl + "/uploads/labels", formData, {
-      params: { clean_labels },
-    });
+    return this.http.post<UploadResponse>(
+      this.apiUrl + "/uploads/labels",
+      formData,
+      {
+        params: { clean_labels },
+      },
+    );
   }
 }

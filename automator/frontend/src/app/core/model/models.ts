@@ -66,6 +66,16 @@ export type BulkResponse = {
     errors: string[];
 };
 
+export type UploadResponse = {
+    [key: string]: {
+        success: boolean;
+        value: {
+            [key: string]: string;
+        };
+        details?: string;
+    };
+};
+
 export interface TagsController {
     get tags(): Array<Tag>;
     get keys(): Array<Value>;

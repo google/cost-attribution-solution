@@ -39,6 +39,6 @@ async def add_tag_route(
             detail=f"invalid CSV schema for {file.filename}",
         )
 
-    process_labels_csv(df, clean_labels)
+    response = process_labels_csv(df, clean_labels)
 
-    return {"detail": "OK"}
+    return response

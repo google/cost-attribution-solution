@@ -15,7 +15,13 @@
 */
 
 import { Observable } from "rxjs";
-import { Binding, BulkResponse, ResourceLabels, Response } from "./models";
+import {
+  Binding,
+  BulkResponse,
+  ResourceLabels,
+  Response,
+  UploadResponse,
+} from "./models";
 
 export abstract class LabelService {
   abstract fetchResources(): Observable<Array<ResourceLabels>>;
@@ -36,5 +42,8 @@ export abstract class LabelService {
     labels: Binding[],
   ): Observable<BulkResponse>;
 
-  abstract uploadCSV(file: File, clean_labels: boolean): Observable<Response>;
+  abstract uploadCSV(
+    file: File,
+    clean_labels: boolean,
+  ): Observable<UploadResponse>;
 }

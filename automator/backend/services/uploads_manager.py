@@ -15,7 +15,10 @@
 import re
 import json
 import logging
+from googleapiclient.http import HttpError
 import pandas as pd
+from typing import Dict
+from google.api_core.exceptions import GoogleAPICallError
 from io import BytesIO
 
 from services.label_binding_manager import update_gcp_labels
@@ -76,9 +79,19 @@ def process_labels_csv(df: pd.DataFrame, clean_labels: bool):
 
         all_projects_labels[row[columns[0]]] = project_labels
 
+    response: dict[str, dict] = {}
+
     for project_id in all_projects_labels.keys():
         labels = all_projects_labels[project_id]
         print(f"key: {project_id}, \nvalue: {labels}\n")
 
         # TODO: make this async to process multiple projects concurrently
-        update_gcp_labels(project_id, labels, clean_labels)
+        try:
+            response[project_id] = {"value": labels, "success": True}
+            update_gcp_labels(project_id, labels, clean_labels)
+        except HttpError as e:
+            logging.error(e)
+            response[project_id]["success"] = False
+            response[project_id]["details"] = e.reason
+
+    return response

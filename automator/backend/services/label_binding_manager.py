@@ -25,7 +25,7 @@ def update_gcp_labels(projectId, new_labels, clean_labels: bool = True):
     project = manager.projects().get(projectId=projectId).execute()
 
     # First fetch all labels from the project
-    current_labels = project["labels"]
+    current_labels = project.setdefault("labels", {})
 
     # Update current labels with new values
     current_labels.update(new_labels)
