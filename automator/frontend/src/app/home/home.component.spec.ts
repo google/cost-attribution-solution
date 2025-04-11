@@ -1,39 +1,36 @@
-// Copyright 2024 Google LLC
-
-//  Licensed under the Apache License, Version 2.0 (the "License");
-//  you may not use this file except in compliance with the License.
-//  You may obtain a copy of the License at
-
-//      https://www.apache.org/licenses/LICENSE-2.0
-
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-import { waitForAsync, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NoopAnimationsModule } from "@angular/platform-browser/animations";
-
-import { HomeComponent } from "./HomeComponent";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { HomeComponent } from "./home.component"; // Correct import path
 
 describe("HomeComponent", () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule],
+  beforeEach(async () => {
+    // Since HomeComponent is standalone, we just import it directly
+    await TestBed.configureTestingModule({
+      imports: [HomeComponent],
     }).compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it("should compile", () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should display the welcome heading", () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const headingElement = compiled.querySelector("h1");
+    expect(headingElement).toBeTruthy(); // Check if the h1 element exists
+  });
+
+  it("should display the logo image", () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const imgElement = compiled.querySelector("img");
+    expect(imgElement).toBeTruthy(); // Check if the img element exists
+    // Check if the src attribute ends with the expected path
+    // The full URL might vary depending on the test environment base URL
+    expect(imgElement?.src).toContain("assets/logo.png");
   });
 });

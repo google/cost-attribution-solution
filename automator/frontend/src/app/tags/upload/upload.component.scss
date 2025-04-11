@@ -26,28 +26,40 @@
 }
 
 .inner-container button {
-    min-width: 10vw;
-    padding: 5%;
+    width: 10vmax;
+    padding: 1.5vmax;
 }
 
 .inner-container {
-    width: 50%;
+    display: flex;
+    flex-direction: column;
     gap: 2%;
     margin: 1% 0;
 }
 
-.status-Success {
-    color: green;
-}
-
-.status-Processing {
-    color: orange;
-}
-
-.status-Error {
-    color: red;
-}
-
 .file-input {
     display: none;
+}
+
+/* Add this rule */
+.response {
+    width: fit-content;
+    max-height: 30vh;
+    overflow-y: scroll;
+    margin-bottom: 2em;
+    padding: 0 1%;
+    border-left: 3px solid $primary-color;
+
+    .item {
+        width: fit-content;
+        margin: 1em 0;
+    }
+
+    .error {
+        background-color: rgba(255, 0, 0, 0.2);
+    }
+
+    .success {
+        background-color: rgba(0, 255, 0, 0.2);
+    }
 }

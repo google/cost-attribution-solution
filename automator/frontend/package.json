@@ -1,13 +1,6 @@
 {
   "name": "cas-frontend",
-  "version": "0.0.1",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
-  },
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.2.0",
