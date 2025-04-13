@@ -54,7 +54,7 @@ def process_tags_csv(resource_tags: List[dict], clean_tags: bool):
         # TODO: make this async to process multiple projects concurrently
         try:
             response[resource_id] = {
-                "value": {t.key: t.value for t in tags},
+                "value": {t["key"]: t["value"] for t in tags},
                 "success": True,
             }
 
