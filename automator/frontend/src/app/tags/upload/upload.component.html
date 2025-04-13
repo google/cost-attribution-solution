@@ -28,9 +28,6 @@
           @for (item of response | keyvalue; track item.key) {
             <div class="item">
               <b>Resource:</b> {{ item.key }}
-              <br />
-              <b>Location:</b>
-              {{ item.value.location }}
 
               <!-- Show tags -->
               @for (value of item.value.value | keyvalue; track value.key) {
