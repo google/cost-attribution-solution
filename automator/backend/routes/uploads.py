@@ -14,13 +14,14 @@
 
 from typing import Annotated
 from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
+from services.uploads.upload_tags import InvalidCsvFormatError, process_tags_csv, transform_tags_csv
 from services.uploads_manager import parse_labels_csv, process_labels_csv
 
 router = APIRouter()
 
 
 @router.post("/labels", status_code=status.HTTP_201_CREATED, response_model=dict)
-async def add_tag_route(
+async def upload_labels_route(
     file: UploadFile = File(...),
     clean_labels: Annotated[
         bool,
@@ -42,3 +43,27 @@ async def add_tag_route(
     response = process_labels_csv(df, clean_labels)
 
     return response
+
+
+@router.post("/tags", status_code=status.HTTP_201_CREATED, response_model=dict)
+async def upload_tags_route(
+    file: UploadFile = File(...),
+    clean_tags: Annotated[
+        bool,
+        Query(
+            description="Whether of not to delete all current tags before applying."
+        ),
+    ] = False,
+):
+    """Process the tags upload CSV file."""
+
+    try:
+        resource_tags = transform_tags_csv(await file.read())
+    except InvalidCsvFormatError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"invalid CSV schema for {file.filename}",
+        )
+
+
+    return process_tags_csv(resource_tags, clean_tags)

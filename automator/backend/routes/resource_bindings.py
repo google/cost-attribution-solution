@@ -106,7 +106,7 @@ def get_resources(
 def update_resource_tags(resource: ResourceTags = Body(...)):
     """Update tags for a resource."""
     update_gcp_tags(
-        resource.id, [t.model_dump() for t in resource.tags], resource.location
+        resource.id, [t.model_dump() for t in resource.tags], clean_tags=True, location=resource.location
     )
     return {"detail": "Tag applied created successfully."}
 

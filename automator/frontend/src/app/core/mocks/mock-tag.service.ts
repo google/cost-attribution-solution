@@ -23,6 +23,7 @@ import {
   Response,
   Tag,
   Binding,
+  UploadResponse,
 } from "../model/models";
 
 @Injectable()
@@ -225,5 +226,16 @@ export class MockTagService implements TagService {
     tags: Binding[],
   ): Observable<BulkResponse> {
     return of({ detail: "success!", errors: [] }).pipe(delay(this.DELAY));
+  }
+
+  uploadCSV(file: File, clean_tags: boolean): Observable<UploadResponse> {
+    return of({
+      project: {
+        success: true,
+        value: {
+          "tagKeys/123": "tagValues/123",
+        },
+      },
+    }).pipe(delay(this.DELAY));
   }
 }

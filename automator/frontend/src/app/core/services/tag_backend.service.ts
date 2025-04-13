@@ -24,6 +24,7 @@ import {
   Response,
   Tag,
   Binding,
+  UploadResponse,
 } from "../model/models";
 import { SERVICE_CONFIG } from "../model/values";
 
@@ -95,5 +96,17 @@ export class TagBackendService implements TagService {
         tags,
       },
     });
+  }
+
+  uploadCSV(file: File, clean_tags: boolean): Observable<UploadResponse> {
+    const formData = new FormData();
+    formData.append("file", file, file.name);
+    return this.http.post<UploadResponse>(
+      this.apiUrl + "/uploads/tags",
+      formData,
+      {
+        params: { clean_tags },
+      },
+    );
   }
 }

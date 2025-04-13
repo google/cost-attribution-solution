@@ -72,6 +72,7 @@ export type UploadResponse = {
         value: {
             [key: string]: string;
         };
+        location?: string;
         details?: string;
     };
 };

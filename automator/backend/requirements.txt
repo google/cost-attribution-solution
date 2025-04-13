@@ -3,3 +3,4 @@ google-cloud-resource-manager
 google-cloud-asset
 google-api-python-client
 pandas
+pytest

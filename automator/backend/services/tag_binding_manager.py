@@ -19,7 +19,7 @@ from services.clients import ClientFactory
 from services.list_possible_tags import getTags
 
 
-def update_gcp_tags(resource_name, new_tags, location=None):
+def update_gcp_tags(resource_name, new_tags, clean_tags=False, location=None):
     """Update the tags on a GCP resource."""
 
     client = ClientFactory.get_tag_bindings_client(location)
@@ -39,13 +39,15 @@ def update_gcp_tags(resource_name, new_tags, location=None):
             )
             tag_bindings_to_add.append(tag_binding)
 
-    tag_bindings_to_remove = []
-    for binding in current_bindings:
-        if binding.tag_value not in new_tag_values:
-            tag_bindings_to_remove.append(binding)
+    if clean_tags:
+        tag_bindings_to_remove = []
 
-    for tag_binding in tag_bindings_to_remove:
-        client.delete_tag_binding(name=tag_binding.name)
+        for binding in current_bindings:
+            if binding.tag_value not in new_tag_values:
+                tag_bindings_to_remove.append(binding)
+
+        for tag_binding in tag_bindings_to_remove:
+            client.delete_tag_binding(name=tag_binding.name)
 
     for tag_binding in tag_bindings_to_add:
         client.create_tag_binding(tag_binding=tag_binding)

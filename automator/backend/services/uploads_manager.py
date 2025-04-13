@@ -17,10 +17,8 @@ import json
 import logging
 from googleapiclient.http import HttpError
 import pandas as pd
-from typing import Dict
-from google.api_core.exceptions import GoogleAPICallError
 from io import BytesIO
-
+from services.tag_binding_manager import update_gcp_tags
 from services.label_binding_manager import update_gcp_labels
 
 

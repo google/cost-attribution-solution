@@ -15,7 +15,14 @@
 */
 
 import { Observable } from "rxjs";
-import { BulkResponse, ResourceTags, Response, Tag, Binding } from "./models";
+import {
+  BulkResponse,
+  ResourceTags,
+  Response,
+  Tag,
+  Binding,
+  UploadResponse,
+} from "./models";
 
 export abstract class TagService {
   abstract fetchTags(): Observable<Array<Tag>>;
@@ -43,4 +50,9 @@ export abstract class TagService {
     resources: { id: string; location: string }[],
     tags: Binding[],
   ): Observable<BulkResponse>;
+
+  abstract uploadCSV(
+    file: File,
+    clean_tags: boolean,
+  ): Observable<UploadResponse>;
 }

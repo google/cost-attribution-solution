@@ -2,61 +2,42 @@ import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
-import { MatPaginatorModule } from "@angular/material/paginator";
-import { MatSelectModule } from "@angular/material/select";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatTableModule } from "@angular/material/table";
-import { MatTabsModule } from "@angular/material/tabs";
-import { LabelService } from "../../core/model/LabelService";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { CommonModule } from "@angular/common";
 import { finalize } from "rxjs";
 import { UploadResponse } from "../../core/model/models";
+import { TagService } from "../../core/model/TagService";
 
 @Component({
-  selector: "app-upload",
+  selector: "app-tags-upload",
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    MatTabsModule,
-    MatIconModule,
-    MatSelectModule,
     MatCardModule,
     MatSlideToggleModule,
-    MatTableModule,
     MatButtonModule,
-    MatPaginatorModule,
     MatProgressBarModule,
   ],
   templateUrl: "./upload.component.html",
   styleUrl: "./upload.component.scss",
 })
 export class UploadComponent {
-  readonly types = [
-    {
-      value: "project",
-      viewValue: "Project",
-    },
-  ];
-
-  readonly fields: { [key: string]: { header: string; rows: string } } = {
-    project: {
-      header: `project_id,cost-center,environment,app`,
-      rows: `my-project-123,fin-ops,prod,shopping-cart\nmy-project-456,sre,dev,catalog`,
-    },
+  readonly fields: { header: string; rows: string } = {
+    header: `resource_id,location,tagKeys/123,tagKeys/456`,
+    rows: `//compute.googleapis.com/projects/project-1/zones/us-east1-b/instances/123,us-east1-b,tagValues/123,tagValues/456
+//compute.googleapis.com/projects/project-1/global/networks/123,global,tagValues/111,tagValues222`,
   };
 
   response: UploadResponse | undefined;
 
   loading: boolean = false;
-  chosenType: string | undefined;
-  clean_labels: boolean = true;
+  clean_tags: boolean = true;
 
   constructor(
-    private service: LabelService,
+    private service: TagService,
     private _snackBar: MatSnackBar,
   ) {}
 
@@ -67,7 +48,7 @@ export class UploadComponent {
     this.response = undefined;
 
     this.service
-      .uploadCSV(file, this.clean_labels)
+      .uploadCSV(file, this.clean_tags)
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (resp) => {

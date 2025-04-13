@@ -2,13 +2,9 @@ import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
-import { MatIconModule } from "@angular/material/icon";
-import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatSelectModule } from "@angular/material/select";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { MatTableModule } from "@angular/material/table";
-import { MatTabsModule } from "@angular/material/tabs";
 import { LabelService } from "../../core/model/LabelService";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { CommonModule } from "@angular/common";
@@ -21,14 +17,10 @@ import { UploadResponse } from "../../core/model/models";
   imports: [
     CommonModule,
     FormsModule,
-    MatTabsModule,
-    MatIconModule,
     MatSelectModule,
     MatCardModule,
     MatSlideToggleModule,
-    MatTableModule,
     MatButtonModule,
-    MatPaginatorModule,
     MatProgressBarModule,
   ],
   templateUrl: "./upload.component.html",

@@ -1,35 +1,21 @@
-<ng-template mat-tab-label>
-  <mat-icon class="tab-icon">upload</mat-icon>
-  New upload
-</ng-template>
 <div class="container tab-spacing">
-  <div class="primary-color title">Bulk upload labels</div>
-  <div>
-    <mat-form-field>
-      <mat-label>Resource Type</mat-label>
-      <mat-select [(value)]="chosenType">
-        @for (type of types; track type) {
-          <mat-option [value]="type.value">{{ type.viewValue }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </div>
-  @if (chosenType) {
-    <mat-card class="example-card" appearance="outlined">
-      <mat-card-header>
-        <mat-card-title class="primary-color"
-          >CSV File Structure: ensure your CSV adheres to the following
-          structure</mat-card-title
-        >
-      </mat-card-header>
-      <mat-card-content>
-        <b>{{ fields[chosenType].header }}</b>
-        <pre>{{ fields[chosenType].rows }}</pre>
-      </mat-card-content>
-    </mat-card>
-  }
-  <mat-slide-toggle class="clear-toggle" [(ngModel)]="clean_labels"
-    >Clear labels</mat-slide-toggle
+  <div class="primary-color title">Bulk upload tags</div>
+  <mat-card class="example-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title class="primary-color"
+        >CSV File Structure: ensure your CSV adheres to the following
+        structure</mat-card-title
+      >
+    </mat-card-header>
+    <mat-card-content>
+      <b>{{ fields.header }}</b>
+      <pre>{{ fields.rows }}</pre>
+
+      <p><b>Note:</b> location and tagKeys can be empty for some resources.</p>
+    </mat-card-content>
+  </mat-card>
+  <mat-slide-toggle class="clear-toggle" [(ngModel)]="clean_tags"
+    >Clear tags</mat-slide-toggle
   >
 
   <div class="inner-container">
@@ -41,9 +27,12 @@
         <div class="response">
           @for (item of response | keyvalue; track item.key) {
             <div class="item">
-              <b>Project:</b> {{ item.key }}
+              <b>Resource:</b> {{ item.key }}
+              <br />
+              <b>Location:</b>
+              {{ item.value.location }}
 
-              <!-- Show labels -->
+              <!-- Show tags -->
               @for (value of item.value.value | keyvalue; track value.key) {
                 <div>{{ value.key }}: {{ value.value }}</div>
               }
@@ -74,7 +63,6 @@
         color="primary"
         (click)="fileUpload.click()"
         class="upload"
-        [disabled]="!chosenType"
       >
         Upload CSV
       </button>
