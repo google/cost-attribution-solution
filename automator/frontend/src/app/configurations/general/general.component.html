@@ -1,0 +1,34 @@
+<div class="sub-title">Asset types</div>
+
+<mat-form-field id="asset-types">
+  <mat-label>Choose types</mat-label>
+  <mat-select [formControl]="chosenAssetTypes" multiple>
+    @for (assetType of assetTypes; track assetType) {
+      <mat-option [value]="assetType">{{ assetType }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<div class="sub-title">Missing Attribution report url</div>
+
+<mat-form-field class="text-config">
+  <mat-label>Missing Attribution report url</mat-label>
+  <input
+    matInput
+    placeholder="Ex. https://lookerstudio.google.com/embed/reporting/123-456-789-000/page/abc"
+  />
+</mat-form-field>
+
+<div class="sub-title">Billing report url</div>
+
+<mat-form-field class="text-config">
+  <mat-label>Billing report url</mat-label>
+  <input
+    matInput
+    placeholder="Ex. https://lookerstudio.google.com/embed/reporting/123-456-789-000/page/abc"
+  />
+</mat-form-field>
+
+<div>
+  <button mat-raised-button color="primary">Save configurations</button>
+</div>

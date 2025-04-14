@@ -1,0 +1,28 @@
+.tag-chip-container {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.tag-chip {
+    margin: 1% 1%;
+}
+
+.mat-mdc-standard-chip {
+    border-radius: 10px;
+}
+
+.delete-icon {
+    color: #e74545;
+}
+
+.mat-column-edit,
+.mat-column-delete {
+    max-width: 10vw;
+}
+
+.mat-column-name {
+    max-width: 10vw;
+}

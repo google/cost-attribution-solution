@@ -8,7 +8,7 @@ import { environment } from "../../environments/environment";
   standalone: true,
   imports: [],
   templateUrl: "./reports.component.html",
-  styleUrl: "./reports.component.sass",
+  styleUrl: "./reports.component.scss",
 })
 export class ReportsComponent {
   error: string | undefined;

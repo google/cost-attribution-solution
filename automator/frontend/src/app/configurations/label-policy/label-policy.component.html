@@ -1,0 +1,75 @@
+<div class="container">
+  <div class="inner-container">
+    <button mat-flat-button color="primary" class="search success">
+      Create new tag
+    </button>
+  </div>
+
+  <div class="mat-elevation-z2 table-container">
+    <mat-table
+      [dataSource]="dataSource"
+      matSort
+      class="mat-elevation-z2 full-table"
+    >
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Key</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="values">
+        <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
+        <mat-cell *matCellDef="let element" class="tags">
+          <div class="tag-chip-container">
+            @for (value of element.values; track value) {
+              <mat-chip class="tag-chip">{{ value.value }}</mat-chip>
+            }
+          </div>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Edit Tag</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <mat-icon class="edit-icon" (click)="editResourceTags(element)"
+            >edit</mat-icon
+          >
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="delete">
+        <mat-header-cell *matHeaderCellDef>Delete Tag</mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          @if (deleting) {
+            <mat-progress-bar
+              mode="indeterminate"
+              color="warn"
+            ></mat-progress-bar>
+          } @else {
+            <mat-icon [matMenuTriggerFor]="menu" class="edit-icon delete-icon"
+              >delete</mat-icon
+            >
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="confirmDeleteTag(element)">
+                Confirm deletion
+              </button>
+            </mat-menu>
+          }
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+      ></mat-row>
+
+      <ng-container matColumnDef="noData">
+        <mat-cell class="no-data" *matNoDataRow>No labels added.</mat-cell>
+      </ng-container>
+    </mat-table>
+    <mat-paginator
+      [pageSizeOptions]="[20, 50, 100]"
+      showFirstLastButtons
+      aria-label="Select page of periodic elements"
+    ></mat-paginator>
+  </div>
+</div>
