@@ -1,28 +1,81 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.full-height {
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.container {
+  padding: 2% 1% 1% 1%;
+}
+
+.inner-container {
+  flex-shrink: 0;
+}
+
+.filter {
+  flex-shrink: 0;
+  width: 100%;
+}
+
 .tag-chip-container {
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 4px 0;
+  gap: 4px;
 }
 
 .tag-chip {
-    margin: 1% 1%;
+  margin: 0;
 }
 
 .mat-mdc-standard-chip {
-    border-radius: 10px;
+  border-radius: 16px;
+  height: 28px;
+  font-size: 0.85em;
+}
+
+.any-value-text {
+  font-style: italic;
+  color: grey;
+  padding: 4px 0;
 }
 
 .delete-icon {
-    color: #e74545;
+  color: #e74545;
 }
 
 .mat-column-edit,
 .mat-column-delete {
-    max-width: 10vw;
+  width: 80px;
+  text-align: center;
+  flex: 0 0 80px;
 }
 
 .mat-column-name {
-    max-width: 10vw;
+  width: 30%;
+  flex: 1 1 30%;
+}
+
+.mat-column-values {
+  width: 50%;
+  flex: 1 1 50%;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: grey;
+  font-style: italic;
+}
+
+.delete-progress {
+  width: 40px;
+  height: 4px;
+  margin: auto;
 }

@@ -1,11 +1,11 @@
-import { Component } from "@angular/core";
-import { LabelPolicyComponent } from "./label-policy/label-policy.component";
-import { MatIconModule } from "@angular/material/icon";
-import { MatTabsModule } from "@angular/material/tabs";
-import { GeneralComponent } from "./general/general.component";
+import { Component } from '@angular/core';
+import { LabelPolicyComponent } from './label-policy/label-policy.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
+import { GeneralComponent } from './general/general.component';
 
 @Component({
-  selector: "app-configurations",
+  selector: 'app-configurations',
   standalone: true,
   imports: [
     MatIconModule,
@@ -15,7 +15,7 @@ import { GeneralComponent } from "./general/general.component";
     GeneralComponent,
     LabelPolicyComponent,
   ],
-  templateUrl: "./configurations.component.html",
-  styleUrl: "./configurations.component.scss",
+  templateUrl: './configurations.component.html',
+  styleUrl: './configurations.component.scss',
 })
 export class ConfigurationsComponent {}

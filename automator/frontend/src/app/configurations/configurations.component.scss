@@ -1,7 +1,32 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+mat-tab-group {
+    padding-top: 2%;
+    box-sizing: border-box;
+}
+
 .tab-icon {
     margin-left: 8px;
 }
 
+.full-height {
+    height: 100%;
+
+    ::ng-deep .mat-mdc-tab-body-wrapper {
+        height: 100%;
+    }
+    ::ng-deep .mat-mdc-tab-body-content {
+        height: 100%;
+    }
+}
+
 .tab-content {
     padding: 1% 0.5%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }

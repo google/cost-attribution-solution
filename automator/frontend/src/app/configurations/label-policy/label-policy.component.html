@@ -1,75 +1,142 @@
-<div class="container">
+<div class="container full-height">
   <div class="inner-container">
-    <button mat-flat-button color="primary" class="search success">
-      Create new tag
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="createNew()"
+      class="search success"
+    >
+      Create new label policy
     </button>
   </div>
 
-  <div class="mat-elevation-z2 table-container">
-    <mat-table
-      [dataSource]="dataSource"
-      matSort
-      class="mat-elevation-z2 full-table"
-    >
-      <ng-container matColumnDef="name">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>Key</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
-      </ng-container>
+  <!-- Filter Input -->
+  <mat-form-field class="filter">
+    <mat-label>Filter labels</mat-label>
+    <input
+      matInput
+      (keyup)="applyFilter($event)"
+      placeholder="Enter policy name or value"
+      #input
+    />
+    @if (input.value) {
+      <button
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="input.value = ''; applyFilter($event)"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
 
-      <ng-container matColumnDef="values">
-        <mat-header-cell *matHeaderCellDef>Values</mat-header-cell>
-        <mat-cell *matCellDef="let element" class="tags">
-          <div class="tag-chip-container">
-            @for (value of element.values; track value) {
-              <mat-chip class="tag-chip">{{ value.value }}</mat-chip>
-            }
-          </div>
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="edit">
-        <mat-header-cell *matHeaderCellDef>Edit Tag</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <mat-icon class="edit-icon" (click)="editResourceTags(element)"
-            >edit</mat-icon
+  @if (loading) {
+    <div class="container-center loading-container">
+      <!-- Added class -->
+      <div class="loading-text">Loading label policies...</div>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+  } @else {
+    <div class="mat-elevation-z2 table-container">
+      <mat-table
+        [dataSource]="dataSource"
+        matSort
+        class="mat-elevation-z2 full-table"
+      >
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header
+            >Policy Key</mat-header-cell
           >
-        </mat-cell>
-      </ng-container>
+          <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="delete">
-        <mat-header-cell *matHeaderCellDef>Delete Tag</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          @if (deleting) {
-            <mat-progress-bar
-              mode="indeterminate"
-              color="warn"
-            ></mat-progress-bar>
-          } @else {
-            <mat-icon [matMenuTriggerFor]="menu" class="edit-icon delete-icon"
-              >delete</mat-icon
+        <ng-container matColumnDef="values">
+          <mat-header-cell *matHeaderCellDef>Allowed Values</mat-header-cell>
+          <mat-cell *matCellDef="let element" class="tags">
+            <div class="tag-chip-container">
+              @if (element.values && element.values.length > 0) {
+                @for (value of element.values; track value.value) {
+                  <!-- Track by unique value -->
+                  <mat-chip class="tag-chip">{{ value.value }}</mat-chip>
+                }
+              } @else {
+                <span class="any-value-text">Any value allowed</span>
+                <!-- Class for styling -->
+              }
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
+          <!-- Shortened header -->
+          <mat-cell *matCellDef="let element">
+            <button
+              mat-icon-button
+              color="primary"
+              aria-label="Edit policy"
+              (click)="editResourceTags(element)"
             >
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="confirmDeleteTag(element)">
-                Confirm deletion
-              </button>
-            </mat-menu>
-          }
-        </mat-cell>
-      </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-      ></mat-row>
+              <mat-icon class="edit-icon">edit</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="noData">
-        <mat-cell class="no-data" *matNoDataRow>No labels added.</mat-cell>
-      </ng-container>
-    </mat-table>
-    <mat-paginator
-      [pageSizeOptions]="[20, 50, 100]"
-      showFirstLastButtons
-      aria-label="Select page of periodic elements"
-    ></mat-paginator>
-  </div>
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+          <!-- Shortened header -->
+          <mat-cell *matCellDef="let element">
+            <!-- Consider row-specific deleting state if implementing -->
+            @if (deleting) {
+              <mat-progress-bar
+                mode="indeterminate"
+                color="warn"
+                class="delete-progress"
+              ></mat-progress-bar>
+            } @else {
+              <button
+                mat-icon-button
+                color="warn"
+                [matMenuTriggerFor]="menu"
+                aria-label="Delete policy"
+              >
+                <mat-icon class="delete-icon">delete</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="confirmDeleteTag(element)">
+                  <span>Confirm deletion</span>
+                </button>
+              </mat-menu>
+            }
+          </mat-cell>
+        </ng-container>
+        <mat-header-row
+          *matHeaderRowDef="displayedColumns; sticky: true"
+        ></mat-header-row>
+        <!-- Added sticky header -->
+        <mat-row
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+        ></mat-row>
+
+        <!-- Use matNoDataRow directive correctly -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            @if (input.value) {
+              <span>No policies found matching "{{ input.value }}"</span>
+            } @else {
+              <span>No label policies defined.</span>
+            }
+          </td>
+        </tr>
+      </mat-table>
+      <mat-paginator
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        showFirstLastButtons
+        aria-label="Select page of label policies"
+      ></mat-paginator>
+      <!-- Paginator outside the table scroll container -->
+    </div>
+  }
 </div>

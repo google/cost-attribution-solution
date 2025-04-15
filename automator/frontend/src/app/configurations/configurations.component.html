@@ -1,12 +1,12 @@
 <div class="title">Configurations</div>
 
-<mat-tab-group dynamicHeight>
+<mat-tab-group dynamicHeight class="full-height">
   <mat-tab>
     <ng-template mat-tab-label>
       General
       <mat-icon class="tab-icon">settings</mat-icon>
     </ng-template>
-    <div class="tab-content container"><app-general /></div>
+    <div class="tab-content container full-height"><app-general /></div>
   </mat-tab>
 
   <mat-tab>
@@ -14,7 +14,7 @@
       Labels Policies
       <mat-icon class="tab-icon">label_important</mat-icon>
     </ng-template>
-    <div class="tab-content container">
+    <div class="tab-content container full-height">
       <app-label-policy></app-label-policy>
     </div>
   </mat-tab>
@@ -24,6 +24,6 @@
       Tags Policies
       <mat-icon class="tab-icon">beenhere</mat-icon>
     </ng-template>
-    <div class="tab-content"></div>
+    <div class="tab-content full-height"></div>
   </mat-tab>
 </mat-tab-group>
