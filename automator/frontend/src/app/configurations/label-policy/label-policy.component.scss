@@ -4,21 +4,45 @@
 }
 
 .full-height {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
 .container {
-  padding: 2% 1% 1% 1%;
-}
-
-.inner-container {
-  flex-shrink: 0;
+  padding: 1% 1.5%;
 }
 
 .filter {
   flex-shrink: 0;
   width: 100%;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+
+  .mat-elevation-z2.full-table {
+    flex-grow: 1;
+    overflow: auto;
+  }
+
+  mat-paginator {
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
 }
 
 .tag-chip-container {
