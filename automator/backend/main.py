@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import logging
-from fastapi import FastAPI, Request
+from typing import List
+from fastapi import Depends, FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from google.api_core.exceptions import GoogleAPICallError
 from starlette.responses import JSONResponse
+from routes.dependencies import get_asset_types
 
-from routes import tags, resource_bindings, uploads
+from routes import tags, resource_bindings, uploads, configurations
 
 app = FastAPI()
 
@@ -57,6 +59,11 @@ async def get_health():
     """Health endpoint."""
     return {"detail": "OK"}
 
+@app.get("/api/asset_types", status_code=status.HTTP_200_OK, response_model=list[str])
+async def fetch_asset_types(asset_types: List[str] = Depends(get_asset_types)):
+    """Fetch the available asset types."""
+    return asset_types
+
 
 # --- Include Routers ---
 app.include_router(tags.router, prefix="/api/tags", tags=["tags"])
@@ -64,6 +71,7 @@ app.include_router(
     resource_bindings.router, prefix="/api/resources", tags=["resources"]
 )
 app.include_router(uploads.router, prefix="/api/uploads", tags=["uploads"])
+app.include_router(configurations.router, prefix="/api/configurations", tags=["configurations"])
 
 
 if __name__ == "__main__":

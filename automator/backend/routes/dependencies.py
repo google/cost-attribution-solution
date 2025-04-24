@@ -7,7 +7,6 @@ scope = os.environ.get("SCOPE")
 if not scope:
     raise Exception("SCOPE env variable must be provided.")
 
-# TODO: get it from configuration screen
 asset_types = [
     "compute.googleapis.com/Instance",
     "storage.googleapis.com/Bucket",

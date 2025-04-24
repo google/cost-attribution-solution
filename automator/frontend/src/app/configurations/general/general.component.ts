@@ -67,15 +67,12 @@ export class GeneralComponent implements OnInit {
           this.chosenAssetTypes.setValue(config.asset_types || []);
 
           // Set the report URLs from the fetched configuration
-          this.missingAttributionUrl.setValue(
-            config.report_urls["missing_attribution"] || "",
-          );
-          this.billingUrl.setValue(config.report_urls["billing"] || "");
-
-          console.log("Configurations and Asset Types loaded:", {
-            config,
-            allTypes,
-          });
+          if (config.report_urls) {
+            this.missingAttributionUrl.setValue(
+              config.report_urls["missing_attribution"] || "",
+            );
+            this.billingUrl.setValue(config.report_urls["billing"] || "");
+          }
         },
         error: (err) => {
           console.error("Error loading configurations or asset types:", err);
