@@ -54,10 +54,12 @@ export class MockConfigurationsService implements ConfigurationsService {
         "compute.googleapis.com/Network",
       ],
 
-      missing_attribution_report_url:
-        "https://lookerstudio.google.com/embed/reporting/e4cd9ef5-dfb0-4dd2-8332-e8ebbe980299/page/6zXD",
-      billing_report_url:
-        "https://lookerstudio.google.com/embed/reporting/e4cd9ef5-dfb0-4dd2-8332-e8ebbe980299/page/p_nk4rm2e9pd",
+      report_urls: {
+        missing_attribution:
+          "https://lookerstudio.google.com/embed/reporting/e4cd9ef5-dfb0-4dd2-8332-e8ebbe980299/page/6zXD",
+        billing:
+          "https://lookerstudio.google.com/embed/reporting/e4cd9ef5-dfb0-4dd2-8332-e8ebbe980299/page/p_nk4rm2e9pd",
+      },
     }).pipe(delay(this.DELAY));
   }
 

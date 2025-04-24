@@ -59,9 +59,7 @@ export type Tag = {
 
 export type Configurations = {
     asset_types: string[];
-
-    missing_attribution_report_url?: string;
-    billing_report_url?: string;
+    report_urls: { [key: string]: string };
 };
 
 export type Response = {

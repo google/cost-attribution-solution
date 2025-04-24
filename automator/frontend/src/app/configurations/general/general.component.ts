@@ -68,9 +68,9 @@ export class GeneralComponent implements OnInit {
 
           // Set the report URLs from the fetched configuration
           this.missingAttributionUrl.setValue(
-            config.missing_attribution_report_url || "",
+            config.report_urls["missing_attribution"] || "",
           );
-          this.billingUrl.setValue(config.billing_report_url || "");
+          this.billingUrl.setValue(config.report_urls["billing"] || "");
 
           console.log("Configurations and Asset Types loaded:", {
             config,
@@ -93,8 +93,11 @@ export class GeneralComponent implements OnInit {
   saveConfigurations() {
     const configToSave = {
       asset_types: this.chosenAssetTypes.value || [],
-      missing_attribution_report_url: this.missingAttributionUrl.value || "",
-      billing_report_url: this.billingUrl.value || "",
+
+      report_urls: {
+        missing_attribution: this.missingAttributionUrl.value || "",
+        billing: this.billingUrl.value || "",
+      },
     };
 
     this.saving = true;
