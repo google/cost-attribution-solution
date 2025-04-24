@@ -14,20 +14,23 @@
    limitations under the License.
 */
 
-import { ApplicationConfig, importProvidersFrom } from "@angular/core";
-import { provideRouter } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
-import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
-import { routes } from "./app.routes";
+import { ApplicationConfig, importProvidersFrom } from "@angular/core";
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from "@angular/material/form-field";
+import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
+import { provideRouter } from "@angular/router";
+import { environment } from "./../environments/environment";
+import { routes } from "./app.routes";
+import { MockConfigurationsService } from "./core/mocks/mock-configurations.service";
+import { MockLabelService } from "./core/mocks/mock-label.service";
+import { MockTagService } from "./core/mocks/mock-tag.service";
+import { ConfigurationsService } from "./core/model/ConfigurationService";
+import { LabelService } from "./core/model/LabelService";
 import { TagService } from "./core/model/TagService";
 import { SERVICE_CONFIG, TITLE } from "./core/model/values";
-import { environment } from "./../environments/environment";
-import { TagBackendService } from "./core/services/tag_backend.service";
-import { MockTagService } from "./core/mocks/mock-tag.service";
-import { LabelService } from "./core/model/LabelService";
+import { ConfigurationsBackendService } from "./core/services/configurations_backend.service";
 import { LabelBackendService } from "./core/services/label_backend.service";
-import { MockLabelService } from "./core/mocks/mock-label.service";
+import { TagBackendService } from "./core/services/tag_backend.service";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -42,6 +45,12 @@ export const appConfig: ApplicationConfig = {
             useClass: environment.production
                 ? LabelBackendService
                 : MockLabelService,
+        },
+        {
+            provide: ConfigurationsService,
+            useClass: environment.production
+                ? ConfigurationsBackendService
+                : MockConfigurationsService,
         },
         provideRouter(routes),
         provideAnimationsAsync(),

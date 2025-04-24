@@ -57,6 +57,13 @@ export type Tag = {
     values: Value[];
 };
 
+export type Configurations = {
+    asset_types: string[];
+
+    missing_attribution_report_url?: string;
+    billing_report_url?: string;
+};
+
 export type Response = {
     detail: string;
 };

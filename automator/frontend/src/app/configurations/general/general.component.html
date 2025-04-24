@@ -1,46 +1,59 @@
-<div class="full-height container">
-  <div class="sub-title">Asset Types to Monitor</div>
-
-  <mat-form-field id="asset-types" appearance="outline">
-    <mat-label>Choose types</mat-label>
-    <mat-select [formControl]="chosenAssetTypes" multiple>
-      <mat-select-trigger>
-        <!-- Custom trigger to show selected count -->
-        {{ chosenAssetTypes.value?.length || 0 }} types selected
-      </mat-select-trigger>
-      @for (assetType of assetTypes; track assetType) {
-        <mat-option [value]="assetType">{{ assetType }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <div class="sub-title">Missing Attribution Report URL</div>
-
-  <mat-form-field class="text-config" appearance="outline">
-    <!-- Added appearance -->
-    <input
-      matInput
-      [formControl]="missingAttributionUrl"
-      placeholder="Ex. https://lookerstudio.google.com/embed/reporting/..."
-    />
-    <mat-hint>Enter the full embed URL for the report.</mat-hint>
-  </mat-form-field>
-
-  <div class="sub-title">Billing Report URL</div>
-
-  <mat-form-field class="text-config" appearance="outline">
-    <input
-      matInput
-      [formControl]="billingUrl"
-      placeholder="Ex. https://lookerstudio.google.com/embed/reporting/..."
-    />
-    <mat-hint>Enter the full embed URL for the report.</mat-hint>
-  </mat-form-field>
-
-  <div class="actions">
-    <!-- Container for the button -->
-    <button mat-raised-button color="primary" (click)="saveConfigurations()">
-      Save configurations
-    </button>
+@if (loading) {
+  <div class="container-center loading-container">
+    <div class="loading-text">Loading general configurations...</div>
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </div>
-</div>
+} @else {
+  <div class="full-height container">
+    <div class="sub-title">Asset Types to Monitor</div>
+
+    <mat-form-field id="asset-types" appearance="outline">
+      <mat-label>Choose types</mat-label>
+      <mat-select [formControl]="chosenAssetTypes" multiple>
+        <mat-select-trigger>
+          <!-- Custom trigger to show selected count -->
+          {{ chosenAssetTypes.value?.length || 0 }} types selected
+        </mat-select-trigger>
+        <!-- *** Iterate over availableAssetTypes *** -->
+        @for (assetType of availableAssetTypes; track assetType) {
+          <mat-option [value]="assetType">{{ assetType }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <div class="sub-title">Missing Attribution Report URL</div>
+
+    <mat-form-field class="text-config" appearance="outline">
+      <!-- Added appearance -->
+      <input
+        matInput
+        [formControl]="missingAttributionUrl"
+        placeholder="Ex. https://lookerstudio.google.com/embed/reporting/..."
+      />
+      <mat-hint>Enter the full embed URL for the report.</mat-hint>
+    </mat-form-field>
+
+    <div class="sub-title">Billing Report URL</div>
+
+    <mat-form-field class="text-config" appearance="outline">
+      <input
+        matInput
+        [formControl]="billingUrl"
+        placeholder="Ex. https://lookerstudio.google.com/embed/reporting/..."
+      />
+      <mat-hint>Enter the full embed URL for the report.</mat-hint>
+    </mat-form-field>
+
+    <div class="actions">
+      <!-- Container for the button -->
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="saving"
+        (click)="saveConfigurations()"
+      >
+        Save configurations
+      </button>
+    </div>
+  </div>
+}
