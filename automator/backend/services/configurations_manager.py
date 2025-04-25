@@ -19,33 +19,72 @@ import logging
 from google.api_core.exceptions import NotFound
 from services.clients import ClientFactory
 
+## Configurations
 CONFIG_FILE_PATH = "app_config.json"
 DEFAULT_CONFIG = {"asset_types": [], "report_urls": {}}
+
+## Label policies
+POLICY_LABELS_FILE_PATH = "label_policies.json"
+DEFAULT_POLICY_LABEL = {}
 
 
 def load_configurations(gcs_bucket_name, config_file_path=CONFIG_FILE_PATH) -> dict:
     """Loads configurations from a JSON file in GCS."""
-    client = ClientFactory.get_storage_client()
-
-    try:
-        bucket = client.get_bucket(gcs_bucket_name)
-        blob = bucket.blob(config_file_path)
-        config_str = blob.download_as_text()
-        return json.loads(config_str)
-    except NotFound:
-        logging.warning(f"Config file gs://{gcs_bucket_name}/{config_file_path} not found. Using default.")
-        return DEFAULT_CONFIG
-    except json.JSONDecodeError:
-        logging.error(f"Invalid JSON in config file gs://{gcs_bucket_name}/{config_file_path}. Using default.")
-        return DEFAULT_CONFIG
+    return _load_dict_from_gcs(gcs_bucket_name, config_file_path, DEFAULT_CONFIG)
 
 
 def store_configurations(configurations: dict, gcs_bucket_name: str, config_file_path=CONFIG_FILE_PATH):
     """Saves configurations as a JSON file to GCS."""
+    _store_dict_to_gcs(configurations, gcs_bucket_name, config_file_path)
+
+
+def load_policy_labels(gcs_bucket_name, file_path=POLICY_LABELS_FILE_PATH) -> dict:
+    """Loads policy from a JSON file in GCS."""
+    return _load_dict_from_gcs(gcs_bucket_name, file_path, DEFAULT_POLICY_LABEL)
+
+
+def update_policy_labels(policy: dict, gcs_bucket_name, file_path=POLICY_LABELS_FILE_PATH):
+    """Update policy from a JSON file in GCS."""
+    policies = load_policy_labels(gcs_bucket_name)
+
+    # Add or update the given policy
+    policies.update(policy)
+
+    _store_dict_to_gcs(policies, gcs_bucket_name, POLICY_LABELS_FILE_PATH)
+
+def delete_policy_labels(policy_key: str, gcs_bucket_name, file_path=POLICY_LABELS_FILE_PATH):
+    """Delete policy from a JSON file in GCS."""
+    policies = load_policy_labels(gcs_bucket_name)
+
+    # Delete the given policy key
+    if policy_key in policies:
+        policies.pop(policy_key)
+
+    _store_dict_to_gcs(policies, gcs_bucket_name, POLICY_LABELS_FILE_PATH)
+
+def _load_dict_from_gcs(gcs_bucket_name: str, file_path: str, default=None) -> dict:
+    """Loads a JSON file from GCS."""
+    client = ClientFactory.get_storage_client()
+
+    try:
+        bucket = client.get_bucket(gcs_bucket_name)
+        blob = bucket.blob(file_path)
+        config_str = blob.download_as_text()
+        return json.loads(config_str)
+    except (NotFound, json.JSONDecodeError) as e:
+        if not default:
+            raise e
+
+        logging.error(f"Not found or invalid JSON in file gs://{gcs_bucket_name}/{file_path}. Using defaults.")
+        return default
+
+
+def _store_dict_to_gcs(content: dict, gcs_bucket_name: str, file_path: str):
+    """Saves dict as a JSON file to GCS."""
 
     client = ClientFactory.get_storage_client()
 
     bucket = client.get_bucket(gcs_bucket_name)
-    blob = bucket.blob(config_file_path)
-    config_str = json.dumps(configurations, indent=2)
+    blob = bucket.blob(file_path)
+    config_str = json.dumps(content, indent=2)
     blob.upload_from_string(config_str, content_type="application/json")

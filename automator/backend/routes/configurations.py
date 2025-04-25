@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
+from typing import Dict, List
 from fastapi import APIRouter, Depends, status
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 from routes.dependencies import get_gcs_bucket_name
-from services.configurations_manager import load_configurations, store_configurations
+from services import configurations_manager
 
 router = APIRouter()
 
@@ -24,16 +24,34 @@ class Configurations(BaseModel):
     asset_types: List[str]
     report_urls: dict[str, str]
 
+class LabelPolicy(RootModel[Dict[str, List[str]]]):
+    pass
+
 @router.get("", status_code=status.HTTP_200_OK, response_model=Configurations)
-async def fetch_configurations(gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
+def fetch_configurations(gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
     """Fetch the configurations."""
 
-    config_data = load_configurations(gcs_bucket_name)
+    config_data = configurations_manager.load_configurations(gcs_bucket_name)
     return Configurations(**config_data)
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=dict)
-async def save_configurations(configurations: Configurations, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
+def save_configurations(configurations: Configurations, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
     """Save the configurations."""
 
-    store_configurations(configurations.model_dump(), gcs_bucket_name)
+    configurations_manager.store_configurations(configurations.model_dump(), gcs_bucket_name)
     return {"detail": "Configurations saved successfully."}
+
+@router.get("/policy/label", status_code=status.HTTP_200_OK, response_model=dict)
+def fetch_label_policy(gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
+    """Fetch label policies."""
+    return configurations_manager.load_policy_labels(gcs_bucket_name)
+
+@router.post("/policy/label", status_code=status.HTTP_204_NO_CONTENT)
+def update_label_policy(policy: LabelPolicy, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
+    """Update label policy."""
+    configurations_manager.update_policy_labels(policy.model_dump(), get_gcs_bucket_name)
+
+@router.delete("/policy/label/{key}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_label_policy(key: str, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
+    """Delete label policy."""
+    configurations_manager.delete_policy_labels(key, get_gcs_bucket_name)
