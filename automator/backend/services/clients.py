@@ -14,7 +14,7 @@
 
 """Client factory for Google Cloud APIs."""
 
-from google.cloud import resourcemanager_v3, asset_v1
+from google.cloud import resourcemanager_v3, asset_v1, storage
 from google.api_core.client_options import ClientOptions
 
 
@@ -79,3 +79,8 @@ class ClientFactory:
     def get_asset_client(cls) -> asset_v1.AssetServiceClient:
         """Gets Asset client"""
         return cls.get_client(asset_v1.AssetServiceClient)
+
+    @classmethod
+    def get_storage_client(cls) -> storage.Client:
+        """Get Cloud Storage client."""
+        return cls.get_client(storage.Client)

@@ -2,5 +2,6 @@ fastapi[standard]
 google-cloud-resource-manager
 google-cloud-asset
 google-api-python-client
+google-cloud-storage
 pandas
 pytest

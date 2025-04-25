@@ -24,6 +24,7 @@ export class ReportsComponent {
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.error = undefined;
+      this.url = null;
 
       const reportType = params.get("reportType");
       const dashboards: { [key: string]: string } = environment.dashboards;

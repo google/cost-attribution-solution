@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from typing import List
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
+from routes.dependencies import get_gcs_bucket_name
+from services.configurations_manager import load_configurations, store_configurations
 
 router = APIRouter()
 
@@ -22,18 +24,16 @@ class Configurations(BaseModel):
     asset_types: List[str]
     report_urls: dict[str, str]
 
-@router.get("", status_code=status.HTTP_200_OK, response_model=dict)
-async def fetch_configurations():
+@router.get("", status_code=status.HTTP_200_OK, response_model=Configurations)
+async def fetch_configurations(gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
     """Fetch the configurations."""
 
-    return {}
+    config_data = load_configurations(gcs_bucket_name)
+    return Configurations(**config_data)
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=dict)
-async def save_configurations(configurations: Configurations):
+async def save_configurations(configurations: Configurations, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
     """Save the configurations."""
 
-    print(configurations)
-
-    return {
-        "details": 'OK'
-    }
+    store_configurations(configurations.model_dump(), gcs_bucket_name)
+    return {"detail": "Configurations saved successfully."}
