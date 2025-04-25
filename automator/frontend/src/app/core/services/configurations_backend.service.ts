@@ -18,7 +18,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { Observable } from "rxjs";
 import { ConfigurationsService } from "../model/ConfigurationService";
-import { Configurations, Response } from "../model/models";
+import { Configurations, LabelPolicy, Response } from "../model/models";
 import { SERVICE_CONFIG } from "../model/values";
 
 @Injectable()
@@ -41,6 +41,25 @@ export class ConfigurationsBackendService implements ConfigurationsService {
     return this.http.post<Response>(
       this.apiUrl + "/configurations",
       configurations,
+    );
+  }
+
+  fetchLabelPolicies(): Observable<LabelPolicy> {
+    return this.http.get<LabelPolicy>(
+      this.apiUrl + "/configurations/policy/label",
+    );
+  }
+
+  updateLabelPolicies(policy: LabelPolicy): Observable<void> {
+    return this.http.post<void>(
+      this.apiUrl + "/configurations/policy/label",
+      policy,
+    );
+  }
+
+  deleteLabelPolicies(policy_key: string): Observable<void> {
+    return this.http.delete<void>(
+      this.apiUrl + "/configurations/policy/label/" + policy_key,
     );
   }
 }

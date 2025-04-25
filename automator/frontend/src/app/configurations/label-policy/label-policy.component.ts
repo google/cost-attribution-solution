@@ -1,37 +1,33 @@
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 import { Component, ViewChild } from "@angular/core";
-import { FormsModule } from "@angular/forms"; // Keep FormsModule
+import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
-import {
-    MatChipInputEvent,
-    MatChipsModule,
-} from "@angular/material/chips";
+import { MatChipInputEvent, MatChipsModule } from "@angular/material/chips";
+import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatIconModule } from "@angular/material/icon";
-import { MatInputModule } from "@angular/material/input"; // Keep MatInputModule
+import { MatInputModule } from "@angular/material/input";
 import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatSort, MatSortModule } from "@angular/material/sort";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
-import { MatFormFieldModule } from "@angular/material/form-field"; // Keep MatFormFieldModule
-
-type DisplayPolicyValue = { value: string };
+import { finalize } from "rxjs";
+import { ConfigurationsService } from "../../core/model/ConfigurationService";
 
 type DisplayPolicy = {
-    id: string;
     name: string;
-    values?: DisplayPolicyValue[];
+    values: string[];
     isEditing?: boolean;
-    _originalState?: { name: string; values?: DisplayPolicyValue[] };
+    _originalState?: { name: string; values: string[] };
 };
 
 @Component({
     selector: "app-label-policy",
     standalone: true,
     imports: [
-        FormsModule, // Keep
-        MatInputModule, // Keep
+        FormsModule,
+        MatInputModule,
         MatButtonModule,
         MatTableModule,
         MatProgressBarModule,
@@ -40,7 +36,7 @@ type DisplayPolicy = {
         MatSortModule,
         MatMenuModule,
         MatIconModule,
-        MatFormFieldModule, // Keep
+        MatFormFieldModule,
     ],
     templateUrl: "./label-policy.component.html",
     styleUrl: "./label-policy.component.scss",
@@ -52,9 +48,11 @@ export class LabelPolicyComponent {
     deleting: boolean = false;
 
     readonly separatorKeysCodes = [ENTER, COMMA] as const;
-    private newPolicyCounter = 0;
 
-    constructor(private _snackBar: MatSnackBar) {
+    constructor(
+        private _snackBar: MatSnackBar,
+        private service: ConfigurationsService,
+    ) {
         this.loadData();
     }
 
@@ -74,116 +72,156 @@ export class LabelPolicyComponent {
 
     loadData() {
         this.loading = true;
-        const mockData: DisplayPolicy[] = [
-            { id: "1", name: "cost-center", values: [{ value: "finops" }, { value: "rnd" }] },
-            { id: "2", name: "environment", values: [{ value: "prod" }, { value: "dev" }, { value: "staging" }] },
-            { id: "3", name: "owner" },
-        ];
-        setTimeout(() => {
-            this.dataSource.data = mockData.map((p) => ({ ...p, isEditing: false }));
-            this.loading = false;
-        }, 1500);
+
+        this.service
+            .fetchLabelPolicies()
+            .pipe(finalize(() => (this.loading = false)))
+            .subscribe((policies) => {
+                this.dataSource.data = Object.entries(policies).map(
+                    ([k, v]) => ({
+                        name: k,
+                        values: v,
+                    }),
+                );
+            });
     }
 
     createNew() {
         if (this.isAnyRowEditing) {
-            this._snackBar.open("Please save or cancel the current edit first.", "Close", { duration: 3000 });
+            this._snackBar.open(
+                "Please save or cancel the current edit first.",
+                "Close",
+                { duration: 3000 },
+            );
             return;
         }
-        this.newPolicyCounter++;
-        const newPolicy: DisplayPolicy = { id: `new-${this.newPolicyCounter}`, name: "", values: [], isEditing: true };
+
+        const newPolicy: DisplayPolicy = {
+            name: "",
+            values: [],
+            isEditing: true,
+        };
+
         this.dataSource.data = [newPolicy, ...this.dataSource.data];
-        if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
+
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+        }
     }
 
-    // Check if the key is a duplicate, excluding the row itself
     isDuplicateKey(policyToCheck: DisplayPolicy): boolean {
         const proposedKey = policyToCheck.name?.trim().toLowerCase();
-        if (!proposedKey) return false; // Not a duplicate if empty
 
-        return this.dataSource.data.some(
-            existingPolicy =>
-                existingPolicy.id !== policyToCheck.id && // Exclude self
-                existingPolicy.name.trim().toLowerCase() === proposedKey
+        return (
+            this.dataSource.data.filter(
+                (existingPolicy) =>
+                    existingPolicy.name.trim().toLowerCase() === proposedKey,
+            ).length > 1
         );
     }
 
     savePolicy(policy: DisplayPolicy) {
-        // Keep the basic empty check here as a safeguard, though the button should be disabled
         if (!policy.name || policy.name.trim() === "") {
-            this._snackBar.open("Policy Key cannot be empty (save prevented).", "Close", { duration: 3000 });
+            this._snackBar.open(
+                "Policy Key cannot be empty (save prevented).",
+                "Close",
+                { duration: 3000 },
+            );
             return;
         }
-        // Duplicate check is now primarily handled by disabling the button,
-        // but could be added here again as a final server-side style check if desired.
 
-        console.log("Saving policy:", policy);
-        if (policy.id.startsWith("new-")) { policy.id = `saved-${Date.now()}`; }
-        policy.isEditing = false;
-        delete policy._originalState;
-        this.dataSource.data = [...this.dataSource.data];
-        this._snackBar.open(`Policy ${policy.name} saved.`, "Close", { duration: 2000 });
-    }
+        this.service
+            .updateLabelPolicies({ [policy.name]: policy.values })
+            .subscribe((res) => {
+                policy.isEditing = false;
+                delete policy._originalState;
 
-    cancelAdd(policyToCancel: DisplayPolicy) {
-        this.dataSource.data = this.dataSource.data.filter((p) => p.id !== policyToCancel.id);
-        console.log("Cancelled adding policy");
+                this._snackBar.open(`Policy ${policy.name} saved.`, "Close", {
+                    duration: 3000,
+                });
+            });
     }
 
     cancelEdit(policy: DisplayPolicy) {
+        // It's an edit
         if (policy._originalState) {
             policy.name = policy._originalState.name;
-            policy.values = policy._originalState.values ? policy._originalState.values.map(v => ({ ...v })) : [];
+            policy.values = policy._originalState.values;
+
+            policy.isEditing = false;
+            delete policy._originalState;
+        } else {
+            this.dataSource.data = this.dataSource.data.filter(
+                (p) => !p.isEditing,
+            );
         }
-        policy.isEditing = false;
-        delete policy._originalState;
-        this.dataSource.data = [...this.dataSource.data];
-        console.log("Cancelled editing policy:", policy.id);
     }
 
     addValue(policy: DisplayPolicy, event: MatChipInputEvent): void {
         const value = (event.value || "").trim().toLowerCase();
         if (value) {
-            if (!policy.values) { policy.values = []; }
-            if (!policy.values.some((v) => v.value === value)) { policy.values.push({ value: value }); }
+            if (!policy.values.includes(value)) {
+                policy.values.push(value);
+            }
         }
         event.chipInput!.clear();
     }
 
-    removeValue(policy: DisplayPolicy, valueToRemove: DisplayPolicyValue): void {
+    removeValue(policy: DisplayPolicy, valueToRemove: string): void {
         if (policy.values) {
-            policy.values = policy.values.filter((v) => v.value !== valueToRemove.value);
+            policy.values = policy.values.filter((v) => v !== valueToRemove);
         }
     }
 
     editResourceTags(policy: DisplayPolicy) {
         if (this.isAnyRowEditing) {
-            this._snackBar.open("Please save or cancel the current edit first.", "Close", { duration: 3000 });
+            this._snackBar.open(
+                "Please save or cancel the current edit first.",
+                "Close",
+                { duration: 3000 },
+            );
             return;
         }
-        policy._originalState = { name: policy.name, values: policy.values ? policy.values.map(v => ({ ...v })) : [] };
+
+        policy._originalState = {
+            name: policy.name,
+            values: [...policy.values],
+        };
+
         policy.isEditing = true;
-        this.dataSource.data = [...this.dataSource.data];
     }
 
     confirmDeleteTag(policy: DisplayPolicy) {
         if (policy.isEditing) {
-            this._snackBar.open("Cannot delete a policy while it is being edited.", "Close", { duration: 3000 });
+            this._snackBar.open(
+                "Cannot delete a policy while it is being edited.",
+                "Close",
+                { duration: 3000 },
+            );
             return;
         }
+
         this.deleting = true;
-        console.log("Deleting Policy:", policy);
-        setTimeout(() => {
-            this.dataSource.data = this.dataSource.data.filter((item) => item.id !== policy.id);
-            this._snackBar.open(`Policy ${policy.name} deleted`, "Close", { duration: 2000 });
-            this.deleting = false;
-        }, 1000);
+
+        this.service
+            .deleteLabelPolicies(policy.name)
+            .pipe(finalize(() => (this.deleting = false)))
+            .subscribe((res) => {
+                this.dataSource.data = this.dataSource.data.filter(
+                    (item) => item.name !== policy.name,
+                );
+                this._snackBar.open(`Policy ${policy.name} deleted`, "Close", {
+                    duration: 2000,
+                });
+            });
     }
 
     applyFilter(event: Event) {
         const filterValue = (event.target as HTMLInputElement).value;
         this.dataSource.filter = filterValue.trim().toLowerCase();
-        if (this.dataSource.paginator) { this.dataSource.paginator.firstPage(); }
+        if (this.dataSource.paginator) {
+            this.dataSource.paginator.firstPage();
+        }
     }
 
     clearFilter(inputElement: HTMLInputElement) {

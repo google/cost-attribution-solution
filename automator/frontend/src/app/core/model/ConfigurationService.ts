@@ -15,12 +15,18 @@
 */
 
 import { Observable } from "rxjs";
-import { Configurations, Response } from "./models";
+import { Configurations, LabelPolicy, Response } from "./models";
 
 export abstract class ConfigurationsService {
     abstract assetTypes(): Observable<Array<string>>;
+
     abstract fetchConfigurations(): Observable<Configurations>;
     abstract saveConfigurations(
         configurations: Configurations,
     ): Observable<Response>;
+
+    // Label Policies
+    abstract fetchLabelPolicies(): Observable<LabelPolicy>;
+    abstract updateLabelPolicies(policy: LabelPolicy): Observable<void>;
+    abstract deleteLabelPolicies(policy_key: string): Observable<void>;
 }

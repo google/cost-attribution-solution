@@ -17,7 +17,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, delay, of } from "rxjs";
 import { ConfigurationsService } from "../model/ConfigurationService";
-import { Configurations, Response } from "../model/models";
+import { Configurations, LabelPolicy, Response } from "../model/models";
 
 @Injectable()
 export class MockConfigurationsService implements ConfigurationsService {
@@ -67,5 +67,19 @@ export class MockConfigurationsService implements ConfigurationsService {
     return of({
       detail: "OK",
     }).pipe(delay(this.DELAY));
+  }
+
+  fetchLabelPolicies(): Observable<LabelPolicy> {
+    return of({
+      environments: ["dev", "hom", "prd"],
+    });
+  }
+
+  updateLabelPolicies(policy: LabelPolicy): Observable<void> {
+    return of();
+  }
+
+  deleteLabelPolicies(policy_key: string): Observable<void> {
+    return of();
   }
 }

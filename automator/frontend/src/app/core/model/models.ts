@@ -57,6 +57,8 @@ export type Tag = {
     values: Value[];
 };
 
+export type LabelPolicy = { [key: string]: string[] };
+
 export type Configurations = {
     asset_types: string[];
     report_urls: { [key: string]: string };

@@ -87,7 +87,7 @@
                 <mat-chip-grid #chipGrid aria-label="Allowed values">
                   @for (value of element.values; track value.value) {
                     <mat-chip-row (removed)="removeValue(element, value)">
-                      {{ value.value }}
+                      {{ value }}
                       <button
                         matChipRemove
                         aria-label="'remove ' + value.value"
@@ -111,7 +111,7 @@
               <div class="tag-chip-container">
                 @if (element.values && element.values.length > 0) {
                   @for (value of element.values; track value.value) {
-                    <mat-chip class="tag-chip">{{ value.value }}</mat-chip>
+                    <mat-chip class="tag-chip">{{ value }}</mat-chip>
                   }
                 } @else {
                   <span class="any-value-text">Any value allowed</span>
@@ -163,11 +163,7 @@
                 mat-icon-button
                 color="warn"
                 aria-label="Cancel edit"
-                (click)="
-                  element.id.startsWith('new-')
-                    ? cancelAdd(element)
-                    : cancelEdit(element)
-                "
+                (click)="cancelEdit(element)"
                 matTooltip="Cancel"
               >
                 <mat-icon>cancel</mat-icon>
