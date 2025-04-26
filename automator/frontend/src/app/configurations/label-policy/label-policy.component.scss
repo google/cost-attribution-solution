@@ -8,23 +8,22 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  overflow-y: auto; // Allow vertical scroll if content overflows
+  overflow-y: auto;
 }
 
 .container {
   padding: 1% 1.5%;
 }
 
-// Styling for the Add button and Filter field
 .inner-container {
-  margin-bottom: 16px; // Space below the add button
+  margin-bottom: 16px;
   flex-shrink: 0;
 }
 
 .filter {
   flex-shrink: 0;
   width: 100%;
-  margin-bottom: 16px; // Space below the filter
+  margin-bottom: 16px;
 }
 
 .loading-container {
@@ -32,28 +31,27 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%; // Take full height for centering
+  height: 100%;
 }
 
 .table-container {
-  flex-grow: 1; // Allow table container to grow
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; // Needed for flex-grow in some browsers
-  overflow: hidden; // Hide overflow within the container itself
+  min-height: 0;
+  overflow: hidden;
 
   .mat-elevation-z2.full-table {
-    flex-grow: 1; // Allow table to grow
-    overflow: auto; // Make the table itself scrollable
+    flex-grow: 1;
+    overflow: auto;
   }
 
   mat-paginator {
-    flex-shrink: 0; // Paginator should not shrink
-    flex-grow: 0; // Paginator should not grow
+    flex-shrink: 0;
+    flex-grow: 0;
   }
 }
 
-// Chip styling
 .tag-chip-container {
   display: flex;
   justify-content: flex-start;
@@ -80,17 +78,15 @@
   display: inline-block;
 }
 
-// Icon styling
 .delete-icon {
   color: #e74545;
 }
 
-// Column widths
 .mat-column-edit,
 .mat-column-delete {
-  width: 60px;
+  width: 80px;
   text-align: center;
-  flex: 0 0 60px;
+  flex: 0 0 80px;
 }
 
 .mat-column-name {
@@ -105,27 +101,22 @@
   padding-right: 10px;
 }
 
-// No data row
 .no-data {
-  text-align: center;
-  padding: 20px;
+  padding: 1%;
   color: grey;
   font-style: italic;
 }
 
-// Progress bar
 .delete-progress {
   width: 40px;
   height: 4px;
   margin: auto;
 }
 
-// Styles for inline editing fields
 .mat-mdc-cell .inline-edit-field {
   width: 95%;
 }
 
-// Highlight editing row slightly and add padding
 .editing-row {
   background-color: rgba(63, 81, 181, 0.04);
 

@@ -72,7 +72,7 @@ def _load_dict_from_gcs(gcs_bucket_name: str, file_path: str, default=None) -> d
         config_str = blob.download_as_text()
         return json.loads(config_str)
     except (NotFound, json.JSONDecodeError) as e:
-        if not default:
+        if default is None:
             raise e
 
         logging.error(f"Not found or invalid JSON in file gs://{gcs_bucket_name}/{file_path}. Using defaults.")

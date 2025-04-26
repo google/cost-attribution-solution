@@ -49,9 +49,9 @@ def fetch_label_policy(gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
 @router.post("/policy/label", status_code=status.HTTP_204_NO_CONTENT)
 def update_label_policy(policy: LabelPolicy, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
     """Update label policy."""
-    configurations_manager.update_policy_labels(policy.model_dump(), get_gcs_bucket_name)
+    configurations_manager.update_policy_labels(policy.model_dump(), gcs_bucket_name)
 
 @router.delete("/policy/label/{key}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_label_policy(key: str, gcs_bucket_name: str = Depends(get_gcs_bucket_name)):
     """Delete label policy."""
-    configurations_manager.delete_policy_labels(key, get_gcs_bucket_name)
+    configurations_manager.delete_policy_labels(key, gcs_bucket_name)

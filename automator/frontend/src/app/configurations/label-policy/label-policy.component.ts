@@ -76,13 +76,20 @@ export class LabelPolicyComponent {
         this.service
             .fetchLabelPolicies()
             .pipe(finalize(() => (this.loading = false)))
-            .subscribe((policies) => {
-                this.dataSource.data = Object.entries(policies).map(
-                    ([k, v]) => ({
-                        name: k,
-                        values: v,
-                    }),
-                );
+            .subscribe({
+                next: (policies) => {
+                    this.dataSource.data = Object.entries(policies).map(
+                        ([k, v]) => ({
+                            name: k,
+                            values: v,
+                        }),
+                    );
+                },
+                error: (err) => {
+                    this._snackBar.open(`Failed: ${err}`, "Close", {
+                        duration: 10000,
+                    });
+                },
             });
     }
 
@@ -132,13 +139,24 @@ export class LabelPolicyComponent {
 
         this.service
             .updateLabelPolicies({ [policy.name]: policy.values })
-            .subscribe((res) => {
-                policy.isEditing = false;
-                delete policy._originalState;
+            .subscribe({
+                next: (_) => {
+                    policy.isEditing = false;
+                    delete policy._originalState;
 
-                this._snackBar.open(`Policy ${policy.name} saved.`, "Close", {
-                    duration: 3000,
-                });
+                    this._snackBar.open(
+                        `Policy ${policy.name} saved.`,
+                        "Close",
+                        {
+                            duration: 3000,
+                        },
+                    );
+                },
+                error: (err) => {
+                    this._snackBar.open(`Failed: ${err}`, "Close", {
+                        duration: 10000,
+                    });
+                },
             });
     }
 
@@ -206,13 +224,25 @@ export class LabelPolicyComponent {
         this.service
             .deleteLabelPolicies(policy.name)
             .pipe(finalize(() => (this.deleting = false)))
-            .subscribe((res) => {
-                this.dataSource.data = this.dataSource.data.filter(
-                    (item) => item.name !== policy.name,
-                );
-                this._snackBar.open(`Policy ${policy.name} deleted`, "Close", {
-                    duration: 2000,
-                });
+            .subscribe({
+                next: (_) => {
+                    this.dataSource.data = this.dataSource.data.filter(
+                        (item) => item.name !== policy.name,
+                    );
+                    this._snackBar.open(
+                        `Policy ${policy.name} deleted`,
+                        "Close",
+                        {
+                            duration: 2000,
+                        },
+                    );
+                },
+
+                error: (err) => {
+                    this._snackBar.open(`Failed: ${err}`, "Close", {
+                        duration: 10000,
+                    });
+                },
             });
     }
 

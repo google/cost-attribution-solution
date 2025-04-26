@@ -204,15 +204,15 @@
           [class.editing-row]="row.isEditing"
         ></mat-row>
 
-        <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+        <ng-container matColumnDef="noData">
+          <mat-cell class="no-data" *matNoDataRow>
             @if (input.value) {
               <span>No policies found matching "{{ input.value }}"</span>
             } @else {
               <span>No label policies defined.</span>
             }
-          </td>
-        </tr>
+          </mat-cell>
+        </ng-container>
       </mat-table>
       <mat-paginator
         [pageSizeOptions]="[10, 20, 50, 100]"
