@@ -30,11 +30,11 @@ provider "google" {
 
 # Enable APIs
 module "project-services" {
-  source  = "terraform-google-modules/project-factory/google//modules/project_services"
-  version = "4.0.0"
+  source                      = "terraform-google-modules/project-factory/google//modules/project_services"
+  version                     = "4.0.0"
   disable_services_on_destroy = false
 
-  project_id = var.project_id
+  project_id    = var.project_id
   activate_apis = var.activate_apis
 }
 
@@ -43,19 +43,19 @@ module "sa" {
   source  = "terraform-google-modules/service-accounts/google//modules/simple-sa"
   version = "~> 4.0"
 
-  project_id = var.project_id
-  name       = "cas-tag-automator"
+  project_id    = var.project_id
+  name          = "cas-tag-automator"
   project_roles = []
 }
 
 module "project-iam-bindings" {
   count = length(var.organization_id) == 0 ? 1 : 0
 
-  source   = "terraform-google-modules/iam/google//modules/projects_iam"
-  version  = "~> 8.0"
+  source  = "terraform-google-modules/iam/google//modules/projects_iam"
+  version = "~> 8.0"
 
   projects = ["${var.project_id}"]
-  mode          = "additive"
+  mode     = "additive"
 
   bindings = {
     "roles/cloudasset.viewer" = [
@@ -98,9 +98,9 @@ resource "google_cloud_run_v2_service" "frontend" {
 
 resource "google_cloud_run_service_iam_binding" "binding_fe" {
   location = google_cloud_run_v2_service.frontend.location
-  project = google_cloud_run_v2_service.frontend.project
-  service = google_cloud_run_v2_service.frontend.name
-  role = "roles/run.invoker"
+  project  = google_cloud_run_v2_service.frontend.project
+  service  = google_cloud_run_v2_service.frontend.name
+  role     = "roles/run.invoker"
   members = [
     "serviceAccount:service-${data.google_project.project.number}@gcp-sa-iap.iam.gserviceaccount.com",
   ]
@@ -116,6 +116,12 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg_fe" {
   }
 }
 
+resource "google_storage_bucket" "cas-config" {
+  project  = var.project_id
+  name     = "${var.project_id}-cas-config"
+  location = var.region
+}
+
 ## Backend - Cloud run Container
 resource "google_cloud_run_v2_service" "backend" {
   name     = "cas-backend"
@@ -129,8 +135,12 @@ resource "google_cloud_run_v2_service" "backend" {
     containers {
       image = "gcr.io/${var.project_id}/tag-automator-backend:${var.tag_name}"
       env {
+        name  = "CONFIG_BUCKET"
+        value = "${var.project_id}-cas-config"
+      }
+      env {
         name  = "SCOPE"
-        value = "organizations/${var.organization_id}" 
+        value = "organizations/${var.organization_id}"
       }
     }
     service_account = module.sa.email
@@ -139,9 +149,9 @@ resource "google_cloud_run_v2_service" "backend" {
 
 resource "google_cloud_run_service_iam_binding" "binding_be" {
   location = google_cloud_run_v2_service.backend.location
-  project = google_cloud_run_v2_service.backend.project
-  service = google_cloud_run_v2_service.backend.name
-  role = "roles/run.invoker"
+  project  = google_cloud_run_v2_service.backend.project
+  service  = google_cloud_run_v2_service.backend.name
+  role     = "roles/run.invoker"
   members = [
     "serviceAccount:service-${data.google_project.project.number}@gcp-sa-iap.iam.gserviceaccount.com",
   ]
@@ -159,7 +169,7 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg_be" {
 
 ## Load balancer
 resource "google_compute_url_map" "urlmap" {
-  name        = "cas-url-map"
+  name            = "cas-url-map"
   default_service = module.lb-http.backend_services["frontend"].self_link
 
   host_rule {
@@ -248,12 +258,12 @@ resource "google_iap_brand" "project_brand" {
 # Oauth client ID and Secret
 resource "google_iap_client" "project_client" {
   display_name = "Test Client"
-  brand        =  google_iap_brand.project_brand.name
+  brand        = google_iap_brand.project_brand.name
 }
 
 data "google_iam_policy" "iap" {
   binding {
-    role = "roles/iap.httpsResourceAccessor"
+    role    = "roles/iap.httpsResourceAccessor"
     members = var.iap_members
   }
 }

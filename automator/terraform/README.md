@@ -42,8 +42,8 @@ Follow these steps to deploy the application:
 
     ```bash
     cd backend
-    docker build -t gcr.io/winter-clone-437922-b4/tag-automator-backend:latest .
-    docker push gcr.io/winter-clone-437922-b4/tag-automator-backend:latest
+    docker build -t gcr.io/${YOUR_PROJECT_ID}/tag-automator-backend:latest .
+    docker push gcr.io/${YOUR_PROJECT_ID}/tag-automator-backend:latest
     ```
 
 3.  **Build and Push Frontend Docker Image:**
