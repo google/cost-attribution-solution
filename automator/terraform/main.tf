@@ -90,7 +90,7 @@ resource "google_cloud_run_v2_service" "frontend" {
 
   template {
     containers {
-      image = "gcr.io/${var.project_id}/tag-automator-frontend:${var.tag_name}"
+      image = "us.gcr.io/${var.project_id}/tag-automator-frontend:${var.tag_name}"
     }
     service_account = module.sa.email
   }
@@ -117,9 +117,18 @@ resource "google_compute_region_network_endpoint_group" "serverless_neg_fe" {
 }
 
 resource "google_storage_bucket" "cas-config" {
-  project  = var.project_id
-  name     = "${var.project_id}-cas-config"
-  location = var.region
+  project                     = var.project_id
+  name                        = "${var.project_id}-cas-config"
+  location                    = var.region
+  uniform_bucket_level_access = true
+}
+
+resource "google_storage_bucket_iam_member" "cas-config-iam" {
+  for_each = toset(["roles/storage.bucketViewer", "roles/storage.objectUser"])
+
+  bucket = google_storage_bucket.cas-config.name
+  role   = each.value
+  member = "serviceAccount:${module.sa.email}"
 }
 
 ## Backend - Cloud run Container
@@ -133,7 +142,7 @@ resource "google_cloud_run_v2_service" "backend" {
 
   template {
     containers {
-      image = "gcr.io/${var.project_id}/tag-automator-backend:${var.tag_name}"
+      image = "us.gcr.io/${var.project_id}/tag-automator-backend:${var.tag_name}"
       env {
         name  = "CONFIG_BUCKET"
         value = "${var.project_id}-cas-config"
@@ -251,7 +260,7 @@ module "lb-http" {
 # OAuth consent screen 
 resource "google_iap_brand" "project_brand" {
   support_email     = var.support_email_address
-  application_title = "IAP Cloud Run CAS"
+  application_title = "Tag Automator"
   project           = var.project_id
 }
 

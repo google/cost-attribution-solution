@@ -86,9 +86,15 @@ export class LabelPolicyComponent {
                     );
                 },
                 error: (err) => {
-                    this._snackBar.open(`Failed: ${err}`, "Close", {
-                        duration: 10000,
-                    });
+                    console.error(err);
+
+                    this._snackBar.open(
+                        `Failed to fetch policies. Please try again.`,
+                        "Close",
+                        {
+                            duration: 10000,
+                        },
+                    );
                 },
             });
     }
@@ -153,9 +159,15 @@ export class LabelPolicyComponent {
                     );
                 },
                 error: (err) => {
-                    this._snackBar.open(`Failed: ${err}`, "Close", {
-                        duration: 10000,
-                    });
+                    console.error(err);
+
+                    this._snackBar.open(
+                        `Failed to update policy. Please try again.`,
+                        "Close",
+                        {
+                            duration: 10000,
+                        },
+                    );
                 },
             });
     }
@@ -239,9 +251,15 @@ export class LabelPolicyComponent {
                 },
 
                 error: (err) => {
-                    this._snackBar.open(`Failed: ${err}`, "Close", {
-                        duration: 10000,
-                    });
+                    console.error(err);
+
+                    this._snackBar.open(
+                        `Failed to delete policy. Please try again.`,
+                        "Close",
+                        {
+                            duration: 10000,
+                        },
+                    );
                 },
             });
     }

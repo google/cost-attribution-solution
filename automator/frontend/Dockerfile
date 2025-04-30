@@ -13,11 +13,8 @@ RUN npm install
 # Copy the application code to the working directory
 COPY . .
 
-# Build the angular application development
-RUN npm run build --configuration development
-
 # Build the angular application production
-# RUN npm run build
+RUN node_modules/.bin/ng build
 
 # Expose the port that your application listens on
 EXPOSE 8080

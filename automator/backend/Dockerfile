@@ -13,4 +13,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 8080
 
-CMD ["fastapi", "run", "main.py"]
+CMD ["fastapi", "run", "--port", "8080", "main.py"]

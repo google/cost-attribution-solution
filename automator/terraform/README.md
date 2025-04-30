@@ -113,3 +113,14 @@ This error indicates that the IAP Brand already exists in your project. To resol
     ```
 
     -   This will align your Terraform state with the existing resource
+
+**Error: Error 400: Service account service-{your project number}@gcp-sa-iap.iam.gserviceaccount.com does not exist. **
+
+This Service Account should be created automically when you enable IAP API, so make sure it's active on your project.
+If, even with IAP enabled you still get the error, then you must [create it manually](https://cloud.google.com/iap/docs/enabling-cloud-run?hl=en#console) like this:
+
+`gcloud beta services identity create
+    --service=iap.googleapis.com
+    --project=PROJECT_ID`
+    
+After the above command, it should be created and you can proceed the installation.
