@@ -24,8 +24,8 @@ provider "google" {
 
   // These might be required if the quota project is different than the host project and are not associated with your credentials.
   // See https://registry.terraform.io/providers/hashicorp/google/latest/docs/guides/provider_reference#quota-management-configuration for more details.
-  //user_project_override = true
-  //billing_project = var.project_id
+  user_project_override = true
+  billing_project       = var.project_id
 }
 
 # Enable Cloud Resource Manager API
@@ -44,9 +44,9 @@ module "project-services" {
   source  = "terraform-google-modules/project-factory/google//modules/project_services"
   version = "4.0.0"
 
-  project_id = var.project_id
+  project_id    = var.project_id
   activate_apis = var.activate_apis
-  depends_on = [module.project-service-cloudresourcemanager]
+  depends_on    = [module.project-service-cloudresourcemanager]
 }
 
 resource "google_storage_bucket" "bucket_gcf_source" {
@@ -58,6 +58,15 @@ resource "google_storage_bucket" "bucket_gcf_source" {
   depends_on                  = [module.project-services]
 }
 
+module "sa" {
+  source  = "terraform-google-modules/service-accounts/google//modules/simple-sa"
+  version = "~> 4.0"
+
+  project_id    = var.project_id
+  name          = "cas-alert"
+  project_roles = []
+}
+
 module "cas_alert" {
   source = "../alert/deploy"
 
@@ -65,7 +74,7 @@ module "cas_alert" {
   project_id                 = var.project_id
   region                     = var.region
   bucket_gcf_source_name     = google_storage_bucket.bucket_gcf_source.name
-  service_account_email      = var.service_account_email
+  service_account_email      = module.sa.email
   notification_email_address = var.notification_email_address
   asset_types                = var.alert_asset_types
   depends_on                 = [module.project-services]
@@ -79,7 +88,7 @@ module "cas_report" {
   region                      = var.region
   location                    = var.location
   bucket_gcf_source_name      = google_storage_bucket.bucket_gcf_source.name
-  service_account_email       = var.service_account_email
+  service_account_email       = module.sa.email
   scheduler_cas_job_frequency = var.scheduler_cas_job_frequency
   depends_on                  = [module.project-services]
 }

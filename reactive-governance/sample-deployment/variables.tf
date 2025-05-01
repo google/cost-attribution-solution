@@ -39,10 +39,10 @@ variable "location" {
   type        = string
 }
 
-variable "service_account_email" {
-  description = "Value of the Service Account"
-  type        = string
-}
+# variable "service_account_email" {
+#   description = "Value of the Service Account"
+#   type        = string
+# }
 
 variable "notification_email_address" {
   description = "Email to receive alerts when resources with missing labels"
@@ -69,7 +69,7 @@ variable "alert_asset_types" {
 }
 
 variable "activate_apis" {
-  type = list(string)
+  type        = list(string)
   description = "List of APIs to enable for the project. This is necessary for some asset types to be correctly ingested by the feed."
   default = [
     "compute.googleapis.com",

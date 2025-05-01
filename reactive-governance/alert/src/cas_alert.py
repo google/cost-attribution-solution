@@ -19,7 +19,7 @@ import logging
 
 from google.cloud import storage
 
-GCS_BUCKET = f"{os.environ.get("GOOGLE_CLOUD_PROJECT")}-cas-config"
+GCS_BUCKET = f"{os.environ.get('GOOGLE_CLOUD_PROJECT')}-cas-config"
 ALLOWED_LABELS_FILE = os.environ.get("ALLOWED_LABELS_FILE", "label_policies.json")
 
 def read_dict_from_gcs(bucket_name, file_path, logger):
