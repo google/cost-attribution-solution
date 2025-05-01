@@ -186,6 +186,9 @@ export class TagsBindingsComponent {
   }
 
   private formatDisplayTags(tags: Binding[]) {
+    // To filter out tags out of configured scope
+    tags = tags.filter((t) => this.availableTags.getKeyName(t.id));
+
     if (tags.length == 0) return "-";
 
     return tags

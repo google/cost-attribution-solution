@@ -66,6 +66,16 @@ export class MockTagService implements TagService {
         location: "us-central1",
         name: "hello",
         tags: [
+          // Out of scope tag, should not be displayed
+          {
+            id: "tagKeys/123456",
+            value: "tagValues/123456",
+          },
+          // Out of scope tag, should not be displayed
+          {
+            id: "tagKeys/654321",
+            value: "tagValues/654321",
+          },
           {
             id: "tagKeys/281480339478982",
             value: "tagValues/281483840234079",
