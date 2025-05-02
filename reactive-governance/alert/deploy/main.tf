@@ -141,7 +141,7 @@ resource "google_logging_metric" "quota_logging_metric" {
   name        = var.cas_alert_log_metric
   description = "Tracks logs for resources missing labels"
   # filter      = "logName:\"projects/${var.project_id}/logs/\" jsonPayload.message:\"Resource with missing Label - Name: \""
-  filter = "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"cas-alert\" AND SEARCH(textPayload, \"Resource with missing Label\")"
+  filter = "resource.type=\"cloud_run_revision\" AND resource.labels.service_name=\"cas-alert\" AND SEARCH(textPayload, \"Resource with missing or invalid labels\")"
   metric_descriptor {
     metric_kind = "DELTA"
     value_type  = "INT64"

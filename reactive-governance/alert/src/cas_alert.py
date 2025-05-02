@@ -79,7 +79,7 @@ def cas_alert(event, _):
                 # Check if labels are valid and log a warning if not
                 if not validate_labels(labels, allowed_labels_config):
                     logger.warning(
-                        f"Resource with invalid labels - Name: {asset.get('name')} | "
+                        f"Resource with missing or invalid labels - Name: {asset.get('name')} | "
                         f"Asset Type: {asset.get('assetType')} | "
                         f"Parent: {resource.get('parent')}"
                     )
@@ -87,7 +87,7 @@ def cas_alert(event, _):
             else:
                 if not labels:
                     logger.warning(
-                        f"Resource with missing Labels - Name: {asset.get('name')} | "
+                        f"Resource with missing or invalid labels - Name: {asset.get('name')} | "
                         f"Asset Type: {asset.get('assetType')} | "
                         f"Parent: {resource.get('parent')}"
                     )
