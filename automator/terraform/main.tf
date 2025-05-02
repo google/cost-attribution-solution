@@ -91,6 +91,10 @@ resource "google_cloud_run_v2_service" "frontend" {
   template {
     containers {
       image = "us.gcr.io/${var.project_id}/tag-automator-frontend:${var.tag_name}"
+
+      resources {
+        cpu_idle = false
+      }
     }
     service_account = module.sa.email
   }
@@ -143,6 +147,11 @@ resource "google_cloud_run_v2_service" "backend" {
   template {
     containers {
       image = "us.gcr.io/${var.project_id}/tag-automator-backend:${var.tag_name}"
+
+      resources {
+        cpu_idle = false
+      }
+
       env {
         name  = "CONFIG_BUCKET"
         value = "${var.project_id}-cas-config"
