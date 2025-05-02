@@ -5,6 +5,7 @@ from pytest import fixture
 @fixture
 def client():
     os.environ["SCOPE"] = "test"
+    os.environ["CONFIG_BUCKET"] = "test"
 
     from main import app
     yield TestClient(app)
