@@ -64,7 +64,7 @@ module "sa" {
 
   project_id    = var.project_id
   name          = "cas-alert"
-  project_roles = []
+  project_roles = ["roles/storage.bucketViewer", "roles/storage.objectUser"]
 }
 
 module "cas_alert" {

@@ -122,7 +122,8 @@ resource "google_cloudfunctions2_function" "cas_alert_function" {
     timeout_seconds       = var.cloud_function_cas_reporting_timeout
     service_account_email = var.service_account_email
     environment_variables = {
-      LOG_EXECUTION_ID = "true"
+      LOG_EXECUTION_ID     = "true"
+      GOOGLE_CLOUD_PROJECT = var.project_id
     }
   }
 
