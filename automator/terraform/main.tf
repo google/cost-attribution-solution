@@ -86,12 +86,14 @@ resource "google_cloud_run_v2_service" "frontend" {
   template {
     containers {
       image = "us.gcr.io/${var.project_id}/tag-automator-frontend:${var.tag_name}"
-
-      resources {
-        cpu_idle = false
-      }
     }
+
     service_account = module.sa.email
+
+    scaling {
+      max_instance_count = 100
+      min_instance_count = 1
+    }
   }
 }
 
@@ -143,10 +145,6 @@ resource "google_cloud_run_v2_service" "backend" {
     containers {
       image = "us.gcr.io/${var.project_id}/tag-automator-backend:${var.tag_name}"
 
-      resources {
-        cpu_idle = false
-      }
-
       env {
         name  = "CONFIG_BUCKET"
         value = "${var.project_id}-cas-config"
@@ -156,6 +154,12 @@ resource "google_cloud_run_v2_service" "backend" {
         value = "organizations/${var.organization_id}"
       }
     }
+
+    scaling {
+      max_instance_count = 100
+      min_instance_count = 1
+    }
+
     service_account = module.sa.email
   }
 }
