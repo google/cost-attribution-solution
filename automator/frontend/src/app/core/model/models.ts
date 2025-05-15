@@ -52,6 +52,10 @@ export type ResourceTags = {
     tags: Binding[];
 };
 
+export type TagValuesResponse = {
+    detail: Value[];
+};
+
 export type Tag = {
     key: Value;
     values: Value[];

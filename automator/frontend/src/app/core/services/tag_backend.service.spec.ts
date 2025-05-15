@@ -11,6 +11,7 @@ import {
   ResourceTags,
   Tag,
   Binding,
+  TagValuesResponse,
 } from "../model/models"; // Import necessary types
 
 describe("TagBackendService", () => {
@@ -102,7 +103,9 @@ describe("TagBackendService", () => {
   it("should edit a tag", () => {
     const keyToEdit = "tagKey456";
     const values = ["value1", "value2"];
-    const mockResponse: Response = { detail: "Tag values updated" };
+    const mockResponse: TagValuesResponse = {
+      detail: [{ id: "123", value: "abc" }],
+    };
 
     service.editTag(keyToEdit, values).subscribe((response) => {
       expect(response).toEqual(mockResponse);

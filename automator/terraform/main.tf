@@ -58,17 +58,12 @@ module "project-iam-bindings" {
   mode     = "additive"
 
   bindings = {
-    "roles/cloudasset.viewer" = [
-      "serviceAccount:${module.sa.email}",
-    ]
-    "roles/resourcemanager.tagUser" = [
-      "serviceAccount:${module.sa.email}",
-    ]
+    for role in var.iam_roles : role => ["serviceAccount:${module.sa.email}"]
   }
 }
 
 resource "google_organization_iam_member" "organization_iam" {
-  for_each = length(var.organization_id) == 0 ? toset([]) : toset(var.org_iam_roles)
+  for_each = length(var.organization_id) == 0 ? toset([]) : toset(var.iam_roles)
 
   org_id = var.organization_id
   role   = each.value

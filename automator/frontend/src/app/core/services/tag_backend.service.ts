@@ -25,6 +25,7 @@ import {
   Tag,
   Binding,
   UploadResponse,
+  TagValuesResponse,
 } from "../model/models";
 import { SERVICE_CONFIG } from "../model/values";
 
@@ -40,8 +41,8 @@ export class TagBackendService implements TagService {
     return this.http.delete<Response>(this.apiUrl + "/tags/" + key);
   }
 
-  editTag(key: string, values: string[]): Observable<Response> {
-    return this.http.post<Response>(this.apiUrl + "/tags/tagValues", {
+  editTag(key: string, values: string[]): Observable<TagValuesResponse> {
+    return this.http.post<TagValuesResponse>(this.apiUrl + "/tags/tagValues", {
       key,
       values,
     });

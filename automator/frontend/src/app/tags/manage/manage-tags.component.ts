@@ -104,13 +104,11 @@ export class ManageTagsComponent {
       .subscribe((result: Tag | undefined) => {
         // Apply new result to the table
         if (result) {
-          this.dataSource.data = [
-            ...this.dataSource.data,
-            this.formatTag(result),
-          ];
+          const resultFormatted = this.formatTag(result);
+          this.dataSource.data = [...this.dataSource.data, resultFormatted];
 
           // Opens to edit the newly created tag
-          this.editResourceTags(result);
+          this.editResourceTags(resultFormatted);
         }
       });
   }

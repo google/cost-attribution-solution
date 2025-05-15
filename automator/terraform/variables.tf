@@ -25,7 +25,7 @@ variable "project_id" {
 }
 
 variable "activate_apis" {
-  type = list(string)
+  type        = list(string)
   description = "List of APIs to enable for the project. This is necessary for some asset types to be correctly ingested by the feed."
   default = [
     "cloudasset.googleapis.com",
@@ -45,7 +45,7 @@ variable "region" {
 
 variable "tag_name" {
   description = "The tag of the image"
-  default = "latest"
+  default     = "latest"
 }
 
 variable "domain" {
@@ -58,12 +58,14 @@ variable "lb_name" {
   default     = "iap-lb"
 }
 
-variable "org_iam_roles" {
+variable "iam_roles" {
   type        = list(string)
   description = "IAM roles assigned to service account at Org Level"
   default = [
     "roles/resourcemanager.tagUser",
     "roles/cloudasset.viewer",
+    "roles/resourcemanager.tagAdmin",
+    "roles/resourcemanager.projectMover"
   ]
 }
 

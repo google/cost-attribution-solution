@@ -22,6 +22,7 @@ import {
   Tag,
   Binding,
   UploadResponse,
+  TagValuesResponse,
 } from "./models";
 
 export abstract class TagService {
@@ -30,7 +31,10 @@ export abstract class TagService {
     name: string,
     description: string,
   ): Observable<{ key: string }>;
-  abstract editTag(key: string, values: string[]): Observable<Response>;
+  abstract editTag(
+    key: string,
+    values: string[],
+  ): Observable<TagValuesResponse>;
   abstract deleteTag(key: string): Observable<Response>;
 
   abstract fetchResources(): Observable<Array<ResourceTags>>;

@@ -24,6 +24,7 @@ import {
   Tag,
   Binding,
   UploadResponse,
+  TagValuesResponse,
 } from "../model/models";
 
 @Injectable()
@@ -42,9 +43,14 @@ export class MockTagService implements TagService {
     }).pipe(delay(this.DELAY));
   }
 
-  editTag(key: string, values: string[]): Observable<Response> {
+  editTag(key: string, values: string[]): Observable<TagValuesResponse> {
     return of({
-      detail: "success!",
+      detail: values.map((v, i) => {
+        return {
+          id: String(i),
+          value: v,
+        };
+      }),
     }).pipe(delay(this.DELAY));
   }
 
