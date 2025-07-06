@@ -51,7 +51,64 @@ gcloud services enable \
     cloudresourcemanager.googleapis.com \
     --project=$PROJECT_ID
 ```    
+# Step 2: Service Account and Permission Setup
+This phase creates the dedicated service accounts and assigns all the necessary permissions required by Terraform to deploy the solution.
 
+## 1. Create the Deployment Service Account
+This account will be used by Terraform to provision all the resources.
+
+Set environment variables for the service account
+```sh
+export DEPLOYMENT_SA_ID="sa-vertex-attribution"
+export DEPLOYMENT_SA_EMAIL="$DEPLOYMENT_SA_ID@$PROJECT_ID.iam.gserviceaccount.com"
+```
+Create the service account
+```sh
+gcloud iam service-accounts create $DEPLOYMENT_SA_ID \
+    --display-name="Terraform Vertex Attribution SA" \
+    --project=$PROJECT_ID
+```
+## 2.Grant Permissions to the Deployment Service Account
+This account requires a broad set of permissions to manage the various services in the solution.
+
+Define the list of roles
+```sh
+export SA_ROLES="roles/bigquery.admin roles/cloudfunctions.admin roles/cloudscheduler.admin roles/pubsub.admin roles/iam.serviceAccountUser roles/iam.serviceAccountAdmin roles/iam.serviceAccountCreator roles/resourcemanager.projectIamAdmin roles/serviceusage.serviceUsageAdmin roles/logging.configWriter roles/storage.admin"
+```
+Apply the roles in a loop
+```sh
+for role in $SA_ROLES; do
+  echo "Assigning $role to $DEPLOYMENT_SA_EMAIL"
+  gcloud projects add-iam-policy-binding $PROJECT_ID \
+      --member="serviceAccount:$DEPLOYMENT_SA_EMAIL" \
+      --role=$role \
+      --condition=None
+done
+```
+## 3. Grant Permissions to Google-Managed Service Accounts
+This critical step grants necessary permissions to Google's own service accounts, which are used in the background for processes like Cloud Build.
+
+Get the project number
+```sh
+export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(projectNumber)")
+```
+Define the Google-managed service accounts
+```sh
+export CLOUD_BUILD_SA="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com"
+```
+Grant roles for building and deploying the function
+```sh
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=$CLOUD_BUILD_SA --role="roles/run.admin"
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=$CLOUD_BUILD_SA --role="roles/cloudfunctions.developer"
+```
+## 4. Grant Your User Permission to Impersonate
+Your user account needs the ability to act as the deployment service account.
+```sh
+export PROJECT_USER=$(gcloud config get-value core/account)
+gcloud iam service-accounts add-iam-policy-binding $DEPLOYMENT_SA_EMAIL \
+    --member="user:$PROJECT_USER" \
+    --role="roles/iam.serviceAccountTokenCreator"
+```
 
 # Step 2: Terraform Variable Configuration
 This step involves cloning the source repository and defining the configuration parameters for the solution.
