@@ -1,5 +1,6 @@
 resource "google_project_service" "storage_api" {
   service = "storage.googleapis.com"
+  disable_on_destroy = false
 }
 
 resource "google_storage_bucket" "function_bucket" {
@@ -15,6 +16,8 @@ data "archive_file" "function_zip" {
   type        = "zip"
   source_dir  = "${path.module}/function_source" # Path to Cloud Function source directory
   output_path = "${path.module}/function_source.zip"
+  depends_on = [google_storage_bucket.function_bucket]
+
 }
 
 resource "google_storage_bucket_object" "function_zip" {

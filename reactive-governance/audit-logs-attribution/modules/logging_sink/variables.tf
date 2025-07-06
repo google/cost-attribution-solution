@@ -3,7 +3,7 @@ variable "project_id" {
   type        = string
 }
 
-variable "pubsub_sa_email" {
-  description = "Pub/Sub service account email for token creation"
+variable "pubsub_topic_name" {
+  description = "The name of the Pub/Sub topic to send logs to"
   type        = string
 }

@@ -5,11 +5,11 @@ resource "google_project_service" "cloud_functions_api" {
   disable_on_destroy = false
 }
 
-resource "google_storage_bucket_object" "function_zip" {
-  name   = "function_source.zip"                   # Name of the ZIP file in GCS
-  bucket = var.function_bucket                     # Ensure this bucket is passed from root module
-  source = "./modules/storage/function_source.zip" # Path to the generated ZIP file
-}
+# resource "google_storage_bucket_object" "function_zip" {
+#   name   = "function_source.zip"                   # Name of the ZIP file in GCS
+#   bucket = var.function_bucket                     # Ensure this bucket is passed from root module
+#   source = "./modules/storage/function_source.zip" # Path to the generated ZIP file
+# }
 
 resource "google_cloudfunctions2_function" "log_processor" {
   name     = var.name
@@ -28,6 +28,10 @@ resource "google_cloudfunctions2_function" "log_processor" {
 
   service_config {
     service_account_email = var.cloud_function_sa
+    environment_variables = {
+      BQ_DATASET_ID = var.bq_dataset_id
+      BQ_TABLE_ID   = var.bq_table_id
+    }
   }
 
   event_trigger {

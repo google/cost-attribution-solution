@@ -32,3 +32,12 @@ variable "object_name" {
   description = "The name of the ZIP file in Cloud Storage"
   type        = string
 }
+variable "bq_dataset_id" {
+  description = "The BigQuery dataset ID"
+  type        = string
+}
+
+variable "bq_table_id" {
+  description = "The BigQuery table ID"
+  type        = string
+}
