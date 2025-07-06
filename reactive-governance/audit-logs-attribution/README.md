@@ -4,15 +4,6 @@ This document outlines a solution for obtaining detailed cost analytics for Vert
 🏗️ Architectural Overview
 The proposed architecture establishes a serverless data pipeline designed to stream audit logs directly into BigQuery, which enables comprehensive analysis.
 
-graph TD;
-    subgraph "Google Cloud Project"
-        A[📄 Vertex AI & Document AI Logs] -->|1. Filtered & Captured by| B(🔍 Logging Sink);
-        B -->|2. Transmitted to| C(📬 Pub/Sub Topic);
-        C -->|3. Triggers Execution of| D(☁️ Cloud Function);
-        D -->|4. Processes & Inserts Data into| E(📊 BigQuery Table);
-    end
-    E -->|5. Analyzed & Visualized by| F(📈 Looker Studio / BI Tool);
-
 ✅ Prerequisites
 Prior to implementation, the following prerequisites must be satisfied:
 
@@ -52,6 +43,7 @@ gcloud services enable \
     cloudresourcemanager.googleapis.com \
     --project=$PROJECT_ID
 
+
 Step 2: Terraform Variable Configuration
 This step involves cloning the source repository and defining the configuration parameters for the solution.
 
@@ -60,10 +52,12 @@ Clone the Source Repository:
 git clone https://github.com/google/cost-attribution-solution.git
 cd cost-attribution-solution/reactive-governance/audit-logs-attribution
 
+
 Create a Variables File:
 A local configuration file should be created by copying the provided example.
 
 cp terraform.tfvars.example terraform.tfvars
+
 
 Define Configuration in terraform.tfvars:
 The terraform.tfvars file must be populated with values corresponding to the target environment.
@@ -78,6 +72,7 @@ bq_table_id   = "audit_events_raw"
 bucket_name   = "your-unique-bucket-name"
 cf_name       = "process-vertex-audit-logs"
 
+
 Step 3: Infrastructure Deployment
 Execution of the standard Terraform workflow is required to provision the specified Google Cloud resources.
 
@@ -86,19 +81,15 @@ This command initializes the working directory, downloading necessary providers 
 
 terraform init
 
+
 Generate an Execution Plan:
 This command creates an execution plan, which details the resources that will be created, modified, or destroyed.
 
 terraform plan
+
 
 Apply the Configuration:
 This command applies the changes required to reach the desired state of the configuration. Confirmation is required before proceeding.
 
 terraform apply
 
-🔍 Verification Procedure
-Initiate an Audit Log Event: Perform an action within the Google Cloud console that generates an audit log for the Vertex AI or Document AI service, such as the creation of a notebook instance or the execution of a prediction request.
-
-Inspect the Cloud Function Logs: In the Google Cloud Console, navigate to the Cloud Functions service. Review the execution logs for the deployed function to confirm that it was triggered and completed without error.
-
-Query the BigQuery Table: Allow a brief interval for data propagation, then access the BigQuery service. Execute a SQL query against the target table to verify the presence of the newly processed log data.
