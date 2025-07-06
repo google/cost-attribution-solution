@@ -1,5 +1,5 @@
 # The GCP project ID
-project_id = "cas-test-465106"
+project_id = "your-gcp-project-id"
 
 # The region for the resources
 region = "us-central1"
