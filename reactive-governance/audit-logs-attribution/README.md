@@ -171,6 +171,32 @@ After the deployment is finished, return to your user account.
 ```sh
 gcloud config unset auth/impersonate_service_account
 ```
+
+# Step 5: Verification and Data Analysis
+After deployment, verify the solution is working and begin analyzing the data.
+
+1. **Trigger an Audit Log:** Perform an action in Vertex AI (e.g., create a notebook or run a training job).
+
+2. **Check Resources:** Verify that messages appear in the Pub/Sub topic, the Cloud Function's logs show successful execution, and the data is present in the BigQuery table.
+
+3. **Analyze in BigQuery:** Query the BigQuery table to gain insights into your Vertex AI costs.
+
+# Step 6: Data Visualization
+To visualize the captured data, a Looker Studio template is provided. This dashboard allows for interactive exploration of your Vertex AI cost data.
+
+1. **Access the Dashboard Template:**
+[Looker Studio dashboard template](https://lookerstudio.google.com/u/0/reporting/a23e213d-4416-4506-a8d6-7e18426f9dec/page/p_alonlf06od).
+
+2. **Using the Template:**
+
+Click the "Edit and share" button (or the copy icon) in the top-right corner to make a copy of the report.
+
+In the "Copy this report" dialog, select your BigQuery table as the New Data Source.
+
+Looker Studio will create a copy of the dashboard connected to your data, which you can then customize and share.
+
+
+
 # Clean Up
 To avoid incurring ongoing charges, you can destroy the resources created by this solution.
 
