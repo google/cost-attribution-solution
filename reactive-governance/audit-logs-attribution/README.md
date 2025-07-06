@@ -20,25 +20,29 @@ Prior to implementation, the following prerequisites must be satisfied:
 The subsequent steps provide a comprehensive guide for deploying the requisite infrastructure utilizing Terraform.
 
 # Step 1: Environment Preparation
-The initial phase involves the configuration of the designated Google Cloud project and the activation of all necessary services.
+The initial phase involves cloning the repository, configuring the designated Google Cloud project, and activating all necessary services.
 
- Define the Project ID as an environment variable
- ```sh
+## 1. Clone the Source Repository and Navigate to Directory
+```sh
+git clone https://github.com/google/cost-attribution-solution.git
+cd cost-attribution-solution/reactive-governance/audit-logs-attribution
+```
+## 2. Set Up Google Cloud Environment
+
+Define the Project ID as an environment variable
+```sh
 export PROJECT_ID="<YOUR_PROJECT_ID>"
 ```
-
- Configure the gcloud CLI to target the specified project
+Configure the gcloud CLI to target the specified project
 ```sh
 gcloud config set project $PROJECT_ID
 ```
-
- Ensure all gcloud components are updated to the latest version
- ```sh
+Ensure all gcloud components are updated to the latest version
+```sh
 gcloud components update
 ```
-
- Enable all required APIs for the solution's operation
- ```sh
+Enable all required APIs for the solution's operation
+```sh
 gcloud services enable \
     iam.googleapis.com \
     cloudbuild.googleapis.com \
@@ -48,9 +52,10 @@ gcloud services enable \
     bigquery.googleapis.com \
     pubsub.googleapis.com \
     storage.googleapis.com \
+    eventarc.googleapis.com \
     cloudresourcemanager.googleapis.com \
     --project=$PROJECT_ID
-```    
+```
 # Step 2: Service Account and Permission Setup
 This phase creates the dedicated service accounts and assigns all the necessary permissions required by Terraform to deploy the solution.
 
@@ -95,11 +100,19 @@ export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format="value(pro
 Define the Google-managed service accounts
 ```sh
 export CLOUD_BUILD_SA="serviceAccount:$PROJECT_NUMBER@cloudbuild.gserviceaccount.com"
+export COMPUTE_SA="serviceAccount:$PROJECT_NUMBER-compute@developer.gserviceaccount.com"
 ```
-Grant roles for building and deploying the function
+Grant roles to the Cloud Build SA for deploying the function
 ```sh
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=$CLOUD_BUILD_SA --role="roles/run.admin"
 gcloud projects add-iam-policy-binding $PROJECT_ID --member=$CLOUD_BUILD_SA --role="roles/cloudfunctions.developer"
+```
+Grant roles to the Compute Engine default SA for build process tasks
+```sh
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=$COMPUTE_SA --role="roles/logging.logWriter"
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=$COMPUTE_SA --role="roles/storage.objectViewer"
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=$COMPUTE_SA --role="roles/artifactregistry.reader"
+gcloud projects add-iam-policy-binding $PROJECT_ID --member=$COMPUTE_SA --role="roles/artifactregistry.writer"
 ```
 ## 4. Grant Your User Permission to Impersonate
 Your user account needs the ability to act as the deployment service account.
@@ -109,25 +122,18 @@ gcloud iam service-accounts add-iam-policy-binding $DEPLOYMENT_SA_EMAIL \
     --member="user:$PROJECT_USER" \
     --role="roles/iam.serviceAccountTokenCreator"
 ```
+# Step 3: Terraform Variable Configuration
+This step involves defining the configuration parameters for the solution.
 
-# Step 2: Terraform Variable Configuration
-This step involves cloning the source repository and defining the configuration parameters for the solution.
-
-## 1. Clone the Source Repository:
-```sh
-git clone https://github.com/google/cost-attribution-solution.git
-cd cost-attribution-solution/reactive-governance/audit-logs-attribution
-```
-
-
-## 2. Create a Variables File:
+## 1. Create a Variables File
 A local configuration file should be created by copying the provided example.
-```sh
+```
 cp terraform.tfvars.example terraform.tfvars
 ```
-
-## 3. Define Configuration in terraform.tfvars:
+## 2. Define Configuration in terraform.tfvars
 The terraform.tfvars file must be populated with values corresponding to the target environment.
+
+Example terraform.tfvars
 ```sh
 project_id    = "your-gcp-project-id"
 region        = "us-central1"
@@ -137,36 +143,57 @@ bq_table_id   = "audit_events_raw"
 bucket_name   = "your-unique-bucket-name"
 cf_name       = "process-vertex-audit-logs"
 ```
-
-# Step 3: Infrastructure Deployment
+# Step 4: Infrastructure Deployment
 Execution of the standard Terraform workflow is required to provision the specified Google Cloud resources.
 
 ## 1. Set Impersonation and Generate Token
-These commands tell Terraform to authenticate as the deployment service account.
+Wait 60-90 seconds after granting permissions in Step 2 before running these commands to allow IAM changes to propagate.
 ```sh
 gcloud config set auth/impersonate_service_account $DEPLOYMENT_SA_EMAIL
 export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
 ```
-## 2. Initialize Terraform:
-This command initializes the working directory, downloading necessary providers and modules.
+## 2. Initialize, Plan, and Apply
+
+Initialize the working directory
 ```sh
 terraform init
 ```
-## 3. Generate an Execution Plan:
-This command creates an execution plan, which details the resources that will be created, modified, or destroyed.
+Create an execution plan
 ```sh
 terraform plan
 ```
-
-## 4. Apply the Configuration:
-This command applies the changes required to reach the desired state of the configuration. Confirmation is required before proceeding.
+Apply the configuration (Type 'yes' when prompted)
 ```sh
 terraform apply
 ```
-(Type yes when prompted)
-
-## 5. Stop Impersonating
+## 3. Stop Impersonating
 After the deployment is finished, return to your user account.
 ```sh
 gcloud config unset auth/impersonate_service_account
 ```
+# Clean Up
+To avoid incurring ongoing charges, you can destroy the resources created by this solution.
+
+## 1. Set Impersonation
+```sh
+gcloud config set auth/impersonate_service_account $DEPLOYMENT_SA_EMAIL
+export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+```
+## 2. Destroy the Resources
+```sh
+terraform destroy
+```
+(Type yes when prompted)
+
+## 3. Stop Impersonating
+```sh
+gcloud config unset auth/impersonate_service_account
+```
+## 4. Delete the Service Account (Optional)
+```sh
+gcloud iam service-accounts delete $DEPLOYMENT_SA_EMAIL --project=$PROJECT_ID
+```
+
+
+
+
