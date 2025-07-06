@@ -141,20 +141,32 @@ cf_name       = "process-vertex-audit-logs"
 # Step 3: Infrastructure Deployment
 Execution of the standard Terraform workflow is required to provision the specified Google Cloud resources.
 
-## 1. Initialize Terraform:
+## 1. Set Impersonation and Generate Token
+These commands tell Terraform to authenticate as the deployment service account.
+```sh
+gcloud config set auth/impersonate_service_account $DEPLOYMENT_SA_EMAIL
+export GOOGLE_OAUTH_ACCESS_TOKEN=$(gcloud auth print-access-token)
+```
+## 2. Initialize Terraform:
 This command initializes the working directory, downloading necessary providers and modules.
 ```sh
 terraform init
 ```
-
-## 2. Generate an Execution Plan:
+## 3. Generate an Execution Plan:
 This command creates an execution plan, which details the resources that will be created, modified, or destroyed.
 ```sh
 terraform plan
 ```
 
-## 3. Apply the Configuration:
+## 4. Apply the Configuration:
 This command applies the changes required to reach the desired state of the configuration. Confirmation is required before proceeding.
 ```sh
 terraform apply
+```
+(Type yes when prompted)
+
+## 5. Stop Impersonating
+After the deployment is finished, return to your user account.
+```sh
+gcloud config unset auth/impersonate_service_account
 ```
