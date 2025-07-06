@@ -3,7 +3,7 @@ This document outlines a solution for obtaining detailed cost analytics for Vert
 
 # Architectural Overview
 The proposed architecture establishes a serverless data pipeline designed to stream audit logs directly into BigQuery, which enables comprehensive analysis. This solution captures and processes Vertex AI audit logs, storing them in BigQuery to enable detailed cost attribution and analysis. By tracking resource usage through audit logs, you can gain insights into which specific users or services are driving your Vertex AI costs.
-![architecture](../reactive-governance/img/cas-reactive-audit-log-architecture.png)
+![architecture](../img/cas-reactive-audit-log-architecture.png)
 
 # Prerequisites
 Prior to implementation, the following prerequisites must be satisfied:
