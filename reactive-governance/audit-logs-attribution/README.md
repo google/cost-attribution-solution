@@ -1,110 +1,104 @@
-Vertex AI Audit Log Cost Attribution
-This solution captures and processes Vertex AI audit logs, storing them in BigQuery to enable detailed cost attribution and analysis. By tracking resource usage through audit logs, you can gain insights into which specific users or services are driving your Vertex AI costs.
+Cost Attribution for Vertex AI Workloads via Audit Log Analysis
+This document outlines a solution for obtaining detailed cost analytics for Vertex AI workloads. The methodology involves the implementation of an automated data pipeline to capture, process, and archive Vertex AI audit logs within BigQuery. This process facilitates the attribution of expenditures directly to specific users and API calls, thereby providing granular financial insights.
 
-Architecture
-The solution is built on a serverless architecture using the following Google Cloud services:
+🏗️ Architectural Overview
+The proposed architecture establishes a serverless data pipeline designed to stream audit logs directly into BigQuery, which enables comprehensive analysis.
 
-Cloud Logging Sink: Captures specific Vertex AI audit logs (for services like documentai.googleapis.com and aiplatform.googleapis.com) and routes them to a Pub/Sub topic.
+graph TD;
+    subgraph "Google Cloud Project"
+        A[📄 Vertex AI & Document AI Logs] -->|1. Filtered & Captured by| B(🔍 Logging Sink);
+        B -->|2. Transmitted to| C(📬 Pub/Sub Topic);
+        C -->|3. Triggers Execution of| D(☁️ Cloud Function);
+        D -->|4. Processes & Inserts Data into| E(📊 BigQuery Table);
+    end
+    E -->|5. Analyzed & Visualized by| F(📈 Looker Studio / BI Tool);
 
-Pub/Sub: Acts as a messaging queue to receive logs from the logging sink and trigger the processing function.
+✅ Prerequisites
+Prior to implementation, the following prerequisites must be satisfied:
 
-Cloud Function: A Python-based function that is triggered by new messages in the Pub/Sub topic. It processes the log data and inserts it into a BigQuery table.
+Google Cloud Project: A designated project is required to host the solution's resources.
 
-BigQuery: A data warehouse that stores the processed audit logs for analysis and reporting. A predefined table schema is included to structure the incoming log data.
+Permissions: The user or service account executing the deployment must possess the Owner role on the host project.
 
-1. Prerequisites
-Before you begin, ensure you have the following:
+Google Cloud SDK: The gcloud command-line tool must be installed and authenticated.
 
-Host Project: A Google Cloud project where the solution's resources will be deployed.
+Terraform: Version v0.14.6 or a subsequent version is required.
 
-Permissions: The Owner role on the host project is required for the initial setup.
+🚀 Deployment Instructions
+The subsequent steps provide a comprehensive guide for deploying the requisite infrastructure utilizing Terraform.
 
-Google Cloud SDK: The gcloud command-line tool must be installed and authenticated. You can find detailed instructions here.
+Step 1: Environment Preparation
+The initial phase involves the configuration of the designated Google Cloud project and the activation of all necessary services.
 
-Terraform: Terraform version v0.14.6 or higher must be installed. Instructions can be found here.
-
-2. Deployment
-Follow these steps to deploy the solution.
-
-Step 2.1: Initial Project and Environment Setup
-Run these commands in your terminal to configure your project and local environment.
-
-Bash
-
-# Set your project ID
+# Define the Project ID as an environment variable
 export PROJECT_ID="<YOUR_PROJECT_ID>"
+
+# Configure the gcloud CLI to target the specified project
 gcloud config set project $PROJECT_ID
 
-# Ensure all gcloud components are up to date
+# Ensure all gcloud components are updated to the latest version
 gcloud components update
 
-# Enable all required APIs for the solution
-gcloud services enable iam.googleapis.com \
+# Enable all required APIs for the solution's operation
+gcloud services enable \
+    iam.googleapis.com \
     cloudbuild.googleapis.com \
-    eventarc.googleapis.com \
     run.googleapis.com \
     cloudfunctions.googleapis.com \
     logging.googleapis.com \
     bigquery.googleapis.com \
     pubsub.googleapis.com \
     storage.googleapis.com \
-    appengine.googleapis.com \
     cloudresourcemanager.googleapis.com \
     --project=$PROJECT_ID
-Step 2.2: Configure Terraform Variables
-Clone the repository and navigate to the correct directory:
 
-Bash
+Step 2: Terraform Variable Configuration
+This step involves cloning the source repository and defining the configuration parameters for the solution.
+
+Clone the Source Repository:
 
 git clone https://github.com/google/cost-attribution-solution.git
 cd cost-attribution-solution/reactive-governance/audit-logs-attribution
-Create a terraform.tfvars file from the example:
 
-Bash
+Create a Variables File:
+A local configuration file should be created by copying the provided example.
 
 cp terraform.tfvars.example terraform.tfvars
-Open terraform.tfvars and update the following variables with your specific values:
 
-project_id
+Define Configuration in terraform.tfvars:
+The terraform.tfvars file must be populated with values corresponding to the target environment.
 
-region
+# terraform.tfvars
 
-bq_region
+project_id    = "your-gcp-project-id"
+region        = "us-central1"
+bq_region     = "US"
+bq_dataset_id = "vertex_ai_audit_logs"
+bq_table_id   = "audit_events_raw"
+bucket_name   = "your-unique-bucket-name"
+cf_name       = "process-vertex-audit-logs"
 
-bq_dataset_id
+Step 3: Infrastructure Deployment
+Execution of the standard Terraform workflow is required to provision the specified Google Cloud resources.
 
-bq_table_id
-
-bucket_name
-
-cf_name
-
-Step 2.3: Run Terraform
-Initialize your Terraform workspace, which downloads the necessary providers and modules.
-
-Bash
+Initialize Terraform:
+This command initializes the working directory, downloading necessary providers and modules.
 
 terraform init
-Create an execution plan to preview the resources that will be created.
 
-Bash
+Generate an Execution Plan:
+This command creates an execution plan, which details the resources that will be created, modified, or destroyed.
 
 terraform plan
-Apply the configuration to deploy the resources.
 
-Bash
+Apply the Configuration:
+This command applies the changes required to reach the desired state of the configuration. Confirmation is required before proceeding.
 
 terraform apply
-When prompted, type yes to confirm the deployment.
 
-3. Verification
-Once the Terraform deployment is complete, you can verify that the solution is working:
+🔍 Verification Procedure
+Initiate an Audit Log Event: Perform an action within the Google Cloud console that generates an audit log for the Vertex AI or Document AI service, such as the creation of a notebook instance or the execution of a prediction request.
 
-Trigger a Vertex AI Action: Perform an action in Vertex AI that generates an audit log (e.g., create a notebook, run a training job).
+Inspect the Cloud Function Logs: In the Google Cloud Console, navigate to the Cloud Functions service. Review the execution logs for the deployed function to confirm that it was triggered and completed without error.
 
-Check Pub/Sub: Go to the Pub/Sub section in the Google Cloud Console and check the topic for new messages.
-
-Check Cloud Function Logs: View the logs for the deployed Cloud Function to ensure it is being triggered and running without errors.
-
-Query BigQuery: After a few moments, query your BigQuery table to see if the new audit log data has been inserted.
-
+Query the BigQuery Table: Allow a brief interval for data propagation, then access the BigQuery service. Execute a SQL query against the target table to verify the presence of the newly processed log data.
