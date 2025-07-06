@@ -7,13 +7,13 @@ The proposed architecture establishes a serverless data pipeline designed to str
 # Prerequisites
 Prior to implementation, the following prerequisites must be satisfied:
 
-Google Cloud Project: A designated project is required to host the solution's resources.
+**Google Cloud Project** A designated project is required to host the solution's resources.
 
-Permissions: The user or service account executing the deployment must possess the Owner role on the host project.
+**Permissions** The user or service account executing the deployment must possess the Owner role on the host project.
 
-Google Cloud SDK: The gcloud command-line tool must be installed and authenticated.
+**Google Cloud SDK** The gcloud command-line tool must be installed and authenticated.
 
-Terraform: Version v0.14.6 or a subsequent version is required.
+**Terraform** Version v0.14.6 or a subsequent version is required.
 
 # Deployment Instructions
 The subsequent steps provide a comprehensive guide for deploying the requisite infrastructure utilizing Terraform.
