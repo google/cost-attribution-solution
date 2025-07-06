@@ -68,7 +68,7 @@ gcloud iam service-accounts create $DEPLOYMENT_SA_ID \
     --display-name="Terraform Vertex Attribution SA" \
     --project=$PROJECT_ID
 ```
-## 2.Grant Permissions to the Deployment Service Account
+## 2. Grant Permissions to the Deployment Service Account
 This account requires a broad set of permissions to manage the various services in the solution.
 
 Define the list of roles
