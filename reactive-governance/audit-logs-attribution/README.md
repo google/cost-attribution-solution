@@ -1,4 +1,4 @@
-# Cost Attribution for Vertex AI Workloads via Audit Log Analysis
+# Cost Attribution for Vertex AI Workloads via Audit Logs
 This document outlines a solution for obtaining detailed cost analytics for Vertex AI workloads. The methodology involves the implementation of an automated data pipeline to capture, process, and archive Vertex AI audit logs within BigQuery. This process facilitates the attribution of expenditures directly to specific users and API calls, thereby providing granular financial insights.
 
 # Architectural Overview
